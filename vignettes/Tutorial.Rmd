@@ -1,0 +1,95 @@
+---
+title: "Tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(gwasglue2)
+library(TwoSampleMR)
+library(ieugwasr)
+library(hyprcoloc)
+library(susieR)
+```
+
+There are two usecases for this tutorial 
+
+1. Performing a basic TwoSampleMR analysis
+2. Generating a regional genotype-phenotype map (Million Veteran's Programme analysis example)
+
+
+
+
+## 1. TwoSampleMR analysis
+
+We will perform an MR analysis of body mass index (exposure - ieu-a-2) against coronary heart disease (outcome - ieu-a-7).
+
+Obtain the data
+
+```{r}
+dataset <- gwasglue2::clumped_hits(traits = "ieu-a-2", source = "OpenGWAS") %>%
+  gwasglue2::create_dataset(traits = c("ieu-a-2", "ieu-a-7"), variants = .) %>%
+  gwasglue2::annotate(exposure = "ieu-a-2", outcome = "ieu-a-7")
+```
+
+Perform the analysis
+
+```{r}
+result <- dataset %>%
+  TwoSampleMR(dataset=., method_list="mr_ivw")
+```
+
+
+## 2. Regional genotype-phenotype map
+
+We need to first define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)
+
+```{r}
+genomicrange <- "22:43714200-44995307"
+
+```
+
+We need to scan OpenGWAS for traits that have a significant associations in this region
+
+```{r}
+id_list <- ieugwasr::phewas(pval = 5e-6, variants=genomicrange, batch="ukb-a")$id %>%
+  unique()
+```
+
+Obtain data
+
+```{r}
+dataset <- gwasglue2::create_dataset(traits=id_list, variants=genomicrange) %>%
+  gwasglue2::annotate(ld_matrix="1000genomes_EUR")
+```
+
+Next, for each trait we need to perform finemapping. This will involve using SusieR to identify credible sets in the region for the trait, and then generate the conditional summary datasets for each credible set. Explanation:
+
+Credible set: If a trait is inferred to have e.g. 3 causal variants in the genomic region then there will be 3 credible sets. Each credible set is essentially a cluster of SNPs close by, it will include 1 or more SNPs that are candidates to be the causal variant.
+
+Conditional summary datasets: Once credible sets are identified, we can try to estimate what the summary data results would have looked like for each credible set after accounting for all the other credible sets. So in this example there would be 3 conditional summary datasets, each with a single peak in a different location.
+
+Use susieR to generate the credible sets for each dataset (e.g. some of them will have only 1, some will have more than 1. But all of them will have at least 1 because they have been selected to have an association in the region)
+
+```{r}
+dataset <- gwasglue2::annotate(dataset = ., credible_sets="susieR")
+```
+
+Finally, we can perform the colocalisation. Here we want to jointly colocalise across all the conditional summary datasets
+
+
+```{r}
+result <- dataset %>%
+  hyprcoloc::hyprcoloc(dataset=.)
+```
+
