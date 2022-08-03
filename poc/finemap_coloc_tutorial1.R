@@ -164,6 +164,12 @@ convert_tool <- function(data_set, analysis_order = 1, pop=FALSE, with_alleles=F
 ######################################################################################
 # ANALYSIS (I am working inside the poc folder)
 # call gwasglue2 functions
+source("functions_gwasglue2.R")
+
+# The EUR plink files can be downloaded here (multiple populations):
+# http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz
+
+# plink binaries can be found here: https://www.cog-genomics.org/plink/
 
 library(magrittr)
 library(dplyr)
