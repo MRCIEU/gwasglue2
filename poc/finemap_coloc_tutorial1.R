@@ -15,44 +15,15 @@ ieugwasr::api_status()
 
 #' CONVERT FINE MAPPING
 #' @param data_set Output of create_dataset function
-#' @param pop TRUE/FALSE
-#' Default FALSE. If TRUE the pop parameter will be used in ieugwasr::ld_matrix
-#' @param bfile TRUE/FALSE
-#' Default TRUE. If TRUE the bfile parameter will be used in ieugwasr::ld_matrix
-#' @param plink_bin Path to where the plink executable is in the OS
+
 #' @return data_set A list of annotated dataframes with extra elements for each trait id (z$snp,z$zscore ld, n )
-convert_finemap <- function(data_set, pop = FALSE, with_alleles = FALSE, bfile = TRUE, plink_bin = NULL) {
-   #  LD matrices (doing just once). Check if there are situations when it is needed to have a different LD matrix for each trait
-    # read the ld_ref column for the ref name
-    ldr <- unique(unlist(sapply(data_set, `[`, "ld_ref")))
-     message("Building LD matrix")
-     if (pop == TRUE) {
-        ld <- suppressWarnings(ieugwasr::ld_matrix(data_set[[1]]$rsid, pop = ldr, with_alleles = with_alleles, bfile = FALSE,plink_bin = plink_bin))
-    }
-    if (bfile == TRUE){
-        ld <- suppressWarnings(ieugwasr::ld_matrix(data_set[[1]]$rsid, pop=FALSE, with_alleles=with_alleles, bfile=ldr,plink_bin=plink_bin))
-    }
-    rsid_avail <- rownames(ld)
-    message("Data available for ", length(rsid_avail), " variants")
-    
-    for (i in seq_along(data_set)) {
-        x <- subset(data_set[[i]], data_set[[i]]$rsid %in% rsid_avail)
+convert_finemap <- function(data_set) {
+   for (i in seq_along(data_set)) {
         # id <- unique(x$id)
         dat <- list()
         # calculate some sumstats
-		dat[["z"]] <- dplyr::tibble(snp = x[["rsid"]], zscore = x[["beta"]] / x[["se"]])
-		index <- match(x[["rsid"]], rsid_avail)
-		dat[["ld"]] <- ld[index, index]
-		stopifnot(all(x[["rsid"]] == rownames(dat[["ld"]])))
-
-		# n <- x[["n"]]
-		# if(all(is.na(n))){
-		# 	g <- ieugwasr::gwasinfo(id[i])
-		# 	n <- g[["sample_size"]]
-		# }
-        
-        # subset the data_set dataframes to ?
-        data_set[[i]] <- x
+		dat[["z"]] <- dplyr::tibble(snp = data_set[[i]][["rsid"]], zscore = data_set[[i]][["beta"]] / data_set[[i]][["se"]])
+		
 		# add objects to the data_set list
          dat_l <- append(data_set[[i]],dat)
          data_set[[i]] <- dat_l
@@ -179,11 +150,11 @@ path_to_plink <- "plink"
 # Obtain the data
 dt1 <- phewas_ids(variants = "22:43714200-44995307", batch = "ukb-a", pval = 5e-6) %>%
     create_dataset(traits = ., variants = "22:43714200-44995307") %>%
-    annotate(data_set = ., ld_ref="EUR", analysis_type = c("finemap","coloc"))
+    annotate(data_set = ., ld_ref="EUR", analysis_type = c("finemap","coloc"), bfile = TRUE, plink_bin = path_to_plink)
 
 # convert to finemap format and run susieR
 dt2<- dt1 %>%
-    convert_finemap(data_set =., bfile = TRUE, plink_bin = path_to_plink) %>% 
+    convert_finemap(data_set =.) %>% 
     run_susieR(data_set = .)
 
 # convert to coloc format
@@ -191,6 +162,7 @@ dt3 <- dt2 %>%
      convert_coloc(data_set=.)
 
 # coloc analysis (TODO create a function to run hypercoloc)
+# assuming independent traits
 for (i in seq_along(dt3)){
     if (is.na(dt3[[i]]$beta_coloc)) next
     else {
@@ -200,43 +172,8 @@ for (i in seq_along(dt3)){
         rsid <- rownames(dt3[[i]]$beta_coloc[[j]])
         betas <- dt3[[i]]$beta_coloc[[j]]
         ses <- dt3[[i]]$se_coloc[[j]]
-        res <- hyprcoloc::hyprcoloc(betas, ses, trait.names=traits, snp.id=rsid)
+        res <- hyprcoloc::hyprcoloc(betas, ses, trait.names=traits, snp.id=rsid,bb.selection = "regional")
         print(res)
         }
     } 
 }
-
-
-
-
-######################################################################################
-# OTHER TESTS
-
-# convert_finemap<- function(data_set, pop=NULL, with_alleles=FALSE, bfile=NULL,plink_bin=NULL){
-#     # create a new list
-#     data_set_fmap <- list()
-#     #  LD matrices (doing just once). Check if there are situations when it is needed to have a different LD matrix for each trait
-#     ld <- suppressWarnings(ieugwasr::ld_matrix(data_set[[1]]$rsid, pop=pop, with_alleles=with_alleles, bfile=bfile,plink_bin=plink_bin))
-#     rsid_avail <- rownames(ld)
-#     message("Data available for ", length(rsid_avail), " variants")
-    
-#     for (i in seq_along(data_set)){
-#         x <- subset(data_set[[i]], data_set[[i]]$rsid %in% rsid_avail)
-#         id <- unique(x$id)
-#         dat <- list()
-#         dat[["z"]] <- dplyr::tibble(snp = x[["rsid"]], zscore = x[["beta"]] / x[["se"]])
-# 		index <- match(x[["rsid"]], rsid_avail)
-# 		dat[["ld"]] <- ld[index, index]
-# 		stopifnot(all(x[["rsid"]] == rownames(dat[["ld"]])))
-
-# 		n <- x[["n"]]
-# 		if(all(is.na(n))) {
-# 			g <- ieugwasr::gwasinfo(id[i])
-# 			n <- g[["sample_size"]]
-# 		}
-# 		dat[["n"]] <- n
-# 		data_set_fmap[[id]] <- dat
-#         }
-# return(data_set_fmap)
-
-# }
