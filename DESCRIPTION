@@ -1,17 +1,32 @@
 Package: gwasglue2
-Title: What the Package Does (One Line, Title Case)
+Title: GWAS summary data sources connected to analytical tools
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    c(person("Gibran", "Hemani", email="g.hemani@bristol.ac.uk", role = "aut",
+             comment = c(ORCID = "0000-0003-0920-1055")),
+    person("Rita", "Rasteiro", email="rita.rasteiro@bristol.ac.uk", role = c("cre", "aut"),
+            comment=c(ORCID = "0000-0002-4217-3060")),
+    person("Christopher", "Woods", email="Christopher.Woods@bristol.ac.uk", role = c("aut"),
+            comment=c(ORCID = ""))
+            )
+Description: Description: Many tools exist that use GWAS summary data for colocalisation, fine mapping, Mendelian randomization, visualisation, etc. This package is a conduit that connects R packages that can retrieve GWAS summary data to various tools for analysing those data.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
-URL: https://github.com/explodecomputer/gwasglue2
-BugReports: https://github.com/explodecomputer/gwasglue2/issues
+URL: https://github.com/MRCIEU/gwasglue2
+BugReports: https://github.com/MRCIEU/gwasglue2/issues
+Depends: 
+    R (>= 4.0.0),
+    gwasvcf,
+    ieugwasr
+Imports:
+    dplyr,
+    magrittr,
+    dplyr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3

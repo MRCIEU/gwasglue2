@@ -1,1 +1,5 @@
 ^LICENSE\.md$
+^gwasglue2\.Rproj$
+^\.Rproj\.user$
+^poc$
+^\.Rhistory$
