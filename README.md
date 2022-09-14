@@ -9,11 +9,12 @@ The goal of gwasglue2 is to ...
 ## Installation
 
 You can install the development version of gwasglue2 from [GitHub](https://github.com/) with:
-
+<!---
 ``` r
 # install.packages("devtools")
 devtools::install_github("MRCIEU/gwasglue2")
-```
+
+```-->
 
 ## Example
 
