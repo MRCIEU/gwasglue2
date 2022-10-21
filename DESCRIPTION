@@ -18,12 +18,13 @@ URL: https://github.com/MRCIEU/gwasglue2
 BugReports: https://github.com/MRCIEU/gwasglue2/issues
 Depends: 
     R (>= 4.0.0),
+    methods,
     gwasvcf,
     ieugwasr
 Imports:
     dplyr,
     magrittr,
-    dplyr
+    tibble
 Suggests: 
     knitr,
     rmarkdown,

@@ -16,7 +16,6 @@ setMethod( "harmonise", "DataSet", function(object) {
 
 
 
-
   object@is_harmonised <- TRUE
   return(object)
 }
