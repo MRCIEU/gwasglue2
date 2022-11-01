@@ -4,7 +4,7 @@
 #' @slot ss A tibble with the GWAS summary statistics (default NA).
 #' @slot metadata  A data.frame with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
-#' @slot tools The tools that gwasglue is going to convert to (default NA).
+#' @slot tools The tools that gwasglue2 is going to convert to (default NA).
 #' @slot mr_label Exposure/Outcome (default NA).
 #' @slot ld_ref The prefix of the plink files (eg. EUR) used to build the LD correlation matrix (default NA).
 #' @slot pop The population code in ieugwasr (eg. EUR) used to build the LD correlation matrix (default NA).
@@ -45,7 +45,7 @@ setClass("SummarySet",
 #' @return
 SummarySet <- function(ss, traits, variants, tools) {
   new("SummarySet",
-    ss = createSumset(traits = traits, variants = variants),
+   ss = createSumset(traits = traits, variants = variants),
     tools = tools,
     variants = variants
   )
