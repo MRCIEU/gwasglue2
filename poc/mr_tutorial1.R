@@ -26,7 +26,7 @@ ieugwasr::api_status()
 # CHANGE COLNAMES 
 # (makes it easier to work in MR: it is inside create_dataset, but it can be moved to convert_mr)
 change_colnames <- function (data_set){
-d <- data_set %>% rename(c(SNP = rsid,effect_allele=ea, other_allele = nea, pval=p, samplesize=n))
+d <- data_set %>% dplyr::rename(c(SNP = rsid,effect_allele=ea, other_allele = nea, pval=p, samplesize=n))
 return (d)
 }
 

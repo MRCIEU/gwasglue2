@@ -31,7 +31,7 @@ setClass("SummarySet",
     ld_ref = NA_character_,
     pop = NA_character_
   ),
-  contains = class(tibble())
+  contains = class(dplyr::tibble())
 )
 
 

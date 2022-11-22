@@ -26,7 +26,7 @@ setMethod("convertForTwoSampleMR", "DataSet", function(object) {
   for (i in seq_along(object@summary_sets)){
     # change column names
     object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss %>%
-      rename(c(SNP = rsid,effect_allele=ea, other_allele = nea, pval=p, samplesize=n))
+      dplyr::rename(c(SNP = rsid,effect_allele=ea, other_allele = nea, pval=p, samplesize=n))
     #  add extra column named "mr_keep"
     object@summary_sets[[i]]@ss$mr_keep <- !is.na(object@summary_sets[[i]]@ss$beta) &
       !is.na(object@summary_sets[[i]]@ss$se) &

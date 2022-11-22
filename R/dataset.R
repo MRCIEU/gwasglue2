@@ -44,7 +44,7 @@ setClass("DataSet",
     is_harmonisedLD = FALSE,
     is_converted = FALSE
   ),
-  contains = c(class(tibble()))
+  contains = c(class(dplyr::tibble()))
 )
 
 

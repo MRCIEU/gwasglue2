@@ -18,16 +18,17 @@ URL: https://github.com/MRCIEU/gwasglue2
 BugReports: https://github.com/MRCIEU/gwasglue2/issues
 Depends: 
     R (>= 4.0.0),
-    methods,
-    gwasvcf,
-    ieugwasr
+    methods
 Imports:
-    dplyr,
-    magrittr,
-    tibble
+    dplyr
 Suggests: 
     knitr,
     rmarkdown,
+    ieugwasr,
+    gwasvcf,
     testthat (>= 3.0.0)
+Collate:
+    'summaryset.R'
+    'dataset.R'
 VignetteBuilder: knitr
 Config/testthat/edition: 3
