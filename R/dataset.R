@@ -3,7 +3,7 @@
 
 #' An S4 class to represent the Data Set
 #'
-#' @slot sumset A list of SummarySet objects (default NA).
+#' @slot summary_sets A list of SummarySet objects (default NA).
 #' @slot overlap_SNPs among all SummarySets
 #' @slot is_resized logical (default FALSE).
 #' @slot is_harmonised logical (default FALSE).
