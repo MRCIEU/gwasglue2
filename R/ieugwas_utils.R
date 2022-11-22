@@ -18,7 +18,7 @@ clumpTophits <- function(traits,  clump = TRUE, source = ieugwasr::check_access_
 #' @param pval p-value threshold. Default = `0.00001`. Iherited from ieugwasr::phewas
 #' @param batch Vector of batch IDs to search across. If `c()` (default) then returns all batches. Iherited fromieugwasr::phewas
 #' @return id_list Array with traits ids
-phewas_ids <- function(variants, batch, pval) {
+phewasIDs <- function(variants, batch, pval) {
   id_list <- ieugwasr::phewas(pval = pval, variants = variants, batch = batch)$id %>%
     unique()
   return(id_list)

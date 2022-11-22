@@ -1,19 +1,20 @@
 
 #' An S4 class to represent the Summary Set
 #'
+#' @slot source Eg.IEUopenGWAS (default NA).
 #' @slot ss A tibble with the GWAS summary statistics (default NA).
 #' @slot metadata  A data.frame with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
 #' @slot tools The tools that gwasglue2 is going to convert to (default NA).
 #' @slot mr_label Exposure/Outcome (default NA).
 #' @slot ld_ref The prefix of the plink files (eg. EUR) used to build the LD correlation matrix (default NA).
+
 #' @slot pop The population code in ieugwasr (eg. EUR) used to build the LD correlation matrix (default NA).
 setClass("SummarySet",
   slots = c(
     source = "character",
     ss = "tbl_df",
     metadata = "data.frame",
-    # traits = "character",
     variants = "character",
     tools = "character",
     mr_label = "character",
@@ -24,7 +25,6 @@ setClass("SummarySet",
     source = NA_character_,
     ss = NA_character_,
     metadata = data.frame(NA),
-    # traits = NA_character_,
     variant = NA_character_,
     tool = NA_character_,
     mr_label = NA_character_,
