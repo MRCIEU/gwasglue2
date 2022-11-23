@@ -1,5 +1,5 @@
 test_that("twosamplemr gives the same as gwasglue2", {
-
+  skip("Not ready yet")
   dataset <- DataSet(sumset1,sumset2) %>%
     overlapSNP(.) %>%
     harmoniseData(.,tolerance = 0.08,action = 2)

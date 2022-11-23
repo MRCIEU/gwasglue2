@@ -20,14 +20,20 @@ Depends:
     R (>= 4.0.0),
     methods
 Imports:
-    dplyr
+    dplyr,
+    reshape2
 Suggests: 
     knitr,
     rmarkdown,
     ieugwasr,
     gwasvcf,
+    TwoSampleMR,
     testthat (>= 3.0.0),
     covr
+Remotes:
+    mrcieu/TwoSampleMR,
+    mrcieu/gwasglue,
+    mrcieu/ieugwasr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Collate: 

@@ -35,7 +35,7 @@ harmonise <- function(rsid, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, act
   d12 <- harmonise_12(rsid[i12], A1[i12], B1[i12], B2[i12], betaA[i12], betaB[i12], fA[i12], fB[i12], tolerance, action)
   d11 <- harmonise_11(rsid[i11], A1[i11], B1[i11], betaA[i11], betaB[i11], fA[i11], fB[i11], tolerance, action)
 
-  # jlog <- plyr::rbind.fill(
+  # jlog <- dplyr::bind_rows(
   # 	as.data.frame(attr(d22, "log"), stringsAsFactors=FALSE),
   # 	as.data.frame(attr(d21, "log"), stringsAsFactors=FALSE),
   # 	as.data.frame(attr(d12, "log"), stringsAsFactors=FALSE),
@@ -559,8 +559,8 @@ harmonise_data <- function(dat1, dat2, action=2)
   # 	return(x)
   # })
 
-  jlog <- plyr::rbind.fill(lapply(fix.tab, function(x) attr(x, "log")))
-  fix.tab <- plyr::rbind.fill(fix.tab)
+  jlog <- dplyr::bind_rows(lapply(fix.tab, function(x) attr(x, "log")))
+  fix.tab <- dplyr::bind_rows(fix.tab)
   attr(fix.tab, "log") <- jlog
 
   # fix.tab <- harmonise_make_snp_effects_positive(fix.tab)

@@ -1,10 +1,10 @@
 library(dplyr)
 library(ieugwasr)
 
+x <- ieugwasr::tophits("ieu-a-2")$rsid
+sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
+
 test_that("create summaryset", {
-    x <- ieugwasr::tophits("ieu-a-2")$rsid
-    sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
-    sumset1
     expect_true(nrow(sumset1@ss) == length(x))
 })
 
@@ -20,6 +20,7 @@ test_that("get metadata", {
 
 test_that("set mr_label", {
     sumset1 <- setMRlabel(sumset1, mr_label = "exposure")
+    expect_equal
 })
 
 
