@@ -1,4 +1,5 @@
-
+#' @include dataset.R
+NULL
 
 # Set and get methods for convert methods
 
