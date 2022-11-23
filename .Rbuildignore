@@ -3,3 +3,5 @@
 ^\.Rproj\.user$
 ^poc$
 ^\.Rhistory$
+^codecov\.yml$
+^\.github$
