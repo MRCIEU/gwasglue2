@@ -45,7 +45,7 @@ Note that the whole OpenGWAS database is an example of a 'complete' dataset - al
 
 This is typically how a workflow might look:
 
-![Work flow](flop.png)
+![Work flow](flow.png)
 
 We should be able to ingest data from various locations, and then the class provides a number of different ways to manipulate and annotate the data.
 
