@@ -10,7 +10,7 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-latest
+    runs-on: mrcieu/opengwas-r:0.1.6
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes

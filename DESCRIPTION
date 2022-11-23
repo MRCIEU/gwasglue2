@@ -32,7 +32,7 @@ Suggests:
     covr
 Remotes:
     mrcieu/TwoSampleMR,
-    mrcieu/gwasglue,
+    mrcieu/gwasvcf,
     mrcieu/ieugwasr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
