@@ -1,8 +1,10 @@
-context("creating a dataset")
-library(dplyr)
+test_that("create a dataset from summary sets", {
+  sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
+  sumset2 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")
+  sumset3 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")
 
-test_that("", {
-  dataset <- DataSet(sumset1,sumset2) %>%
+  dataset <- DataSet(sumset1,sumset2,sumset3) %>%
     overlapSNP(.) %>%
-    harmoniseData(.,tolerance = 0.08,action = 2)
+    harmoniseData(.,tolerance = 0.08, action = 1)
+  
 })
