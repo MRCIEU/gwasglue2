@@ -1,0 +1,69 @@
+---
+title: "Strategy"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Strategy}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(gwasglue2)
+```
+
+The gwasglue2 package sits between the data and the analytical methods within the OpenGWAS ecosystem
+
+![gwas ecosystem](https://gwas.mrcieu.ac.uk/static/images/gwas_ecosystem.bb869525db1a.png)
+
+## Objectives
+
+- Represent GWAS summary data from multiple sources in various different shapes for different tools
+- Represent a class structure that other packages can call
+- Have very few dependencies
+- Ensure harmonisation of data across different sources
+- Be able to simulate data for ease of analytical prototyping
+- Store relevant meta data
+- Have methods for visualising, joining and subsetting datasets
+- Create examples of analytical tools creating methods that import the gwasglue2 package.
+
+Here are some example 'structures' of summary datasets that it should be able to handle
+
+## Data structures
+
+![Data structures](data_structures.png)
+
+Note that the whole OpenGWAS database is an example of a 'complete' dataset - all traits and all variants. What we typically want to represent in gwasglue2 is a specific slice of that data, that is almost always going to be a rectangular shape - a set of variants across a set of traits. In addition, we need to be able to be able to flexibly associate metadata or other forms of annotations (LD matrices, genomic annotations etc) to the data. Finally, analytical tools need to be aware of these structures in order to easily deploy methods upon them.
+
+## Work flow
+
+This is typically how a workflow might look:
+
+![Work flow](flop.png)
+
+We should be able to ingest data from various locations, and then the class provides a number of different ways to manipulate and annotate the data.
+
+## Strategy
+
+A set of genetic associations (1 or more) for a single trait is known as a `SummarySet`. This class should contain the data, plus `MetaData` that describes the source study, plus a list of `Concept`s that annotate the Summary data.
+
+A `Concept` is a named list of extra information that can be linked to the data, for example LD matrices, annotations relating to how to use the data in a model (e.g. exposure or outcome), etc.
+
+A `Dataset` is a set of merged and harmonised `SummarySet`s, for example if two SummarySets are generated using the same set of variants for two traits, then putting them together into a `Dataset` will find the intersect of the available variants, and harmonise them to be on the same effect allele. `Dataset` objects can also have a global `Concept` list for extra data that is common across all the `SummarySet`s stored in the object.
+
+Initial visualisation below:
+
+![Class structures](s4_structure.png)
+
+## Implementation
+
+Currently planning to implement as an S4 class, but may move into R7 in the future once it is stable and compatible with roxygen etc.
+
+
+
