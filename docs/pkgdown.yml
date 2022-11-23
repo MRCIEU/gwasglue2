@@ -1,0 +1,8 @@
+pandoc: 2.19.2
+pkgdown: 2.0.6
+pkgdown_sha: ~
+articles:
+  Strategy: Strategy.html
+  Tutorial: Tutorial.html
+last_built: 2022-11-23T15:08Z
+

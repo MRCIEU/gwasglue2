@@ -6,3 +6,6 @@
 ^codecov\.yml$
 ^\.github$
 ^s4_tutorials$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
