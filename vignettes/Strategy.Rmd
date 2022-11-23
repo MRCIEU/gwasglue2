@@ -65,5 +65,52 @@ Initial visualisation below:
 
 Currently planning to implement as an S4 class, but may move into R7 in the future once it is stable and compatible with roxygen etc.
 
+## Controlled fields
 
+Association data within a `SummarySet` should have the following fields -
+
+- Required:
+  - chromosome
+  - position
+  - effect allele (ALT)
+  - non-effect allele (REF)
+  - effect size
+  - standard error
+  - p-value
+- Optional:
+  - effect allele frequency
+  - rsid
+  - imputation info score
+  - sample size
+  - number of cases
+  - number of controls
+
+Metadata fields -
+
+- Required
+  - genome build
+  - units of effect size
+  - number of cases
+  - number of controls
+  - trait name
+  - trait identifier
+  - ancestral population of sample
+  - sex of sample
+  - study DOI
+  - number of variants
+
+- Optional
+  - Ontology term
+  - standard deviation of trait
+  - mean of trait
+  - genotyping method
+  - analysis method
+  - covariates
+  - notes
+
+Accession info should be generated upon creation:
+
+- Data source
+- Timestamp of access
+- Query
 
