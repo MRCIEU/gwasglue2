@@ -5,3 +5,4 @@
 ^\.Rhistory$
 ^codecov\.yml$
 ^\.github$
+^s4_tutorials$
