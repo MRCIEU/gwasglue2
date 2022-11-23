@@ -159,3 +159,14 @@ setMethod("getMRlabel","SummarySet",
 #             return(object@traits)
 #           }
 # )
+
+setMethod("dim", signature=c(x="SummarySet"), function(x) {
+    return(dim(x@ss))
+})
+
+setMethod(f = "show", signature="SummarySet", definition = function(object) {
+  cat("A SummarySet with ", nrow(object@ss), " variants\n")
+  print(object@ss)
+})
+
+
