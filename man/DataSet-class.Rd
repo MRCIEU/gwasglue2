@@ -18,6 +18,16 @@ An S4 class to represent the Data Set
 
 \item{\code{is_harmonised}}{logical (default FALSE).}
 
+\item{\code{overall_dropped_SNPs}}{A vector of RSIDs that were removed from the summary_sets.}
+
+\item{\code{dropped_SNPs}}{A list of pairwise harmonising ouptput (SNPs removed from the summary_sets )}
+
+\item{\code{palindromic_SNPs}}{A list of pairwise harmonising ouptput.}
+
+\item{\code{ambiguous_SNPs}}{A list of pairwise harmonising ouptput.}
+
+\item{\code{incompatible_alleles_SNPs}}{A list of pairwise harmonising ouptput.}
+
 \item{\code{ld_matrices}}{A list of LD correlation matrices (default NA).}
 
 \item{\code{is_harmonisedLD}}{logical (default FALSE).}

@@ -7,7 +7,7 @@ Authors@R:
     person("Rita", "Rasteiro", email="rita.rasteiro@bristol.ac.uk", role = c("cre", "aut"),
             comment=c(ORCID = "0000-0002-4217-3060")),
     person("Christopher", "Woods", email="Christopher.Woods@bristol.ac.uk", role = c("aut"),
-            comment=c(ORCID = ""))
+            comment=c(ORCID = "0000-0001-6563-9903"))
             )
 Description: Description: Many tools exist that use GWAS summary data for colocalisation, fine mapping, Mendelian randomization, visualisation, etc. This package is a conduit that connects R packages that can retrieve GWAS summary data to various tools for analysing those data.
 License: MIT + file LICENSE
@@ -20,8 +20,7 @@ Depends:
     R (>= 4.0.0),
     methods
 Imports:
-    dplyr,
-    reshape2
+    dplyr
 Suggests: 
     knitr,
     rmarkdown,
@@ -29,7 +28,8 @@ Suggests:
     gwasvcf,
     TwoSampleMR,
     testthat (>= 3.0.0),
-    covr
+    covr,
+    utils
 Remotes:
     mrcieu/TwoSampleMR,
     mrcieu/gwasvcf,
@@ -39,6 +39,7 @@ Config/testthat/edition: 3
 Collate: 
     'dataset.R'
     'convertTo.R'
+    'globals.R'
     'harmonise.R'
     'harmonise_ld.R'
     'harmonise_method.R'

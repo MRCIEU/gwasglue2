@@ -7,7 +7,14 @@
 clumpTophits(traits, clump = TRUE, source = ieugwasr::check_access_token())
 }
 \arguments{
-\item{source}{}
+\item{traits}{ID of GWAS studies to query}
+
+\item{clump}{Logical (default TRUE)}
+
+\item{source}{IEU (default)}
+}
+\value{
+Array of SNPs rsids
 }
 \description{
 A function to clump the top hit variants

@@ -70,10 +70,10 @@ setMethod( "harmoniseData", "DataSet", function(object,tolerance = 0.08,action =
 
     h <- harmonise(rsid, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance=tolerance, action=action)
     # remove extra columns
-     h1 <-h[,c("rsid","A1","A2","betaA","fA")] %>%
-      dplyr::rename(c(ea = A1, nea = A2, beta = betaA, eaf = fA))
-    h2 <-h[,c("rsid","B1","B2","betaB","fB")] %>%
-      dplyr::rename(c(ea = B1, nea = B2, beta = betaB, eaf = fB))
+    h1 <-h[,c("rsid","A1","A2","betaA","fA")]
+    h1 <- dplyr::rename(h1, c(ea = A1, nea = A2, beta = betaA, eaf = fA))
+    h2 <-h[,c("rsid","B1","B2","betaB","fB")]
+    h2 <- dplyr::rename(h2, c(ea = B1, nea = B2, beta = betaB, eaf = fB))
     # replace c(ea, nea, beta, eaf) columns
     dat1 <- merge(subset(dat1, select=-c(ea, nea, beta, eaf)), h1, by="rsid")
     dat2 <- merge(subset(dat2, select=-c(ea, nea, beta, eaf)), h2, by="rsid")

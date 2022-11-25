@@ -7,7 +7,10 @@
 DataSet(...)
 }
 \arguments{
-\item{...}{}
+\item{...}{Array of SummarySet object names.}
+}
+\value{
+A DataSet S4 object
 }
 \description{
 DataSet function

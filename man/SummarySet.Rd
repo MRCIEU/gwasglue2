@@ -9,7 +9,14 @@ SummarySet(ss, traits, variants, tools)
 \arguments{
 \item{ss}{It uses createSumset function to call ieugwasR and fill @slot ss}
 
-\item{tools}{}
+\item{traits}{ID of GWAS studies to query}
+
+\item{variants}{Array of SNPs rsids}
+
+\item{tools}{Array of methods that gwasglue2 ids going to convert the summarySet to (eg. "mr")}
+}
+\value{
+A SummarySet S4 object.
 }
 \description{
 SummarySet function

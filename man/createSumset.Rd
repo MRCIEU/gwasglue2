@@ -2,13 +2,18 @@
 % Please edit documentation in R/ieugwas_utils.R
 \name{createSumset}
 \alias{createSumset}
-\title{A function to call the summary statistics associated with traits and variants chosen}
+\title{A function to call the summary statistics associated with specific traits and variants chosen}
 \usage{
 createSumset(traits, variants)
 }
 \arguments{
-\item{variants}{}
+\item{traits}{ID of GWAS studies to query}
+
+\item{variants}{Array of SNPs rsids}
+}
+\value{
+A tibble with the summary statistics for variant association.
 }
 \description{
-A function to call the summary statistics associated with traits and variants chosen
+A function to call the summary statistics associated with specific traits and variants chosen
 }

@@ -2,11 +2,11 @@
 
 #' A function to clump the top hit variants
 #'
-#' @param traits
-#' @param clump
-#' @param source
+#' @param traits ID of GWAS studies to query
+#' @param clump Logical (default TRUE)
+#' @param source  IEU (default)
 #'
-#' @return
+#' @return Array of SNPs rsids
 clumpTophits <- function(traits,  clump = TRUE, source = ieugwasr::check_access_token()) {
   ch  <- ieugwasr::tophits(traits[1], clump = clump)
   snps <- ch$rsid
@@ -19,17 +19,16 @@ clumpTophits <- function(traits,  clump = TRUE, source = ieugwasr::check_access_
 #' @param batch Vector of batch IDs to search across. If `c()` (default) then returns all batches. Iherited fromieugwasr::phewas
 #' @return id_list Array with traits ids
 phewasIDs <- function(variants, batch, pval) {
-  id_list <- ieugwasr::phewas(pval = pval, variants = variants, batch = batch)$id %>%
-    unique()
+  id_list <- unique(ieugwasr::phewas(pval = pval, variants = variants, batch = batch)$id) 
   return(id_list)
 }
 
-#' A function to call the summary statistics associated with traits and variants chosen
+#' A function to call the summary statistics associated with specific traits and variants chosen
 #'
-#' @param traits
-#' @param variants
+#' @param traits ID of GWAS studies to query
+#' @param variants Array of SNPs rsids
 #'
-#' @return
+#' @return A tibble with the summary statistics for variant association.
 createSumset <- function(traits, variants) {
   x <-  ieugwasr::associations(variants = variants, id = traits)
   return(x)

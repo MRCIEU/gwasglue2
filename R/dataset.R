@@ -7,11 +7,11 @@
 #' @slot overlap_SNPs among all SummarySets
 #' @slot is_resized logical (default FALSE).
 #' @slot is_harmonised logical (default FALSE).
-#' @slot overall_dropped_SNPs
-#' @slot dropped_SNPs
-#' @slot palindromic_SNPs
-#' @slot ambiguous_SNPs
-#' @slot incompatible_alleles_SNPs
+#' @slot overall_dropped_SNPs A vector of RSIDs that were removed from the summary_sets.
+#' @slot dropped_SNPs A list of pairwise harmonising ouptput (SNPs removed from the summary_sets )
+#' @slot palindromic_SNPs A list of pairwise harmonising ouptput.
+#' @slot ambiguous_SNPs A list of pairwise harmonising ouptput.
+#' @slot incompatible_alleles_SNPs A list of pairwise harmonising ouptput.
 #' @slot ld_matrices A list of LD correlation matrices (default NA).
 #' @slot is_harmonisedLD logical (default FALSE).
 #' @slot is_converted logical (default FALSE).
@@ -50,9 +50,9 @@ setClass("DataSet",
 
 #' DataSet function
 #'
-#' @param ...
-#'
-#' @return
+#' @param ... Array of SummarySet object names.
+#' @importFrom methods new
+#' @return  A DataSet S4 object
 DataSet <- function(...) {
   new("DataSet", summary_sets = list(...))
 }
