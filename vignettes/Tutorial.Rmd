@@ -29,7 +29,7 @@ There are two usecases for this tutorial
 2. Generating a regional genotype-phenotype map (Million Veteran's Programme analysis example)
 
 
-
+### This tutorial is still work in progress. It reflects an earlier draft of gwasglue2.
 
 ## 1. TwoSampleMR analysis
 
@@ -38,20 +38,64 @@ We will perform an MR analysis of body mass index (exposure - ieu-a-2) against c
 Obtain the data
 
 ```{r}
-dataset <- gwasglue2::clumped_hits(traits = "ieu-a-2", source = "OpenGWAS") %>%
-  gwasglue2::create_dataset(traits = c("ieu-a-2", "ieu-a-7"), variants = .) %>%
-  gwasglue2::annotate(exposure = "ieu-a-2", outcome = "ieu-a-7")
+x<- clumpTophits(traits = "ieu-a-2")
+sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
+sumset1
+sumset2 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")
+sumset2
+
 ```
 
-Perform the analysis
+Set the Metadata and MR labels for each of your summary sets
 
 ```{r}
-result <- dataset %>%
-  TwoSampleMR(dataset=., method_list="mr_ivw")
+sumset1 <- setMetadata(sumset1, source = "IEUopenGWAS", traits = "ieu-a-2")
+sumset1 <-setMRlabel(sumset1, mr_label = "exposure")
+sumset1
+
+sumset2 <- setMetadata(sumset2,source = "IEUopenGWAS", traits = "ieu-a-7")
+sumset2 <-setMRlabel(sumset2, mr_label = "outcome")
+sumset2
+
 ```
 
 
-## 2. Regional genotype-phenotype map
+Check the Metadata and MR labels
+
+```{r}
+getMetadata(sumset1)
+getRSID(sumset1)
+
+getMetadata(sumset2)
+getRSID(sumset2)
+```
+
+
+Create S4 DataSet object
+
+```{r}
+dataset <- DataSet(sumset1,sumset2) %>%
+  overlapSNP(.) %>%
+  harmoniseData(.,tolerance = 0.08,action = 2)
+```
+
+Convert dataset to TwoSampleMR format
+
+```{r}
+dataset_mr <- convertForTwoSampleMR(dataset)
+```
+
+Perform the MR analysis
+```{r}
+mr_result<- merge(dataset_mr@summary_sets[[1]]@ss,dataset_mr@summary_sets[[2]]@ss, by = c("SNP", "mr_keep"))  %>%
+  TwoSampleMR::mr(., method_list="mr_ivw")
+
+mr_result
+
+```
+
+
+## 2. Regional genotype-phenotype map (WIP)
 
 We need to first define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)
 
