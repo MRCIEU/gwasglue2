@@ -51,11 +51,9 @@ Set the Metadata and MR labels for each of your summary sets
 ```{r}
 sumset1 <- setMetadata(sumset1, source = "IEUopenGWAS", traits = "ieu-a-2")
 sumset1 <-setMRlabel(sumset1, mr_label = "exposure")
-sumset1
 
 sumset2 <- setMetadata(sumset2,source = "IEUopenGWAS", traits = "ieu-a-7")
 sumset2 <-setMRlabel(sumset2, mr_label = "outcome")
-sumset2
 
 ```
 
@@ -64,14 +62,14 @@ Check the Metadata and MR labels
 
 ```{r}
 getMetadata(sumset1)
-getRSID(sumset1)
+getMRlabel(sumset1)
 
 getMetadata(sumset2)
-getRSID(sumset2)
+getMRlabel(sumset2)
 ```
 
 
-Create S4 DataSet object
+Create the DataSet object
 
 ```{r}
 dataset <- DataSet(sumset1,sumset2) %>%
