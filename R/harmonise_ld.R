@@ -8,8 +8,6 @@
 #'
 #' @param x harmonised dataset
 #' @param ld Output from ld_matrix
-#'
-#' @export
 #' @return List of dataset and harmonised LD matrix
 #'
 #'
@@ -67,76 +65,76 @@ harmonise_ld_dat <- function(x, ld)
 
 
 
-##################################################
-# WIP
+# ##################################################
+# # WIP
 
-#' Harmonise dat1 and dat2 for multivariable MR
-#'
-#' @md
-#' @param dat1 Output from [`mv_extract_dat1s`].
-#' @param dat2 Output from `extract_dat2a(dat1$rsid, id_output)`.
-#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
-#'
-#' @export
-#' @return List of vectors and matrices required for mv analysis.
-#' \describe{
-#' \item{dat1_beta}{a matrix of beta coefficients, in which rows correspond to SNPs and columns correspond to dat1s.}
-#' \item{dat1_se}{is the same as `dat1_beta`, but for standard errors.}
-#' \item{dat1_pval}{the same as `dat1_beta`, but for p-values.}
-#' \item{expname}{A data frame with two variables, `id.dat1` and `dat1` which are character strings.}
-#' \item{dat2_beta}{an array of effects for the dat2, corresponding to the SNPs in dat1_beta.}
-#' \item{dat2_se}{an array of standard errors for the dat2.}
-#' \item{dat2_pval}{an array of p-values for the dat2.}
-#' \item{outname}{A data frame with two variables, `id.dat2` and `dat2` which are character strings.}
-#' }
-#'
-mv_harmonise_data <- function(dat1, dat2, harmonise_strictness=2)
-{
+# #' Harmonise dat1 and dat2 for multivariable MR
+# #'
+# #' @md
+# #' @param dat1 Output from [`mv_extract_dat1s`].
+# #' @param dat2 Output from `extract_dat2a(dat1$rsid, id_output)`.
+# #' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
+# #'
+# #' @export
+# #' @return List of vectors and matrices required for mv analysis.
+# #' \describe{
+# #' \item{dat1_beta}{a matrix of beta coefficients, in which rows correspond to SNPs and columns correspond to dat1s.}
+# #' \item{dat1_se}{is the same as `dat1_beta`, but for standard errors.}
+# #' \item{dat1_pval}{the same as `dat1_beta`, but for p-values.}
+# #' \item{expname}{A data frame with two variables, `id.dat1` and `dat1` which are character strings.}
+# #' \item{dat2_beta}{an array of effects for the dat2, corresponding to the SNPs in dat1_beta.}
+# #' \item{dat2_se}{an array of standard errors for the dat2.}
+# #' \item{dat2_pval}{an array of p-values for the dat2.}
+# #' \item{outname}{A data frame with two variables, `id.dat2` and `dat2` which are character strings.}
+# #' }
+# #'
+# mv_harmonise_data <- function(dat1, dat2, harmonise_strictness=2)
+# {
 
-  stopifnot(all(c("rsid", "id", "ea", "beta", "se", "p") %in% names(dat1)))
-  nexp <- length(unique(dat1$id))
-  stopifnot(nexp > 1)
-  tab <- table(dat1$rsid)
-  keepsnp <- names(tab)[tab == nexp]
-  dat1 <- subset(dat1, rsid %in% keepsnp)
-
-
-  dat1_mat <- reshape2::dcast(dat1, rsid ~ id, value.var="beta")
+#   stopifnot(all(c("rsid", "id", "ea", "beta", "se", "p") %in% names(dat1)))
+#   nexp <- length(unique(dat1$id))
+#   stopifnot(nexp > 1)
+#   tab <- table(dat1$rsid)
+#   keepsnp <- names(tab)[tab == nexp]
+#   dat1 <- subset(dat1, rsid %in% keepsnp)
 
 
-  # Get dat2 data
-  dat <- harmonise_data(subset(dat1, id == dat1$id[1]), dat2, action=harmonise_strictness) #TODO strictness, harmonise data
-  dat <- subset(dat, mr_keep) #TODO mrkeep
-  dat$rsid <- as.character(dat$rsid)
+#   dat1_mat <- reshape2::dcast(dat1, rsid ~ id, value.var="beta")
 
-  dat1_beta <- reshape2::dcast(dat1, rsid ~ id, value.var="beta")
-  dat1_beta <- subset(dat1_beta, rsid %in% dat$rsid)
-  dat1_beta$rsid <- as.character(dat1_beta$rsid)
 
-  dat1_pval <- reshape2::dcast(dat1, rsid ~ id, value.var="p")
-  dat1_pval <- subset(dat1_pval, rsid %in% dat$rsid)
-  dat1_pval$rsid <- as.character(dat1_pval$rsid)
+#   # Get dat2 data
+#   dat <- harmonise_data(subset(dat1, id == dat1$id[1]), dat2, action=harmonise_strictness) #TODO strictness, harmonise data
+#   dat <- subset(dat, mr_keep) #TODO mrkeep
+#   dat$rsid <- as.character(dat$rsid)
 
-  dat1_se <- reshape2::dcast(dat1, rsid ~ id, value.var="se")
-  dat1_se <- subset(dat1_se, rsid %in% dat$rsid)
-  dat1_se$rsid <- as.character(dat1_se$rsid)
+#   dat1_beta <- reshape2::dcast(dat1, rsid ~ id, value.var="beta")
+#   dat1_beta <- subset(dat1_beta, rsid %in% dat$rsid)
+#   dat1_beta$rsid <- as.character(dat1_beta$rsid)
 
-  index <- match(dat1_beta$rsid, dat$rsid)
-  dat <- dat[index, ]
-  stopifnot(all(dat$rsid == dat1_beta$rsid))
+#   dat1_pval <- reshape2::dcast(dat1, rsid ~ id, value.var="p")
+#   dat1_pval <- subset(dat1_pval, rsid %in% dat$rsid)
+#   dat1_pval$rsid <- as.character(dat1_pval$rsid)
 
-  dat1_beta <- as.matrix(dat1_beta[,-1])
-  dat1_pval <- as.matrix(dat1_pval[,-1])
-  dat1_se <- as.matrix(dat1_se[,-1])
+#   dat1_se <- reshape2::dcast(dat1, rsid ~ id, value.var="se")
+#   dat1_se <- subset(dat1_se, rsid %in% dat$rsid)
+#   dat1_se$rsid <- as.character(dat1_se$rsid)
 
-  rownames(dat1_beta) <- dat$rsid
-  rownames(dat1_pval) <- dat$rsid
-  rownames(dat1_se) <- dat$rsid
+#   index <- match(dat1_beta$rsid, dat$rsid)
+#   dat <- dat[index, ]
+#   stopifnot(all(dat$rsid == dat1_beta$rsid))
 
-  dat2_beta <- dat$beta
-  dat2_se <- dat$se
-  dat2_pval <- dat$pval
+#   dat1_beta <- as.matrix(dat1_beta[,-1])
+#   dat1_pval <- as.matrix(dat1_pval[,-1])
+#   dat1_se <- as.matrix(dat1_se[,-1])
 
-  return(list(dat1,dat))
-}
+#   rownames(dat1_beta) <- dat$rsid
+#   rownames(dat1_pval) <- dat$rsid
+#   rownames(dat1_se) <- dat$rsid
+
+#   dat2_beta <- dat$beta
+#   dat2_se <- dat$se
+#   dat2_pval <- dat$pval
+
+#   return(list(dat1,dat))
+# }
 
