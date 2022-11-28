@@ -30,7 +30,7 @@ test_that("getRSID", {
 
 
 test_that("dim works", {
-    expect_equal(dim(sumset1@ss), dim(sumset1))
+    expect_equal(dim(sumset1@ss), dimData(sumset1))
 })
 
-
+  

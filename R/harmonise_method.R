@@ -49,6 +49,13 @@ setMethod("overlapSNP", "DataSet", function(object) {
 
 # Set and get methods for harmonise data
 
+#' Harmonise the alleles and effects between two summary sets
+#' @param object The DataSet object
+#' @param action Level of strictness in dealing with SNPs.
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+#' @param tolerance Tolerance value (default 0.08).
 setGeneric("harmoniseData", function(object, tolerance, action) standardGeneric("harmoniseData"))
 setMethod( "harmoniseData", "DataSet", function(object,tolerance = 0.08,action = 2){
   dat1 <- object@summary_sets[[1]]@ss
@@ -70,10 +77,10 @@ setMethod( "harmoniseData", "DataSet", function(object,tolerance = 0.08,action =
 
     h <- harmonise(rsid, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance=tolerance, action=action)
     # remove extra columns
-     h1 <-h[,c("rsid","A1","A2","betaA","fA")] %>%
-      dplyr::rename(c(ea = A1, nea = A2, beta = betaA, eaf = fA))
-    h2 <-h[,c("rsid","B1","B2","betaB","fB")] %>%
-      dplyr::rename(c(ea = B1, nea = B2, beta = betaB, eaf = fB))
+    h1 <-h[,c("rsid","A1","A2","betaA","fA")]
+    h1 <- dplyr::rename(h1, c(ea = A1, nea = A2, beta = betaA, eaf = fA))
+    h2 <-h[,c("rsid","B1","B2","betaB","fB")]
+    h2 <- dplyr::rename(h2, c(ea = B1, nea = B2, beta = betaB, eaf = fB))
     # replace c(ea, nea, beta, eaf) columns
     dat1 <- merge(subset(dat1, select=-c(ea, nea, beta, eaf)), h1, by="rsid")
     dat2 <- merge(subset(dat2, select=-c(ea, nea, beta, eaf)), h2, by="rsid")

@@ -38,11 +38,11 @@ setClass("SummarySet",
 #' SummarySet function
 #'
 #' @param ss It uses createSumset function to call ieugwasR and fill @slot ss
-#' @param traits
-#' @param variants
-#' @param tools
-#'
-#' @return
+#' @param traits ID of GWAS studies to query
+#' @param variants Array of SNPs rsids
+#' @param tools Array of methods that gwasglue2 ids going to convert the summarySet to (eg. "mr") 
+#' @importFrom methods new
+#' @return A SummarySet S4 object.
 SummarySet <- function(ss, traits, variants, tools) {
   new("SummarySet",
    ss = createSumset(traits = traits, variants = variants),
@@ -160,7 +160,8 @@ setMethod("getMRlabel","SummarySet",
 #           }
 # )
 
-setMethod("dim", signature=c(x="SummarySet"), function(x) {
+setGeneric("dimData",function(x) standardGeneric("dimData"))
+setMethod("dimData", signature=c(x="SummarySet"), function(x) {
     return(dim(x@ss))
 })
 
@@ -168,5 +169,3 @@ setMethod(f = "show", signature="SummarySet", definition = function(object) {
   cat("A SummarySet with ", nrow(object@ss), " variants\n")
   print(object@ss)
 })
-
-
