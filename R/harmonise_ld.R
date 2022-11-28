@@ -2,15 +2,13 @@
 # harmonise_ld_dat() is based TwoSampleMR::harmonise_ld_dat()
 
 
-#' Harmonise LD matrix against summary data
-#'
-#' LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be dat1 dataset or harmonised dartaset
-#'
-#' @param x harmonised dataset
-#' @param ld Output from ld_matrix
-#' @return List of dataset and harmonised LD matrix
-#'
-#'
+#Harmonise LD matrix against summary data
+#
+# LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be dat1 dataset or harmonised dartaset
+#
+# @param x harmonised dataset
+# @param ld Output from ld_matrix
+# @return List of dataset and harmonised LD matrix
 harmonise_ld_dat <- function(x, ld)
 {
 	snpnames <- do.call(rbind, strsplit(rownames(ld), split="_"))

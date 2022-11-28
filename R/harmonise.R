@@ -1,5 +1,5 @@
-#' Harmonise the alleles and effects between two summary sets
-#' This is based o the harmonise function of TwoSampleMR
+# Harmonise the alleles and effects between two summary sets
+# This is based on the harmonise function of TwoSampleMR and is called by harmoniseData()
 
 
 
@@ -9,22 +9,21 @@
 # 3: change .exposure and .outcome columns names in dat
 # 4: columns names is the same as in IEUopenGWAS
 
+#  @param rsid Array of rsids.
+#  @param A1 Array of effect alleles for trait A.
+#  @param A2 Array of other alleles for trait A.
+#  @param B1 Array of effect alleles for trait B.
+#  @param B2 Array of other alleles for trait B.
+#  @param betaA Array of beta values for trait A.
+#  @param betaB Array of beta values for trait B.
+#  @param fA Array 0f frequency values for A1 allele.
+# @param fB Array of frequency values for B1 allele.
+#  @param action Level of strictness in dealing with SNPs.
+#  * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#  * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#  * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+#  @param tolerance Tolerance value.
 
-#' Harmonise function
-#' @param rsid Array of rsids.
-#' @param A1 Array of effect alleles for trait A.
-#' @param A2 Array of other alleles for trait A.
-#' @param B1 Array of effect alleles for trait B.
-#' @param B2 Array of other alleles for trait B.
-#' @param betaA Array of beta values for trait A.
-#' @param betaB Array of beta values for trait B.
-#' @param fA Array 0f frequency values for A1 allele.
-#' @param fB Array of frequency values for B1 allele.
-#' @param action Level of strictness in dealing with SNPs.
-#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
-#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
-#' @param tolerance Tolerance value.
 harmonise <- function(rsid, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
 {
 

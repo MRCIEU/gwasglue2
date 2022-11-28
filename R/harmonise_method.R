@@ -49,6 +49,13 @@ setMethod("overlapSNP", "DataSet", function(object) {
 
 # Set and get methods for harmonise data
 
+#' Harmonise the alleles and effects between two summary sets
+#' @param object The DataSet object
+#' @param action Level of strictness in dealing with SNPs.
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+#' @param tolerance Tolerance value (default 0.08).
 setGeneric("harmoniseData", function(object, tolerance, action) standardGeneric("harmoniseData"))
 setMethod( "harmoniseData", "DataSet", function(object,tolerance = 0.08,action = 2){
   dat1 <- object@summary_sets[[1]]@ss
