@@ -29,7 +29,7 @@ There are two usecases for this tutorial
 2. Generating a regional genotype-phenotype map (Million Veteran's Programme analysis example)
 
 
-### This tutorial is still work in progress. It reflects an earlier draft of gwasglue2.
+#### This tutorial is still work in progress. It reflects an earlier draft of gwasglue2.
 
 ## 1. TwoSampleMR analysis
 
