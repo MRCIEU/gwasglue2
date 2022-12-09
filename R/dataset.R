@@ -28,6 +28,7 @@ setClass("DataSet",
     incompatible_alleles_SNPs = "list",
     ld_matrices = "list",
     is_harmonisedLD = "logical",
+    zscores = "list",
     is_converted = "logical"
   ),
   prototype = prototype(
@@ -42,6 +43,7 @@ setClass("DataSet",
     incompatible_alleles_SNPs = list(NA_character_),
     ld_matrices = list(NA_character_),
     is_harmonisedLD = FALSE,
+    zscores = list(NA_real_),
     is_converted = FALSE
   ),
   contains = c(class(dplyr::tibble()))
@@ -56,4 +58,28 @@ setClass("DataSet",
 DataSet <- function(...) {
   new("DataSet", summary_sets = list(...))
 }
+
+# Get Methods for summary set (similar in Summaryset class)
+setGeneric("getData", function(object,...) standardGeneric("getData"))
+setMethod("getData", "DataSet",
+          function(object,index) {
+            return(object@summary_sets[[index]]@ss)
+          })
+
+
+# Set and get methods for zscores
+setGeneric("setZscores", function(object) standardGeneric("setZscores"))
+setMethod( "setZscores", "DataSet",function(object) {
+  message("Calculating zscores")
+  for (i in seq_along(object@summary_sets)){
+  object@zscores[[i]] <- object@summary_sets[[i]]@ss$beta/object@summary_sets[[i]]@ss$se
+  }
+ return(object)
+    }
+)
+setGeneric("getZscores",function(object,...) standardGeneric("getZscores"))
+setMethod("getZscores", "DataSet",
+          function(object,index) {
+            return(object@zscores[[index]])
+          })
 

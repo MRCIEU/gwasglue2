@@ -8,7 +8,6 @@
 #' @slot tools The tools that gwasglue2 is going to convert to (default NA).
 #' @slot mr_label Exposure/Outcome (default NA).
 #' @slot ld_ref The prefix of the plink files (eg. EUR) used to build the LD correlation matrix (default NA).
-
 #' @slot pop The population code in ieugwasr (eg. EUR) used to build the LD correlation matrix (default NA).
 setClass("SummarySet",
   slots = c(
@@ -25,7 +24,7 @@ setClass("SummarySet",
     source = NA_character_,
     ss = NA_character_,
     metadata = data.frame(NA),
-    variant = NA_character_,
+    variants = NA_character_,
     tool = NA_character_,
     mr_label = NA_character_,
     ld_ref = NA_character_,
@@ -51,6 +50,12 @@ SummarySet <- function(ss, traits, variants, tools) {
   )
 }
 
+# Get Methods for summary set data (similar in Dataset class)
+setGeneric("getData", function(object) standardGeneric("getData"))
+setMethod("getData", "SummarySet",
+          function(object) {
+            return(object@ss)
+          })
 # Set and get methods for Metadata and Source
 # (for now Metadata needs to be in data.frame format: same as ieugwasr::gwasinfo)
 setGeneric("setMetadata", function(object, metadata, source, traits) standardGeneric("setMetadata"))
@@ -159,6 +164,15 @@ setMethod("getMRlabel","SummarySet",
 #             return(object@traits)
 #           }
 # )
+
+
+
+setGeneric("getZscores",function(object) standardGeneric("getZscores"))
+setMethod("getZscores","SummarySet",
+          function(object) {
+            return(object@zscores)
+          }
+)
 
 setGeneric("dimData",function(x) standardGeneric("dimData"))
 setMethod("dimData", signature=c(x="SummarySet"), function(x) {

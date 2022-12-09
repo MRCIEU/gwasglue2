@@ -30,6 +30,7 @@ phewasIDs <- function(variants, batch, pval) {
 #'
 #' @return A tibble with the summary statistics for variant association.
 createSumset <- function(traits, variants) {
-  x <-  ieugwasr::associations(variants = variants, id = traits)
+  x <- ieugwasr::associations(variants = variants, id = traits)
+  x <- dplyr::arrange(x,rsid)
   return(x)
 }
