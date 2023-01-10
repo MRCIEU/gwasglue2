@@ -8,3 +8,5 @@ WORKDIR /project
 RUN git clone https://github.com/MRCIEU/gwasglue2 -b finemap_coloc
 
 ENTRYPOINT [ "/bin/bash" ]
+
+#This is a test
