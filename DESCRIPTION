@@ -41,6 +41,7 @@ Collate:
     'convertTo.R'
     'globals.R'
     'harmonise.R'
+    'harmoniseLD_method.R'
     'harmonise_ld.R'
     'harmonise_method.R'
     'ieugwas_utils.R'
