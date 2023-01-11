@@ -18,6 +18,7 @@ RUN wget http://fileserve.mrcieu.ac.uk/vcf/annotations.vcf.gz.rsidx && \
 ENV RENV_VERSION 0.16.0
 RUN R -e "install.packages('remotes')"
 
+
 # Get bcftools
 ENV BCFTOOLS_VERSION 1.16
 RUN wget https://github.com/samtools/bcftools/releases/download/${BCFTOOLS_VERSION}/bcftools-${BCFTOOLS_VERSION}.tar.bz2 && \
@@ -41,14 +42,14 @@ RUN wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20220402.zip 
     mv plink /bin/ && \
     cd ../ && rm -r plinktemp
 
-RUN R -e "remotes::install_github('mrcieu/ieugwasr')" && \
-    R -e "remotes::install_github('mrcieu/TwoSampleMR')" && \
-    R -e "install.packages('hypercoloc')" && \
-    R -e "install.packages('susieR')" && \
-    R -e "remotes::install_github('mrcieu/gwasvcf')"
+RUN R -e "remotes::install_github('mrcieu/ieugwasr')" 
+RUN R -e "remotes::install_github('mrcieu/TwoSampleMR')" 
+RUN R -e "install.packages('hypercoloc')" 
+RUN R -e "install.packages('susieR')" 
+RUN R -e "remotes::install_github('mrcieu/gwasvcf')"
 
 
-
-RUN git clone https://github.com/MRCIEU/gwasglue2
+RUN git clone https://github.com/MRCIEU/gwasglue2/tree/finemap_coloc
+# RUN git clone https://github.com/MRCIEU/gwasglue2
 
 ENTRYPOINT [ "/bin/bash" ]
