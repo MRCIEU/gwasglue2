@@ -49,7 +49,7 @@ RUN R -e "install.packages('susieR')"
 RUN R -e "remotes::install_github('mrcieu/gwasvcf')"
 
 
-RUN git clone https://github.com/MRCIEU/gwasglue2/tree/finemap_coloc
+RUN git clone -b finemap_coloc https://github.com/MRCIEU/gwasglue2
 # RUN git clone https://github.com/MRCIEU/gwasglue2
 
 ENTRYPOINT [ "/bin/bash" ]
