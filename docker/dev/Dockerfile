@@ -42,13 +42,24 @@ RUN wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20220402.zip 
     mv plink /bin/ && \
     cd ../ && rm -r plinktemp
 
+# Install  R glmnet  (a dependency of MendelianRandomization, which is also a dependency of TwoSampleMR): there was a problem installing it
+
+RUN R -e "install.packages('Rcpp')"
+RUN R -e "install.packages('RcppEiggen')"
+RUN R -e "install.packages('glmnet')"
+
+# Install R packages
 RUN R -e "remotes::install_github('mrcieu/ieugwasr')" 
 RUN R -e "remotes::install_github('mrcieu/TwoSampleMR')" 
-RUN R -e "install.packages('hypercoloc')" 
+RUN R -e remotes::install_github("cnfoley/hyprcoloc", build_opts = c("--resave-data", "--no-manual"), build_vignettes = TRUE)
+# optional, for better performance of susieR
+RUN R -e "install.packages('Rfast')"
 RUN R -e "install.packages('susieR')" 
 RUN R -e "remotes::install_github('mrcieu/gwasvcf')"
 
 
+RUN git clone -b finemap_coloc https://github.com/MRCIEU/gwasglue2
+# Install gwasglue2
 RUN git clone -b finemap_coloc https://github.com/MRCIEU/gwasglue2
 # RUN git clone https://github.com/MRCIEU/gwasglue2
 
