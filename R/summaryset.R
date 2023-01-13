@@ -51,8 +51,8 @@ SummarySet <- function(ss, traits, variants, tools) {
 }
 
 # Get Methods for summary set data (similar in Dataset class)
-setGeneric("getData", function(object) standardGeneric("getData"))
-setMethod("getData", "SummarySet",
+setGeneric("getSummaryData", function(object) standardGeneric("getSummaryData"))
+setMethod("getSummaryData", "SummarySet",
           function(object) {
             return(object@ss)
           })

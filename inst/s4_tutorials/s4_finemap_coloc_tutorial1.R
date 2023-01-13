@@ -61,22 +61,14 @@ ieugwasr::api_status()
 ids <- ieugwasr::phewas(pval = 5e-6, variants = "22:43714200-44995307", batch = "ukb-a")$id %>%
   unique()
 
-# create s4 object and fill metadata slot
-createSummarySets <- function (traits,variants, tools, source, ld_ref){
-s <- SummarySet(traits = traits, variants = variants, tools = tools) %>%
-    setMetadata(., source = source, traits = traits) %>%
-    setLDref(.,ld_ref = ld_ref) %>%
-    setRSID(.,.@ss$rsid)
-
-    return(s)
-   }
+# create s4 SummarySet objects (named summary_set1...n) and fill metadata slot using the createSummarySets() in ieugwas_utils
 
 for (i in seq_along(ids)){
   s <- createSummarySets(traits=ids[i],
                           variants = "22:43714200-44995307",
                           tools = c("finemap","coloc"),
                           source = "IEUopenGWAS",
-                          ld_ref = "inst/files/EUR")
+                          ld_ref = "../data/reference/ld/EUR")
   assign(paste0("summary_set", i) , s)
 
 }
@@ -85,24 +77,17 @@ for (i in seq_along(ids)){
 
 
 # create S4 DataSet object
-path_to_plink <- "inst/files/plink"
 dataset <- DataSet(summary_set1,summary_set2,summary_set3, summary_set4) %>%
   overlapSNP(.) %>%
   harmoniseData(.,tolerance = 0.08,action = 1)
 
 
-d <- buildLDMatrix(dataset, bfile = TRUE, plink_bin = path_to_plink)
+d <- buildLDMatrix(dataset, bfile = TRUE, plink_bin = "plink")
 d1 <- harmoniseLDMatrix(d)  
 %>%
 d2 <- setZscores(d1)
 
 res_susie <- run_susieR(d2, ids)
-
-
-
-
-
-
 
 
 #' run susieR
@@ -115,7 +100,7 @@ run_susieR <- function (data,ids){
     res <- susieR::susie_rss(
       z = getZscores(data, index = i),
       R = getLDMatrix(data,i),
-      n = unique(getData(data,i)$n),
+      n = unique(getData(data, i)$n),
       estimate_residual_variance = FALSE,
       coverage=0.95 # default 0.95
     )

@@ -34,3 +34,15 @@ createSumset <- function(traits, variants) {
   x <- dplyr::arrange(x,rsid)
   return(x)
 }
+
+
+# create s4 SummarySet objects (named summary_set1...n) and fill metadata slotand fill metadata slot
+createSummarySets <- function (traits,variants, tools, source, ld_ref){
+s <- SummarySet(traits = traits, variants = variants, tools = tools) %>%
+    setMetadata(., source = source, traits = traits) %>%
+    setLDref(.,ld_ref = ld_ref) %>%
+    setRSID(.,.@ss$rsid)
+
+    return(s)
+   }
+
