@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  gwasglue2:
+    image: mrcieu/opengwas-r-r2u
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - .:/project
+    stdin_open: true 
+    tty: true
