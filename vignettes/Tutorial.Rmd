@@ -136,3 +136,59 @@ result <- dataset %>%
   hyprcoloc::hyprcoloc(dataset=.)
 ```
 
+## Alternative coloc example
+
+```{r}
+library(gwasglue2)
+library(susieR)     # fork that takes Summaryset
+library(hyprcoloc)  # fork that takes Dataset
+```
+
+We'll analyse the following IDs around the HMGCR gene region
+
+```{r}
+chd_id <- "ieu-a-7"
+ldl_id <- "ieu-b-110"
+hdl_id <- "ieu-b-109"
+trig_id <- "ieu-b-111"
+t2d_id <- "ebi-a-GCST006867"
+hmgcr_chrpos <- "5:74132993-75132993"
+```
+
+Create dataset
+
+```{r}
+dataset <- gwasglue2::create_dataset(traits=c(chd_id, ldl_id, hdl_id, trig_id, t2d_id), variants=hmgcr_chrpos) %>%
+  gwasglue2::annotate(ld_matrix="1000genomes_EUR")
+```
+
+After summary sets are harmonised, marginalise each summary set independently and create a new dataset with all marginalised summary sets
+
+```{r}
+ds_marginalised <- lapply(getTraits(ds), function(trait){
+    # Takes in 1 SS
+    # Outputs 1 DS (with at least 1 SS)
+    susie_rss(getData(ds, trait))
+}) %>%
+    gwasglue2::merge_datasets(.)
+```
+
+Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)
+
+```{r}
+res_simple <- hyprcoloc(ds)
+```
+
+Try hyprcoloc with marginalised datasets
+
+```{r}
+res_marginalised <- hypercoloc(ds_marginalised)
+```
+
+Also try with these other regions:
+
+```{r}
+pcsk9_chrpos <- "1:55005221-56005221"
+npc1l1_chrpos <- "7:44052134-45052134"
+lpa_chrpos <- "6:155952514-165952514"
+```
