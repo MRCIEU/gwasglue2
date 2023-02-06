@@ -62,8 +62,8 @@ RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc', 'susieR', 
 
 
 # Useful tools for vscode
-# RUN R -e "install.packages('languageserver')" && \
-#     R -e 'devtools::install_github("ManuelHentschel/vscDebugger")'
+RUN R -e "install.packages('languageserver')" && \
+    R -e 'devtools::install_github("ManuelHentschel/vscDebugger")'
 
 # # Install Dentist
 # # RUN wget -O DENTIST_1.2.0.0.gz https://www.dropbox.com/s/cq5mmfonocvdiwh/DENTIST.1.2.0.0.gz?dl=0
