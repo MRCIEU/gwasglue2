@@ -56,7 +56,6 @@ setClass("DataSet",
 #' @param ... Array of SummarySet object names.
 #' @importFrom methods new
 #' @return  A DataSet S4 object
-#' @export
 DataSet <- function(...) {
   new("DataSet", summary_sets = list(...))
 }
