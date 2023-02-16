@@ -13,7 +13,7 @@ Description: Description: Many tools exist that use GWAS summary data for coloca
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 URL: https://github.com/MRCIEU/gwasglue2
 BugReports: https://github.com/MRCIEU/gwasglue2/issues
 Depends: 
@@ -46,3 +46,4 @@ Collate:
     'harmonise_method.R'
     'ieugwas_utils.R'
     'summaryset.R'
+    'wrappers.R'

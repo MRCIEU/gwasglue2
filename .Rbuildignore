@@ -10,3 +10,8 @@
 ^docs$
 ^pkgdown$
 ^inst/files$
+^dev$
+^docker$
+^\.dockerignore$
+^\.tests$
+^\.devcontainer$

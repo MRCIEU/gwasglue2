@@ -15,6 +15,7 @@
 #' @slot ld_matrices A list of LD correlation matrices (default NA).
 #' @slot is_harmonisedLD logical (default FALSE).
 #' @slot is_converted logical (default FALSE).
+#' @export 
 setClass("DataSet",
   slots = c(
     summary_sets = "list",
@@ -55,6 +56,7 @@ setClass("DataSet",
 #' @param ... Array of SummarySet object names.
 #' @importFrom methods new
 #' @return  A DataSet S4 object
+#' @export
 DataSet <- function(...) {
   new("DataSet", summary_sets = list(...))
 }
@@ -67,6 +69,13 @@ setMethod("getData", "DataSet",
           })
 
 
+# Get Methods for length of DAtaset
+setGeneric("getLength", function(object) standardGeneric("getLength"))
+setMethod("getLength", "DataSet",
+          function(object) {
+            return(object@summary_sets[[index]]@ss)
+          })
+
 # Set and get methods for zscores
 setGeneric("setZscores", function(object) standardGeneric("setZscores"))
 setMethod( "setZscores", "DataSet",function(object) {
@@ -77,6 +86,7 @@ setMethod( "setZscores", "DataSet",function(object) {
  return(object)
     }
 )
+
 setGeneric("getZscores",function(object,...) standardGeneric("getZscores"))
 setMethod("getZscores", "DataSet",
           function(object,index) {
