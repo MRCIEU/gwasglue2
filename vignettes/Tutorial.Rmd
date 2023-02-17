@@ -191,7 +191,7 @@ After summary sets are harmonised, marginalise each summary set independently an
 
 ```{r}
 ntraits <- getLength(dataset_hmgcr)
-ds_hmgcr_marginalised <- lapply(1:ntraits, function(i)
+ds_hmgcr_marginalised <- lapply(1:ntraits, function(trait)
   {
     # Takes in 1 SS
     # Outputs 1 DS (with at least 1 SS)
