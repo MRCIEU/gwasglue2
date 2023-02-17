@@ -4,11 +4,13 @@ FROM eddelbuettel/r2u:jammy
 
 # Update this date to re-run apt-get.
 # We need to install git with jammy
-LABEL package.date=2023-02-03
+LABEL package.date=2023-02-06
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
      sqlite3 libcurl4-openssl-dev \
-     git
+     git \
+     pandoc \
+     qpdf -y
 
 
 WORKDIR /project
@@ -55,8 +57,8 @@ RUN R -e "install.packages(c('devtools','methods'))"
 RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc', 'susieR', \
         'rmarkdown', 'knitr', 'commonmark', 'markdown','Rfast')); \
         remotes::install_github('mrcieu/ieugwasr'); \
-        remotes::install_github('mrcieu/TwoSampleMR'); \
-        remotes::install_github('mrcieu/gwasvcf'); \
+        remotes::install_github('mrcieu/TwoSampleMR');  
+        remotes::install_github('mrcieu/gwasvcf'); \ 
         remotes::install_github('cnfoley/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = FALSE)"
 # hypercoloc needs pandoc to build vignettes
 

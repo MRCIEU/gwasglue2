@@ -56,23 +56,61 @@ setClass("DataSet",
 #' @param ... Array of SummarySet object names.
 #' @importFrom methods new
 #' @return  A DataSet S4 object
+#' @export 
 DataSet <- function(...) {
   new("DataSet", summary_sets = list(...))
 }
 
 # Get Methods for summary set (similar in Summaryset class)
 setGeneric("getData", function(object,...) standardGeneric("getData"))
+#' Get Methods for summaryset tibble (similar in Summaryset class)
+#'
+#' @param object A DataSet S4 object
+#' @param index index of SummarySet within DataSet
+#' @return summaryset tibble
+#' @export 
 setMethod("getData", "DataSet",
           function(object,index) {
             return(object@summary_sets[[index]]@ss)
           })
 
 
+# Get Methods for summary set 
+setGeneric("getSummarySet", function(object,...) standardGeneric("getSummarySet"))
+#' Get Methods for summarySet 
+#'
+#' @param object A DataSet S4 object
+#' @param index index of SummarySet within DataSet
+#' @return summarySet object
+#' @export 
+setMethod("getSummarySet", "DataSet",
+          function(object,index) {
+            return(object@summary_sets[[index]])
+          })
+
+# Merge Datasets
+setGeneric("MergeDatasets", function(object) standardGeneric("MergeDatasets"))
+#' Merge Datasets 
+#'
+#' @param object A DataSet S4 objects
+#' @return merged dataSets
+#' @export 
+setMethod("MergeDatasets", "DataSet",
+          function(object) {
+
+# how to merge harmonisation info?
+   
+          })
+
+
+
+
+
 # Get Methods for length of DAtaset
 setGeneric("getLength", function(object) standardGeneric("getLength"))
 setMethod("getLength", "DataSet",
           function(object) {
-            return(object@summary_sets[[index]]@ss)
+            return(length(object@summary_sets))
           })
 
 # Set and get methods for zscores

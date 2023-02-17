@@ -37,3 +37,54 @@ susieR_to_dataset <- function(){
 
 }
     
+
+
+
+
+
+# To make the summary set
+
+# - chr, pos, a1, a2, n, eaf, etc are all the same as the
+# - beta = from lbf_variable
+# - se = from lbf_variable
+
+
+#' Convert log Bayes Factor to summary stats
+#'
+#' @param lbf p-vector of log Bayes Factors for each SNP
+#' @param n Overall sample size
+#' @param af p-vector of allele frequencies for each SNP
+#' @param prior_v Variance of prior distribution. SuSiE uses 50
+#'
+#' @return tibble with lbf, af, beta, se, z
+#' @export 
+lbf_to_z_cont <- function(lbf, n, af, prior_v=50){
+  se = sqrt(1 / (2 * n * af * (1-af)))
+  r = prior_v / (prior_v + se^2)
+  z = sqrt((2 * lbf - log(sqrt(1-r)))/r)
+  beta <- z * se
+  return(cbind(lbf, af, z, beta, se))
+}
+
+
+
+create_summary_set_from_lbf <- function(summaryset, lbf, L){
+  n <- summaryset@ss$n
+  af <- summaryset@ss$eaf
+  
+  lbf_conv <- lbf_to_z_cont(lbf, n, af)
+  
+   # replace the beta and se columns in summaryset
+  summaryset@ss$beta <- bf_conv$beta
+  summaryset@ss$se <-bf_conv$se
+
+ 
+  # update metadata to explain which credible set this is
+  summaryset@metadata$id <- paste0(summaryset@metadata$id, "_L",i)
+  # - trait name?
+  # - id?
+  # - notes?
+}
+
+
+
