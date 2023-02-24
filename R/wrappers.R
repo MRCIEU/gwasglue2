@@ -8,7 +8,7 @@
 #' @return parameters needed to run hyprcoloc
 #' @export 
 dataset_to_hyprcoloc <- function(dataset){
-
+  message("hyprcoloc is using gwasglue2 DataSet class object as input")
 	ntraits <- length(dataset@summary_sets)
  	trait.names <- 	unlist(lapply(1:ntraits, function(i){
 		t <- dataset@summary_sets[[i]]@metadata$id
@@ -25,19 +25,6 @@ dataset_to_hyprcoloc <- function(dataset){
     }
 return(list(trait.names, snp.id, ld.matrix, effect.est, effect.se))
 }
-
-
-summaryset_to_susieR <- function(summaryset){
-
-}
-
-susieR_to_dataset <- function(){
-
-
-
-}
-    
-
 
 
 
@@ -58,32 +45,39 @@ susieR_to_dataset <- function(){
 #'
 #' @return tibble with lbf, af, beta, se, z
 #' @export 
-lbf_to_z_cont <- function(lbf, n, af, prior_v=50){
+lbf_to_z_cont <- function(lbf, n, af, prior_v = 50){
   se = sqrt(1 / (2 * n * af * (1-af)))
   r = prior_v / (prior_v + se^2)
   z = sqrt((2 * lbf - log(sqrt(1-r)))/r)
   beta <- z * se
-  return(cbind(lbf, af, z, beta, se))
+  return(data.frame(beta, se))
 }
 
 
-
+#' Create SummarySet from log Bayes Factor
+#'
+#' @param summaryset gwasglue2 SummarySet object
+#' @param lbf p-vector of log Bayes Factors for each SNP
+#' @param L credible set index number
+#' @return modified summaryset (beta, se and trait id)
+#' @export
+#' 
 create_summary_set_from_lbf <- function(summaryset, lbf, L){
-  n <- summaryset@ss$n
   af <- summaryset@ss$eaf
+  n <- summaryset@metadata$sample_size
   
   lbf_conv <- lbf_to_z_cont(lbf, n, af)
-  
    # replace the beta and se columns in summaryset
-  summaryset@ss$beta <- bf_conv$beta
-  summaryset@ss$se <-bf_conv$se
+  summaryset@ss$beta <- lbf_conv$beta
+  summaryset@ss$se <- lbf_conv$se
 
  
   # update metadata to explain which credible set this is
-  summaryset@metadata$id <- paste0(summaryset@metadata$id, "_L",i)
+  summaryset@metadata$id <- paste0(summaryset@metadata$id, "_L",L)
   # - trait name?
   # - id?
   # - notes?
+  return(summaryset)
 }
 
 

@@ -61,6 +61,8 @@ ieugwasr::api_status()
 ids <- ieugwasr::phewas(pval = 5e-6, variants = "22:43714200-44995307", batch = "ukb-a")$id %>%
   unique()
 
+
+
 # create s4 SummarySet objects (named summary_set1...n) and fill metadata slot using the createSummarySets() in ieugwas_utils
 
 for (i in seq_along(ids)){
@@ -68,7 +70,9 @@ for (i in seq_along(ids)){
                           variants = "22:43714200-44995307",
                           tools = c("finemap","coloc"),
                           source = "IEUopenGWAS",
-                          ld_ref = "../data/reference/ld/EUR")
+                          ld_ref = "/project/data/reference/ld/EUR")
+
+                          
   assign(paste0("summary_set", i) , s)
 
 }
@@ -76,33 +80,36 @@ for (i in seq_along(ids)){
 
 
 
-# create S4 DataSet object
-dataset <- DataSet(summary_set1,summary_set2,summary_set3, summary_set4) %>%
+# create S4 DataSet object (_ukba)
+dataset_ukba <- DataSet(summary_set1,summary_set2,summary_set3, summary_set4) %>%
   overlapSNP(.) %>%
   harmoniseData(.,tolerance = 0.08,action = 1)
 
+d_ukba <- buildLDMatrix(dataset_ukba, bfile = TRUE, plink_bin = "plink")
+d1_ukba <- harmoniseLDMatrix(d_ukba)  
 
-d <- buildLDMatrix(dataset, bfile = TRUE, plink_bin = "plink")
-d1 <- harmoniseLDMatrix(d)  
-%>%
-d2 <- setZscores(d1)
+d2_ukba <- setZscores(d1_ukba)
 
-res_susie <- run_susieR(d2, ids)
+res_susie_ukba <- run_susieR(d2_ukba, ids,coverage=0.95)
+# convert to coloc format
 
+coloc_conv <- convert_coloc(res_susier =res_susie_ukba ,data=d2_ukba,ids)
 
 #' run susieR
 #' @param data object class DataSet
 #' @param ids array with trait ids
 #' @return credible sets and fmset
-run_susieR <- function (data,ids){
-  res_f <- list()
+run_susieR <- function (data,ids,estimate_residual_variance = FALSE,
+coverage = 0.95){
+  res_f <- vector("list", length(ids))
   for (i in seq_along(ids)) {
+    
     res <- susieR::susie_rss(
       z = getZscores(data, index = i),
       R = getLDMatrix(data,i),
       n = unique(getData(data, i)$n),
-      estimate_residual_variance = FALSE,
-      coverage=0.95 # default 0.95
+      estimate_residual_variance = estimate_residual_variance,
+      coverage = coverage # default 0.95
     )
     res$fmset <- sapply(res$sets$cs, function(x) {
       getData(data,i)$rsid[x[which.max(res$pip[x])]]
@@ -113,102 +120,79 @@ run_susieR <- function (data,ids){
       res_l[["fmset"]] <- NA
     }else {
       res_l[["credible_sets"]] <-res$sets$cs
-      res_l[["fmset"]]  <- res$fmset
+      res_l[["fmset"]] <- res$fmset
     }
-    res_f <- append(res_f,res_l)
-    names(res_f)[i] <-ids[i]
+ 
+    # names(res_f)[[i]] <-ids[i]
+    res_f[[i]] <- res_l
+    
+   
     message(paste("susieR analyses for trait", ids[i], "finished"))
-  }
-  
+  } 
   return(res_f)
-
 }
 
 
 #' CONVERT COLOC
-#' @param data_set Output of annotate function
+#' @param data res_susier Output of annotate function
 #' @return data_set A list of annotated dataframes (Beta and se matrices for colocalisation)
-convert_coloc <- function(data_set){
-  for (i in seq_along(data_set)) {
-
-    if ( is.na(data_set[[i]]$credible_sets[1])) {
-      data_set[[i]]$beta_coloc <- NA
-      data_set[[i]]$se_coloc <- NA
+convert_coloc <- function(res_susier, data,ids){
+  for (i in seq_along(ids)) {
+    coloc_convert <- vector("list", length(ids))
+    if ( is.na(res_susier[[i]]$credible_sets[1])) {
+      coloc_convert[[i]]$beta_coloc <- NA
+      coloc_convert[[i]]$se_coloc <- NA
     }
 
     else{
       beta_coloc <- list()
       se_coloc <- list()
 
-      for(j in seq_along(data_set[[i]]$credible_sets)){
-        pos <- data_set[[i]]$credible_sets[paste0("L",j)]
-        pos <-  pos[[paste0("L",j)]]
+      for(j in seq_along(res_susier[[i]]$credible_sets)){
+       pos <- res_susier[[i]]$credible_sets[paste0("L",j)][[1]]
 
-        beta_mat <- matrix(,ncol=length(data_set),nrow=length(pos))
-        rownames(beta_mat)<-data_set[[i]]$rsid[pos]
-        colnames(beta_mat)<-  names(data_set)
-        se_mat <- matrix(,ncol=length(data_set),nrow=length(pos))
-        rownames(se_mat)<-data_set[[i]]$rsid[pos]
-        colnames(se_mat)<-  names(data_set)
+        beta_mat <- matrix(,ncol=length(ids),nrow=length(pos))
+
+        rownames(beta_mat)<-getData(data,j)$rsid[pos]
+        colnames(beta_mat)<-  ids
+        se_mat <- matrix(,ncol=length(ids),nrow=length(pos))
+        rownames(se_mat)<-getData(data,j)$rsid[pos]
+        colnames(se_mat)<-  ids
 
         c=1
-        for (z in seq_along(data_set)){
-          beta_mat[,c] <- data_set[[z]]$beta[pos]
-          se_mat[,c] <- data_set[[z]]$se[pos]
+        for (z in seq_along(ids)){
+          beta_mat[,c] <- getData(data,z)$beta[pos]
+          se_mat[,c] <- getData(data,z)$se[pos]
           c=c+1
         }
-        beta_coloc[[j]] <- beta_mat
-        se_coloc[[j]] <- se_mat
+        coloc_convert[[i]]$beta_coloc <- beta_mat
+        coloc_convert[[i]]$se_coloc <- se_mat
       }
-      coloc <- list()
-      coloc[["beta_coloc"]] <- beta_coloc
-      coloc[["se_coloc"]] <- beta_coloc
-      dat_c <- append(data_set[[i]],coloc)
-      data_set[[i]] <- dat_c
+
+      
+    
     }
   }
-  return(data_set)
+  return(coloc_convert)
   message(paste("Colocalisation convertion for trait", i, "finished"))
 }
 
 
 
-######################################################################################
-# plink binaries can be found here: https://www.cog-genomics.org/plink/
-
-library(magrittr)
-library(dplyr)
-
-
-path_to_plink <- "plink"
-# Obtain the data
-dt1 <- phewas_ids(variants = "22:43714200-44995307", batch = "ukb-a", pval = 5e-6) %>%
-
-  dt1 <- phewas_ids(variants = "22:43714200-44995307", batch = "ukb-b", pval = 5e-6) %>%
-  create_dataset(traits = ., variants = "22:43714200-44995307") %>%
-  annotate(data_set = ., ld_ref="EUR", analysis_type = c("finemap","coloc"), bfile = TRUE, plink_bin = path_to_plink)
-
-# convert to finemap format and run susieR
-dt2<- dt1 %>%
-  convert_finemap(data_set =.) %>%
-  run_susieR(data_set = .)
-
-# convert to coloc format
-dt3 <- dt2 %>%
-  convert_coloc(data_set=.)
 
 # coloc analysis (TODO create a function to run hypercoloc)
 # assuming independent traits
-for (i in seq_along(dt3)){
-  if (is.na(dt3[[i]]$beta_coloc[1])) next
+for (i in seq_along(coloc_conv)){
+  if (is.null(coloc_conv[[i]]$beta_coloc[1])) next
   else {
+    print
     # sweep L regions
-    for(j in seq_along(dt3[[i]]$beta_coloc)){
+    for(j in seq_along(coloc_conv[[i]]$beta_coloc)){
       print(paste0("L",j))
-      traits <- colnames(dt3[[i]]$beta_coloc[[j]])
-      rsid <- rownames(dt3[[i]]$beta_coloc[[j]])
-      betas <- dt3[[i]]$beta_coloc[[j]]
-      ses <- dt3[[i]]$se_coloc[[j]]
+      traits <- colnames(coloc_conv[[i]]$beta_coloc[[j]])
+      rsid <- rownames(coloc_conv[[i]]$beta_coloc[[j]])
+      betas <- coloc_conv[[i]]$beta_coloc[[j]]
+      ses <- coloc_conv[[i]]$se_coloc[[j]]
       res <- hyprcoloc::hyprcoloc(betas, ses, trait.names=traits, snp.id=rsid,bb.selection = "regional")
       print(res)
     }

@@ -14,6 +14,8 @@
 #' @slot incompatible_alleles_SNPs A list of pairwise harmonising ouptput.
 #' @slot ld_matrices A list of LD correlation matrices (default NA).
 #' @slot is_harmonisedLD logical (default FALSE).
+#' @slot zscores vector of calculated z-scores
+#' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
 #' @export 
 setClass("DataSet",
@@ -30,6 +32,7 @@ setClass("DataSet",
     ld_matrices = "list",
     is_harmonisedLD = "logical",
     zscores = "list",
+    susieR = "list",
     is_converted = "logical"
   ),
   prototype = prototype(
@@ -45,6 +48,7 @@ setClass("DataSet",
     ld_matrices = list(NA_character_),
     is_harmonisedLD = FALSE,
     zscores = list(NA_real_),
+    susieR = list(NA_character_),
     is_converted = FALSE
   ),
   contains = c(class(dplyr::tibble()))
@@ -87,23 +91,6 @@ setMethod("getSummarySet", "DataSet",
           function(object,index) {
             return(object@summary_sets[[index]])
           })
-
-# Merge Datasets
-setGeneric("MergeDatasets", function(object) standardGeneric("MergeDatasets"))
-#' Merge Datasets 
-#'
-#' @param object A DataSet S4 objects
-#' @return merged dataSets
-#' @export 
-setMethod("MergeDatasets", "DataSet",
-          function(object) {
-
-# how to merge harmonisation info?
-   
-          })
-
-
-
 
 
 # Get Methods for length of DAtaset

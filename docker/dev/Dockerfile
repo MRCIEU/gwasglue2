@@ -54,12 +54,13 @@ ENV RENV_VERSION 0.16.0
 RUN R -e "install.packages(c('devtools','methods'))"
 
 # Install R packages
-RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc', 'susieR', \
+RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc',  \
         'rmarkdown', 'knitr', 'commonmark', 'markdown','Rfast')); \
         remotes::install_github('mrcieu/ieugwasr'); \
-        remotes::install_github('mrcieu/TwoSampleMR');  
-        remotes::install_github('mrcieu/gwasvcf'); \ 
-        remotes::install_github('cnfoley/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = FALSE)"
+        remotes::install_github('mrcieu/TwoSampleMR');  \
+        remotes::install_github('mrcieu/gwasvcf'); \
+        remotes::install_github('ritarasteiro/susieR') \
+        remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = FALSE)"
 # hypercoloc needs pandoc to build vignettes
 
 

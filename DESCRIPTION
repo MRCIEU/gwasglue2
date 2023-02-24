@@ -46,4 +46,5 @@ Collate:
     'harmonise_method.R'
     'ieugwas_utils.R'
     'summaryset.R'
+    'utils.R'
     'wrappers.R'

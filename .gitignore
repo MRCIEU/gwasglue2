@@ -6,3 +6,4 @@
 inst/files
 inst/poc
 inst/s4_tutorials
+.dockerignore

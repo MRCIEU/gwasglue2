@@ -32,6 +32,10 @@ An S4 class to represent the Data Set
 
 \item{\code{is_harmonisedLD}}{logical (default FALSE).}
 
+\item{\code{zscores}}{vector of calculated z-scores}
+
+\item{\code{susieR}}{susieR::susie_rss() output}
+
 \item{\code{is_converted}}{logical (default FALSE).}
 }}
 
