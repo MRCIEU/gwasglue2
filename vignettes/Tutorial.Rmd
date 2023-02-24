@@ -150,6 +150,7 @@ library(hyprcoloc)  # fork that takes Dataset
 
 We'll analyse the following IDs (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region. 
 
+
 ```{r}
 chd_id <- "ieu-a-7"
 ldl_id <- "ieu-b-110"
@@ -158,6 +159,7 @@ trig_id <- "ieu-b-111"
 t2d_id <- "ebi-a-GCST006867"
 hmgcr_chrpos <- "5:74132993-75132993"
 ```
+
 
 Create summarysets
 
@@ -212,11 +214,13 @@ Because not all datasets were marginalised, we are going to merge just the ones 
 
 ```{r}
 ds_hmgcr_marginalised <- merge_datasets(ds_hmgcr_marginalised[[2]], ds_hmgcr_marginalised[[3]])
+
 ```
 
 Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)
 
 ```{r}
+
 res_hmgcr <- hyprcoloc(dataset = ds_hmgcr)
 hyprcoloc is using gwasglue2 DataSet class object as input
 
@@ -232,11 +236,15 @@ $results
 
 attr(,"class")
 [1] "hyprcoloc"
+
+
+
 ```
 
 Try hyprcoloc with marginalised datasets
 
 ```{r}
+
 res_hmgcr_marginalised <- hyprcoloc(dataset = ds_hmgcr_marginalised)
 hyprcoloc is using gwasglue2 DataSet class object as input
 
@@ -251,10 +259,10 @@ $results
 
 attr(,"class")
 [1] "hyprcoloc"
+
 ```
 
 Also try with these other regions:
-
 
 
 ```{r}
@@ -262,6 +270,7 @@ pcsk9_chrpos <- "1:55005221-56005221"
 npc1l1_chrpos <- "7:44052134-45052134"
 lpa_chrpos <- "6:155952514-165952514"
 ```
+
 
 * PCSK9 (proprotein convertase subtilisin/kexin type 9) gene region
 
@@ -533,3 +542,4 @@ print(res_lpa_marginalised)
 
 
 ```
+
