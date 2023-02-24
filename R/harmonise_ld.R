@@ -9,8 +9,7 @@
 # @param x harmonised dataset
 # @param ld Output from ld_matrix
 # @return List of dataset and harmonised LD matrix
-harmonise_ld_dat <- function(x, ld)
-{
+harmonise_ld_dat <- function(x, ld){
 	snpnames <- do.call(rbind, strsplit(rownames(ld), split="_"))
 	i1 <- snpnames[,1] %in% x$rsid
 	ld <- ld[i1,i1]

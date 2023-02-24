@@ -30,6 +30,19 @@ phewasIDs <- function(variants, batch, pval) {
 #'
 #' @return A tibble with the summary statistics for variant association.
 createSumset <- function(traits, variants) {
-  x <-  ieugwasr::associations(variants = variants, id = traits)
+  x <- ieugwasr::associations(variants = variants, id = traits)
+  x <- dplyr::arrange(x,rsid)
   return(x)
 }
+
+
+# create s4 SummarySet objects (named summary_set1...n) and fill metadata slotand fill metadata slot
+createSummarySets <- function (traits,variants, tools, source, ld_ref){
+s <- SummarySet(traits = traits, variants = variants, tools = tools) %>%
+    setMetadata(., source = source, traits = traits) %>%
+    setLDref(.,ld_ref = ld_ref) %>%
+    setRSID(.,.@ss$rsid)
+
+    return(s)
+   }
+

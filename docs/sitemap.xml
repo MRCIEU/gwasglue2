@@ -46,6 +46,18 @@
     <loc>/reference/createSumset.html</loc>
   </url>
   <url>
+    <loc>/reference/create_summary_set_from_lbf.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dataset_to_hyprcoloc.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getData-DataSet-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getSummarySet-DataSet-method.html</loc>
+  </url>
+  <url>
     <loc>/reference/harmonise.html</loc>
   </url>
   <url>
@@ -59,6 +71,12 @@
   </url>
   <url>
     <loc>/reference/isConverted.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lbf_to_z_cont.html</loc>
+  </url>
+  <url>
+    <loc>/reference/merge_datasets.html</loc>
   </url>
   <url>
     <loc>/reference/mv_harmonise_data.html</loc>
