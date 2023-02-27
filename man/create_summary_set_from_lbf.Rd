@@ -14,7 +14,7 @@ create_summary_set_from_lbf(summaryset, lbf, L)
 \item{L}{credible set index number}
 }
 \value{
-modified summaryset (beta, se and trait id)
+marginalised summaryset (beta, se and trait id)
 }
 \description{
 Create SummarySet from log Bayes Factor
