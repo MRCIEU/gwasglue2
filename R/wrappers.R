@@ -59,8 +59,7 @@ lbf_to_z_cont <- function(lbf, n, af, prior_v = 50){
 #' @param summaryset gwasglue2 SummarySet object
 #' @param lbf p-vector of log Bayes Factors for each SNP
 #' @param L credible set index number
-#' @return modified summaryset (beta, se and trait id)
-#' @export
+#' @return marginalised summaryset (beta, se and trait id)
 #' 
 create_summary_set_from_lbf <- function(summaryset, lbf, L){
   af <- summaryset@ss$eaf
@@ -80,5 +79,32 @@ create_summary_set_from_lbf <- function(summaryset, lbf, L){
   return(summaryset)
 }
 
+#' SusieR to DataSet
+#'
+#' #' susie_to_dataset is a wrapper function used inside ritarasteiro/susieR::susie_rss() to create a marginalised DataSet object
+#' @param summaryset gwasglue2 SummarySet object
+#' @param s susieR object
+#' @param R lD matrix
+#' @return DataSet object
+#' @export 
+#' 
+susie_to_dataset <- function(summaryset, s, R){
+ ncredible_sets <- length(s$sets$cs)
+    if(ncredible_sets == 0){
+      warning_message(paste0("There is no credible sets for this trait (",summaryset@metadata$id,"), with the parameter values used. The summary statistics beta and se will not be marginalised."))
+
+    } else{
+       ds <- DataSet()
+      
+      for(i in 1:ncredible_sets){
+        ds@summary_sets[[i]] <- create_summary_set_from_lbf(summaryset, s$lbf_variable[,i], L = i)
+        ds@ld_matrices[[i]] <- R
+      }
+
+    # ds@susieR <- s
+    s <- ds
+    }
+   return(s)
+}
 
 

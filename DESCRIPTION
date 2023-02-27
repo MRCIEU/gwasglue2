@@ -29,7 +29,8 @@ Suggests:
     TwoSampleMR,
     testthat (>= 3.0.0),
     covr,
-    utils
+    utils,
+    crayon
 Remotes:
     mrcieu/TwoSampleMR,
     mrcieu/gwasvcf,
