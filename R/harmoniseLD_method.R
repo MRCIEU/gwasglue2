@@ -1,34 +1,26 @@
-
-
-# build LD matrices
 setGeneric("buildLDMatrix", function(object, ...) standardGeneric("buildLDMatrix"))
-setMethod("buildLDMatrix", "DataSet", function(object, pop = FALSE, bfile = FALSE, plink_bin = NA){
-  ldr <- array()
-  for (i in seq_along(object@summary_sets)){
-    # LD reference dataset name
-    ldr[i] <- object@summary_sets[[i]]@ld_ref
-      message("Building LD matrix")
+setMethod("buildLDMatrix", "DataSet", function(object, ld_ref = NULL, pop = FALSE, bfile = FALSE, plink_bin = NULL){
+     message("Building LD matrix")
       if (pop == TRUE){
-        object@ld_matrices[[i]] <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[i]]@variants, pop = ldr[i], with_alleles = TRUE, bfile = FALSE,plink_bin = plink_bin))
+        object@ld_matrix <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[1]]@variants, pop = ld_ref, with_alleles = TRUE, bfile = FALSE,plink_bin = plink_bin))
       }
       if (bfile == TRUE){
-        object@ld_matrices[[i]] <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[i]]@variants, pop=FALSE, with_alleles=TRUE, bfile=ldr[i],plink_bin=plink_bin))
+        object@ld_matrix <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[1]]@variants, pop=FALSE, with_alleles=TRUE, bfile=ld_ref, plink_bin=plink_bin))
       }
-      names(object@ld_matrices)[i] <- ldr[i]
-      rsid_avail <- rownames(object@ld_matrices[[i]])
+
+      rsid_avail <- rownames(object@ld_matrix)
       message("\nData available for ", length(rsid_avail), " variants")
 
-  }
   return(object)
 }
 )
 
 
 # Get methods for LDMatrix
-setGeneric("getLDMatrix",function(object,...) standardGeneric("getLDMatrix"))
+setGeneric("getLDMatrix",function(object) standardGeneric("getLDMatrix"))
 setMethod("getLDMatrix", "DataSet",
-          function(object,index) {
-            return(object@ld_matrices[[index]])
+          function(object) {
+            return(object@ld_matrix)
           })
 
 
@@ -41,29 +33,52 @@ setMethod("isHarmonisedLD","DataSet",function(object) {
 }
 )
 
-setGeneric("harmoniseLDMatrix", function(object, args) standardGeneric("harmoniseLDMatrix"))
+setGeneric("harmoniseLDMatrix", function(object) standardGeneric("harmoniseLDMatrix"))
 setMethod( "harmoniseLDMatrix", "DataSet", function(object) {
-  message("Gwasglue is now harmonising the data against LD matrices!")
+  
+  rsid_avail <- do.call(rbind, strsplit(rownames(object@ld_matrix), split="_"))[,1]
+
   for (i in seq_along(object@summary_sets)){
-    rsid_avail <- do.call(rbind, strsplit(rownames(object@ld_matrices[[i]]), split="_"))[,1]
+    # message("Gwasglue is now harmonising ", object@summary_sets[[i]]@metadata$id, " the against LD matrix!")
+ 
     # subseting
     sub_ss <- subset(object@summary_sets[[i]]@ss, object@summary_sets[[i]]@ss$rsid %in% rsid_avail)
     
     index <- match(object@summary_sets[[i]]@ss$rsid, rsid_avail)
-    ld <- object@ld_matrices[[i]][index, index]
+    ld <- object@ld_matrix[index, index]
 
 
-h <- harmonise_ld_dat(sub_ss,ld)
-object@summary_sets[[i]]@ss <- h[[1]]
-object@ld_matrices[[i]] <- h[[2]]
+    h <- harmonise_ld_dat(sub_ss,ld)
+    object@summary_sets[[i]]@ss <- h[[1]]
+    
 
- message("\nThere are ", dim(h[[1]])[1], " variants remaining after harmonising against a LD matrix.")
-
-object@is_harmonisedLD <- TRUE
- message("Data is harmonised!")
-
-}
-return(object)
+    message("\nThere are ", dim(h[[1]])[1], " variants remaining after harmonising ", object@summary_sets[[i]]@metadata$id, " against the LD matrix.")
+    }
+  
+  object@ld_matrix <- h[[2]]
+  object@is_harmonisedLD <- TRUE
+  
+  message("Data is harmonised!")
+  return(object)
 }
 )
 
+
+
+#' Harmonise data against LD matrix
+#' 
+#' Function to create a LDmatrix gwasglue2 object and set the @slot ld_matrix using ieugwasr::ld_matrix()
+#' @param dataset The DataSet gwasglue2 object
+#' @param ld_ref If bfile = TRUE, corresponds to the path and prefix of the plink files used to build the LD correlation matrix. If pop = TRUE, it corresponds to the population code in ieugwasr (eg. EUR) instead (default NULL). 
+#' @param pop logical (default FALSE)
+#' @param bfile logical (default FALSE)
+#' @param plink_bin Path to the plink executable
+#' @return  The DataSet gwasglue2 object harmonised
+#' @export 
+harmonise_ld <- function(dataset, ld_ref = NULL, pop = FALSE, bfile = FALSE, plink_bin = NULL){
+
+    ld <- buildLDMatrix(dataset, ld_ref = ld_ref, pop = pop, bfile = bfile, plink_bin = plink_bin) 
+    
+    ds <- harmoniseLDMatrix(ld)
+    return(ds)
+}

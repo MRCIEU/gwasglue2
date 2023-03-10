@@ -1,0 +1,320 @@
+---
+title: "Tutorial2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+```
+
+
+
+#### This tutorial is still work in progress. It reflects an earlier draft of gwasglue2.
+
+
+
+## 1. Alternative regional genotype-phenotype map (WIP)
+
+
+```{r  eval= FALSE}
+remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = TRUE) 
+remotes::install_github('ritarasteiro/susieR')
+
+```
+
+```{r setup}
+library(gwasglue2)
+library(susieR)     # fork that takes Summaryset
+library(hyprcoloc)  # fork that takes Dataset
+```
+
+### HMGCR gene
+We'll analyse the following IDs (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region. 
+
+
+```{r}
+chd_id <- "ieu-a-7"
+ldl_id <- "ieu-b-110"
+hdl_id <- "ieu-b-109"
+trig_id <- "ieu-b-111"
+t2d_id <- "ebi-a-GCST006867"
+hmgcr_chrpos <- "5:74132993-75132993"
+ids <- c(chd_id, ldl_id, hdl_id, trig_id, t2d_id)
+
+```
+First we will set the path to where the reference population plink files are located to build the LD matrix.
+
+```{r}
+ld_ref <- "/project/data/reference/ld/EUR"
+#ld_ref <- "inst/files/EUR"
+
+```
+
+
+Create a gwasglue 2 DataSet object  and harmonise trait against trait, trait against LD matrix
+
+```{r}
+# create gwasglue2 DataSet object (hmgcr)
+hmgcr <- createDataSet(traits=ids, variants = hmgcr_chrpos, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink") 
+
+```
+Before starting with the fine mapping and colocalisation analyses, we are going to look at the p-values for each variant in each trait. 
+
+```{r}
+# plot gwasglue2 DataSet object (hmgcr)
+
+  plot_gwasglue(hmgcr, type="manhattan", region = "hmgcr")
+
+
+```
+
+
+
+
+<!-- After summary sets are harmonised, marginalise each summary set independently and create a new dataset with all marginalised summary sets merged -->
+
+<!-- ```{r} -->
+<!-- # do finemapping with susie -->
+<!-- ntraits <- getLength(hmgcr) -->
+<!-- hmgcr_marginalised <- lapply(1:ntraits, function(trait) -->
+<!--   { -->
+<!--     # Takes in 1 SS -->
+<!--     # Outputs 1 DS (with at least 1 SS) -->
+<!--     ds <- susie_rss(R = getLDMatrix(ds_hmgcr,trait), summaryset = getSummarySet(ds_hmgcr, trait)) -->
+<!-- })  -->
+
+
+<!-- ``` -->
+<!-- Because not all datasets were marginalised, we are going to merge just the ones that were -->
+
+<!-- ```{r} -->
+<!-- hmgcr_marginalised <- merge_datasets(hmgcr_marginalised[[2]], hmgcr_marginalised[[3]]) -->
+
+<!-- ``` -->
+
+<!-- Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided) -->
+
+<!-- ```{r} -->
+
+<!-- res_hmgcr <- hyprcoloc(dataset = hmgcr) -->
+<!-- hyprcoloc is using gwasglue2 DataSet class object as input -->
+
+<!-- print(res_hmgcr) -->
+
+
+
+
+<!-- ``` -->
+
+<!-- Try hyprcoloc with marginalised datasets -->
+
+<!-- ```{r} -->
+
+<!-- res_hmgcr_marginalised <- hyprcoloc(dataset =hmgcr_marginalised) -->
+<!-- hyprcoloc is using gwasglue2 DataSet class object as input -->
+
+<!-- print(res_hmgcr_marginalised) -->
+
+
+<!-- ``` -->
+
+Also try with these other regions:
+
+
+```{r}
+pcsk9_chrpos <- "1:55005221-56005221"
+npc1l1_chrpos <- "7:44052134-45052134"
+lpa_chrpos <- "6:160952515-161087407"
+```
+
+
+### PCSK9 (proprotein convertase subtilisin/kexin type 9) gene region
+
+Create dataset and harmonise trait against trait, trait against LD matrix (note that we are not saving the SummarySet objects separately, but filling them directly to the DataSet).
+
+
+```{r}
+# create gwasglue2 DataSet object (pcsk9)
+pcsk9 <- createDataSet(traits = ids, variants = pcsk9_chrpos, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink") 
+
+```
+
+Manhattan plots for each trait in the DataSet.
+
+```{r}
+# plot gwasglue2 DataSet object (pcsk9)
+
+plot_gwasglue(pcsk9, type="manhattan", region = "pcsk9")
+
+
+```
+<!-- Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged -->
+
+<!-- ```{r} -->
+<!-- # do finemapping with susie -->
+<!-- ntraits <- getLength(pcsk9) -->
+<!-- pcsk9_marginalised <- lapply(1:ntraits, function(trait) -->
+<!--   { -->
+<!--     # Takes in 1 SS -->
+<!--     # Outputs 1 DS (with at least 1 SS) -->
+<!--     ds <- susie_rss(R = getLDMatrix(pcsk9,trait), summaryset = getSummarySet(pcsk9, trait)) -->
+<!-- })  -->
+
+
+<!-- ``` -->
+<!-- Because not all datasets were marginalised, we are going to merge just the ones that were -->
+
+<!-- ```{r} -->
+<!-- ds_hmgcr_marginalised <- merge_datasets(ds_hmgcr_marginalised[[2]]) -->
+<!-- ``` -->
+
+
+<!-- Try hyprcoloc with raw datasets.  -->
+
+<!-- ```{r} -->
+<!-- res_pcsk9 <- hyprcoloc(dataset = pcsk9) -->
+<!-- hyprcoloc is using gwasglue2 DataSet class object as input -->
+<!-- print(res_pcsk9) -->
+
+<!-- ``` -->
+
+<!-- Try hyprcoloc with marginalised datasets -->
+
+<!-- ```{r} -->
+<!-- res_pcsk9_marginalised <- hyprcoloc(dataset =pcsk9_marginalised) -->
+<!-- hyprcoloc is using gwasglue2 DataSet class object as input -->
+
+<!-- print(res_pcsk9_marginalised) -->
+<!-- $results -->
+
+<!-- ``` -->
+
+### NPC1L1 (NPC1 like intracellular cholesterol transporter 1) gene region
+Create dataset and harmonise trait against trait, trait against LD matrix
+
+```{r}
+# create gwasglue2 DataSet object (npc1l1)
+npc1l1 <- createDataSet(traits=ids, variants = npc1l1_chrpos, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink") 
+```
+
+
+Manhattan plots for each trait in the DataSet.
+
+```{r}
+# plot gwasglue2 DataSet object (npc1l1)
+
+plot_gwasglue(npc1l1, type="manhattan", region ="npc1l1")
+
+
+```
+<!-- Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged -->
+
+<!-- ```{r} -->
+<!-- ntraits <- getLength( npc1l1) -->
+<!-- npc1l1_marginalised <- lapply(1:ntraits, function(trait) -->
+<!--   { -->
+<!--     # Takes in 1 SS -->
+<!--     # Outputs 1 DS (with at least 1 SS) -->
+<!--     ds <- susie_rss(R = getLDMatrix(npc1l1,trait), summaryset = getSummarySet( npc1l1, trait)) -->
+<!-- })  -->
+
+
+<!-- ``` -->
+<!-- Because not all datasets were marginalised, we are going to merge just the ones that were -->
+
+<!-- ```{r} -->
+<!-- npc1l1_marginalised <- merge_datasets(npc1l1_marginalised[[2]],npc1l1_marginalised[[3]],npc1l1_marginalised[[4]],npc1l1_marginalised[[5]]) -->
+<!-- ``` -->
+
+
+<!-- Try hyprcoloc with raw datasets.  -->
+
+<!-- ```{r} -->
+<!-- res_npc1l1 <- hyprcoloc(dataset = npc1l1) -->
+<!-- hyprcoloc is using gwasglue2 DataSet class object as input -->
+
+<!-- print(res_npc1l1) -->
+<!-- $results -->
+
+<!-- ``` -->
+
+<!-- Try hyprcoloc with marginalised datasets -->
+
+<!-- ```{r} -->
+<!-- res_npc1l1_marginalised <- hyprcoloc(dataset =npc1l1_marginalised) -->
+<!-- hyprcoloc is using gwasglue2 DataSet class object as input -->
+
+<!-- print(res_npc1l1_marginalised) -->
+
+<!-- ``` -->
+
+### LPA (Lipoprotein(A)) gene region
+Create dataset and harmonise trait against trait, trait against LD matrix
+
+```{r}
+# create gwasglue2 DataSet object (lpa)
+lpa <- createDataSet(traits=ids, variants = lpa_chrpos, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink") 
+
+```
+
+Manhattan plots for each trait in the DataSet.
+
+```{r}
+# plot gwasglue2 DataSet object (lpa)
+
+ plot_gwasglue(lpa, type="manhattan", region = "lpa")
+
+
+```
+
+<!-- Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged -->
+
+<!-- ```{r} -->
+<!-- ntraits <- getLength(lpa) -->
+<!-- npc1l1_marginalised <- lapply(1:ntraits, function(trait) -->
+<!-- { -->
+<!--   # Takes in 1 SS -->
+<!--   # Outputs 1 DS (with at least 1 SS) -->
+<!--   ds <- susie_rss(R = getLDMatrix(lpa,trait), summaryset = getSummarySet(lpa, trait)) -->
+<!-- })  -->
+
+<!-- lpa_marginalised <- merge_datasets() -->
+
+<!-- ``` -->
+<!-- Because not all datasets were marginalised, we are going to merge just the ones that were -->
+
+<!-- ```{r} -->
+
+<!-- ``` -->
+
+
+<!-- Try hyprcoloc with raw datasets.  -->
+
+<!-- ```{r} -->
+
+<!-- res_lpa <- hyprcoloc(dataset = nlpa) -->
+<!-- print(res_lpa) -->
+
+<!-- ``` -->
+
+<!-- Try hyprcoloc with marginalised datasets -->
+
+<!-- ```{r} -->
+<!-- res_lpa_marginalised <- hyprcoloc(dataset =lpa_marginalised) -->
+<!-- print(res_lpa_marginalised) -->
+
+
+<!-- ``` -->
+

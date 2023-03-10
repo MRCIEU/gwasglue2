@@ -16,6 +16,9 @@
     <loc>/articles/Tutorial.html</loc>
   </url>
   <url>
+    <loc>/articles/Tutorial2.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -43,6 +46,9 @@
     <loc>/reference/clumpTophits.html</loc>
   </url>
   <url>
+    <loc>/reference/createDataSet.html</loc>
+  </url>
+  <url>
     <loc>/reference/createSumset.html</loc>
   </url>
   <url>
@@ -64,6 +70,9 @@
     <loc>/reference/harmoniseData.html</loc>
   </url>
   <url>
+    <loc>/reference/harmonise_ld.html</loc>
+  </url>
+  <url>
     <loc>/reference/harmonise_ld_dat.html</loc>
   </url>
   <url>
@@ -83,6 +92,9 @@
   </url>
   <url>
     <loc>/reference/phewasIDs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_gwasglue.html</loc>
   </url>
   <url>
     <loc>/reference/susie_to_dataset.html</loc>

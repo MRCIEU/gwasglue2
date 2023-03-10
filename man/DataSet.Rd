@@ -10,7 +10,7 @@ DataSet(...)
 \item{...}{Array of SummarySet object names.}
 }
 \value{
-A DataSet S4 object
+A gwasglue2 DataSet object
 }
 \description{
 DataSet function

@@ -40,12 +40,12 @@ Config/testthat/edition: 3
 Collate: 
     'dataset.R'
     'convertTo.R'
+    'create.R'
     'globals.R'
     'harmonise.R'
     'harmoniseLD_method.R'
     'harmonise_ld.R'
     'harmonise_method.R'
-    'ieugwas_utils.R'
     'summaryset.R'
     'utils.R'
     'wrappers.R'

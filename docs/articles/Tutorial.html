@@ -43,6 +43,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Strategy.html">Strategy</a>
     <a class="dropdown-item" href="../articles/Tutorial.html">Tutorial</a>
+    <a class="dropdown-item" href="../articles/Tutorial2.html">Tutorial2</a>
   </div>
 </li>
 <li class="nav-item">
@@ -165,10 +166,8 @@
 </h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/gwasglue2" class="external-link">gwasglue2</a></span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'ritarasteiro/hyprcoloc'</span>, build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'--resave-data'</span>, <span class="st">'--no-manual'</span><span class="op">)</span>, build_vignettes <span class="op">=</span> <span class="cn">FALSE</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'ritarasteiro/susieR'</span><span class="op">)</span></span>
-<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/susieR" class="external-link">susieR</a></span><span class="op">)</span>     <span class="co"># fork that takes Summaryset</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">hyprcoloc</span><span class="op">)</span>  <span class="co"># fork that takes Dataset</span></span></code></pre></div>
 <p>We’ll analyse the following IDs (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region.</p>
@@ -183,7 +182,6 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">chd_id</span>, <span class="va">ldl_id</span>, <span class="va">hdl_id</span>, <span class="va">trig_id</span>, <span class="va">t2d_id</span><span class="op">)</span></span>
 <span><span class="co"># create s4 SummarySet objects (named sumset1...n) and fill metadata slot using the createSummarySets() in ieugwas_utils</span></span>
-<span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">createSummarySets</span><span class="op">(</span>traits<span class="op">=</span><span class="va">ids</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
 <span>                          variants <span class="op">=</span> <span class="st">"5:74132993-75132993"</span>,</span>
@@ -191,7 +189,6 @@
 <span>                          source <span class="op">=</span> <span class="st">"IEUopenGWAS"</span>,</span>
 <span>                          ld_ref <span class="op">=</span> <span class="st">"/project/data/reference/ld/EUR"</span><span class="op">)</span>                        </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/assign.html" class="external-link">assign</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"sumset"</span>,<span class="va">i</span><span class="op">)</span> , <span class="va">s</span><span class="op">)</span></span>
-<span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Create dataset and harmonise trait against trait, trait against LD matrix</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -210,49 +207,43 @@
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a>    <span class="co"># Outputs 1 DS (with at least 1 SS)</span></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a>    ds &lt;-<span class="st"> </span><span class="kw">susie_rss</span>(<span class="dt">R =</span> <span class="kw">getLDMatrix</span>(ds_hmgcr,trait), <span class="dt">summaryset =</span> <span class="kw">getSummarySet</span>(ds_hmgcr, trait))</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a>}) </span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>a<span class="dv">-7</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>a<span class="dv">-7</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>b<span class="dv">-111</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ebi<span class="op">-</span>a<span class="op">-</span>GCST006867), with the parameter values used. The summary statistics beta and se will not be marginalised.</span></code></pre></div>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>b<span class="dv">-111</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ebi<span class="op">-</span>a<span class="op">-</span>GCST006867), with the parameter values used. The summary statistics beta and se will not be marginalised.</span></code></pre></div>
 <p>Because not all datasets were marginalised, we are going to merge just the ones that were</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds_hmgcr_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="va">ds_hmgcr_marginalised</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">ds_hmgcr_marginalised</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a>res_hmgcr &lt;-<span class="st"> </span><span class="kw">hyprcoloc</span>(<span class="dt">dataset =</span> ds_hmgcr)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a>hyprcoloc is using gwasglue2 DataSet class object as input</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a><span class="kw">print</span>(res_hmgcr)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a><span class="op">$</span>results</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true"></a>  iteration                      traits posterior_prob regional_prob</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>          ieu<span class="op">-</span>a<span class="dv">-7</span>, ieu<span class="op">-</span>b<span class="dv">-110</span>         <span class="fl">0.5940</span>        <span class="fl">0.6052</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span> ieu<span class="op">-</span>b<span class="dv">-109</span>, ebi<span class="op">-</span>a<span class="op">-</span>GCST006867         <span class="fl">0.9934</span>        <span class="fl">0.9997</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true"></a>  candidate_snp posterior_explained_by_snp dropped_trait</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true"></a><span class="dv">1</span>       rs12916                     <span class="fl">0.9996</span>            <span class="ot">NA</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true"></a><span class="dv">2</span>     rs2307111                     <span class="fl">0.9932</span>            <span class="ot">NA</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true"></a></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a><span class="kw">print</span>(res_hmgcr)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a><span class="op">$</span>results</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a>  iteration                      traits posterior_prob regional_prob</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>          ieu<span class="op">-</span>a<span class="dv">-7</span>, ieu<span class="op">-</span>b<span class="dv">-110</span>         <span class="fl">0.5940</span>        <span class="fl">0.6052</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span> ieu<span class="op">-</span>b<span class="dv">-109</span>, ebi<span class="op">-</span>a<span class="op">-</span>GCST006867         <span class="fl">0.9934</span>        <span class="fl">0.9997</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true"></a>  candidate_snp posterior_explained_by_snp dropped_trait</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true"></a><span class="dv">1</span>       rs12916                     <span class="fl">0.9996</span>            <span class="ot">NA</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true"></a><span class="dv">2</span>     rs2307111                     <span class="fl">0.9932</span>            <span class="ot">NA</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
 <p>Try hyprcoloc with marginalised datasets</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a>res_hmgcr_marginalised &lt;-<span class="st"> </span><span class="kw">hyprcoloc</span>(<span class="dt">dataset =</span> ds_hmgcr_marginalised)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a>hyprcoloc is using gwasglue2 DataSet class object as input</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a><span class="kw">print</span>(res_hmgcr_marginalised)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a><span class="op">$</span>results</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true"></a>  iteration                     traits posterior_prob regional_prob</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span> ieu<span class="op">-</span>b<span class="dv">-110</span>_L2, ieu<span class="op">-</span>b<span class="dv">-110</span>_L3         <span class="fl">0.7226</span>        <span class="fl">1.0000</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span> ieu<span class="op">-</span>b<span class="dv">-110</span>_L1, ieu<span class="op">-</span>b<span class="dv">-110</span>_L4         <span class="fl">0.3766</span>        <span class="fl">0.5999</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true"></a>  candidate_snp posterior_explained_by_snp dropped_trait</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true"></a><span class="dv">1</span>    rs59992948                     <span class="fl">0.0106</span>            <span class="ot">NA</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true"></a><span class="dv">2</span>    rs16872674                     <span class="fl">0.0087</span>            <span class="ot">NA</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true"></a></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a><span class="kw">print</span>(res_hmgcr_marginalised)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a><span class="op">$</span>results</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a>  iteration                     traits posterior_prob regional_prob</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span> ieu<span class="op">-</span>b<span class="dv">-110</span>_L2, ieu<span class="op">-</span>b<span class="dv">-110</span>_L3         <span class="fl">0.7226</span>        <span class="fl">1.0000</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span> ieu<span class="op">-</span>b<span class="dv">-110</span>_L1, ieu<span class="op">-</span>b<span class="dv">-110</span>_L4         <span class="fl">0.3766</span>        <span class="fl">0.5999</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true"></a>  candidate_snp posterior_explained_by_snp dropped_trait</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true"></a><span class="dv">1</span>    rs59992948                     <span class="fl">0.0106</span>            <span class="ot">NA</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true"></a><span class="dv">2</span>    rs16872674                     <span class="fl">0.0087</span>            <span class="ot">NA</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
 <p>Also try with these other regions:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pcsk9_chrpos</span> <span class="op">&lt;-</span> <span class="st">"1:55005221-56005221"</span></span>
@@ -274,7 +265,6 @@
 <span>                          ld_ref <span class="op">=</span> <span class="st">"/project/data/reference/ld/EUR"</span><span class="op">)</span>                        </span>
 <span> <span class="va">pcsk9</span><span class="op">@</span><span class="va">summary_sets</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">s</span></span>
 <span><span class="op">}</span></span>
-<span></span>
 <span><span class="va">pcsk9</span> <span class="op">&lt;-</span>  <span class="va">pcsk9</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">overlapSNP</span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/harmoniseData.html">harmoniseData</a></span><span class="op">(</span><span class="va">.</span>,tolerance <span class="op">=</span> <span class="fl">0.08</span>,action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -289,16 +279,15 @@
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true"></a>    <span class="co"># Outputs 1 DS (with at least 1 SS)</span></span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true"></a>    ds &lt;-<span class="st"> </span><span class="kw">susie_rss</span>(<span class="dt">R =</span> <span class="kw">getLDMatrix</span>(pcsk9,trait), <span class="dt">summaryset =</span> <span class="kw">getSummarySet</span>(pcsk9, trait))</span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true"></a>}) </span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true"></a></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>a<span class="dv">-7</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>a<span class="dv">-7</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>b<span class="dv">-109</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>b<span class="dv">-111</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ebi<span class="op">-</span>a<span class="op">-</span>GCST006867), with the parameter values used. The summary statistics beta and se will not be marginalised.</span></code></pre></div>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>b<span class="dv">-109</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ieu<span class="op">-</span>b<span class="dv">-111</span>), with the parameter values used. The summary statistics beta and se will not be marginalised.</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true"></a>susieR is using gwasglue2 SummarySet class object as input</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true"></a>WARNING<span class="op">:</span><span class="st"> </span>There is no credible sets <span class="cf">for</span> this <span class="kw">trait</span> (ebi<span class="op">-</span>a<span class="op">-</span>GCST006867), with the parameter values used. The summary statistics beta and se will not be marginalised.</span></code></pre></div>
 <p>Because not all datasets were marginalised, we are going to merge just the ones that were</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds_hmgcr_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="va">ds_hmgcr_marginalised</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -317,38 +306,35 @@
 <span id="cb25-12"><a href="#cb25-12" aria-hidden="true"></a><span class="dv">2</span>                         <span class="ot">NA</span>          ieu<span class="op">-</span>a<span class="dv">-7</span></span>
 <span id="cb25-13"><a href="#cb25-13" aria-hidden="true"></a><span class="dv">3</span>                         <span class="ot">NA</span> ebi<span class="op">-</span>a<span class="op">-</span>GCST006867</span>
 <span id="cb25-14"><a href="#cb25-14" aria-hidden="true"></a><span class="dv">4</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-109</span></span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true"></a></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
 <p>Try hyprcoloc with marginalised datasets</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true"></a>res_pcsk9_marginalised &lt;-<span class="st"> </span><span class="kw">hyprcoloc</span>(<span class="dt">dataset =</span>pcsk9_marginalised)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true"></a>hyprcoloc is using gwasglue2 DataSet class object as input</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true"></a><span class="kw">print</span>(res_pcsk9_marginalised)</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true"></a><span class="op">$</span>results</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true"></a>  iteration traits posterior_prob regional_prob candidate_snp</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>   None             <span class="ot">NA</span>        <span class="fl">0.6947</span>            <span class="ot">NA</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span>   None             <span class="ot">NA</span>        <span class="fl">0.4759</span>            <span class="ot">NA</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true"></a><span class="dv">3</span>         <span class="dv">3</span>   None             <span class="ot">NA</span>        <span class="fl">0.3103</span>            <span class="ot">NA</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true"></a><span class="dv">4</span>         <span class="dv">4</span>   None             <span class="ot">NA</span>        <span class="fl">0.0017</span>            <span class="ot">NA</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true"></a><span class="dv">5</span>         <span class="dv">5</span>   None             <span class="ot">NA</span>        <span class="fl">0.0010</span>            <span class="ot">NA</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true"></a><span class="dv">6</span>         <span class="dv">6</span>   None             <span class="ot">NA</span>        <span class="fl">0.0001</span>            <span class="ot">NA</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true"></a><span class="dv">7</span>         <span class="dv">7</span>   None             <span class="ot">NA</span>        <span class="fl">0.0003</span>            <span class="ot">NA</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true"></a><span class="dv">8</span>         <span class="dv">8</span>   None             <span class="ot">NA</span>        <span class="fl">0.0001</span>            <span class="ot">NA</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true"></a><span class="dv">9</span>         <span class="dv">9</span>   None             <span class="ot">NA</span>        <span class="fl">0.0001</span>            <span class="ot">NA</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true"></a>  posterior_explained_by_snp dropped_trait</span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true"></a><span class="dv">1</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L6</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true"></a><span class="dv">2</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L1</span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true"></a><span class="dv">3</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L5</span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true"></a><span class="dv">4</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L2</span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true"></a><span class="dv">5</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L7</span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true"></a><span class="dv">6</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L4</span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true"></a><span class="dv">7</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L8</span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true"></a><span class="dv">8</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L3</span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true"></a><span class="dv">9</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L9</span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true"></a></span>
-<span id="cb26-27"><a href="#cb26-27" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
-<span id="cb26-28"><a href="#cb26-28" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true"></a><span class="kw">print</span>(res_pcsk9_marginalised)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true"></a><span class="op">$</span>results</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true"></a>  iteration traits posterior_prob regional_prob candidate_snp</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>   None             <span class="ot">NA</span>        <span class="fl">0.6947</span>            <span class="ot">NA</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span>   None             <span class="ot">NA</span>        <span class="fl">0.4759</span>            <span class="ot">NA</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true"></a><span class="dv">3</span>         <span class="dv">3</span>   None             <span class="ot">NA</span>        <span class="fl">0.3103</span>            <span class="ot">NA</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true"></a><span class="dv">4</span>         <span class="dv">4</span>   None             <span class="ot">NA</span>        <span class="fl">0.0017</span>            <span class="ot">NA</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true"></a><span class="dv">5</span>         <span class="dv">5</span>   None             <span class="ot">NA</span>        <span class="fl">0.0010</span>            <span class="ot">NA</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true"></a><span class="dv">6</span>         <span class="dv">6</span>   None             <span class="ot">NA</span>        <span class="fl">0.0001</span>            <span class="ot">NA</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true"></a><span class="dv">7</span>         <span class="dv">7</span>   None             <span class="ot">NA</span>        <span class="fl">0.0003</span>            <span class="ot">NA</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true"></a><span class="dv">8</span>         <span class="dv">8</span>   None             <span class="ot">NA</span>        <span class="fl">0.0001</span>            <span class="ot">NA</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true"></a><span class="dv">9</span>         <span class="dv">9</span>   None             <span class="ot">NA</span>        <span class="fl">0.0001</span>            <span class="ot">NA</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true"></a>  posterior_explained_by_snp dropped_trait</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true"></a><span class="dv">1</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L6</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true"></a><span class="dv">2</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L1</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true"></a><span class="dv">3</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L5</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true"></a><span class="dv">4</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L2</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true"></a><span class="dv">5</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L7</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true"></a><span class="dv">6</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L4</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true"></a><span class="dv">7</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L8</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true"></a><span class="dv">8</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L3</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true"></a><span class="dv">9</span>                         <span class="ot">NA</span>  ieu<span class="op">-</span>b<span class="dv">-110</span>_L9</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
 <ul>
 <li>NPC1L1 (NPC1 like intracellular cholesterol transporter 1) gene region Create dataset and harmonise trait against trait, trait against LD matrix</li>
 </ul>
@@ -364,7 +350,6 @@
 <span>                          ld_ref <span class="op">=</span> <span class="st">"/project/data/reference/ld/EUR"</span><span class="op">)</span>                        </span>
 <span> <span class="va">npc1l1</span><span class="op">@</span><span class="va">summary_sets</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">s</span></span>
 <span><span class="op">}</span></span>
-<span></span>
 <span><span class="va">npc1l1</span> <span class="op">&lt;-</span>  <span class="va">npc1l1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">overlapSNP</span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/harmoniseData.html">harmoniseData</a></span><span class="op">(</span><span class="va">.</span>,tolerance <span class="op">=</span> <span class="fl">0.08</span>,action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -390,45 +375,41 @@
 <p>Try hyprcoloc with raw datasets.</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true"></a>res_npc1l1 &lt;-<span class="st"> </span><span class="kw">hyprcoloc</span>(<span class="dt">dataset =</span> npc1l1)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true"></a>hyprcoloc is using gwasglue2 DataSet class object as input</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true"></a><span class="kw">print</span>(res_npc1l1)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true"></a><span class="op">$</span>results</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true"></a>  iteration traits posterior_prob regional_prob candidate_snp</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>   None             <span class="ot">NA</span>        <span class="fl">0.0348</span>            <span class="ot">NA</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span>   None             <span class="ot">NA</span>        <span class="fl">0.2827</span>            <span class="ot">NA</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true"></a><span class="dv">3</span>         <span class="dv">3</span>   None             <span class="ot">NA</span>        <span class="fl">0.0370</span>            <span class="ot">NA</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true"></a><span class="dv">4</span>         <span class="dv">4</span>   None             <span class="ot">NA</span>        <span class="fl">0.0041</span>            <span class="ot">NA</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true"></a>  posterior_explained_by_snp    dropped_trait</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true"></a><span class="dv">1</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-110</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true"></a><span class="dv">2</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-111</span></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true"></a><span class="dv">3</span>                         <span class="ot">NA</span> ebi<span class="op">-</span>a<span class="op">-</span>GCST006867</span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true"></a><span class="dv">4</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-109</span></span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true"></a></span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc</span></span></code></pre></div>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true"></a><span class="kw">print</span>(res_npc1l1)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true"></a><span class="op">$</span>results</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true"></a>  iteration traits posterior_prob regional_prob candidate_snp</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>   None             <span class="ot">NA</span>        <span class="fl">0.0348</span>            <span class="ot">NA</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span>   None             <span class="ot">NA</span>        <span class="fl">0.2827</span>            <span class="ot">NA</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true"></a><span class="dv">3</span>         <span class="dv">3</span>   None             <span class="ot">NA</span>        <span class="fl">0.0370</span>            <span class="ot">NA</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true"></a><span class="dv">4</span>         <span class="dv">4</span>   None             <span class="ot">NA</span>        <span class="fl">0.0041</span>            <span class="ot">NA</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true"></a>  posterior_explained_by_snp    dropped_trait</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true"></a><span class="dv">1</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-110</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true"></a><span class="dv">2</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-111</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true"></a><span class="dv">3</span>                         <span class="ot">NA</span> ebi<span class="op">-</span>a<span class="op">-</span>GCST006867</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true"></a><span class="dv">4</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-109</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc</span></span></code></pre></div>
 <p>Try hyprcoloc with marginalised datasets</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true"></a>res_npc1l1_marginalised &lt;-<span class="st"> </span><span class="kw">hyprcoloc</span>(<span class="dt">dataset =</span>npc1l1_marginalised)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true"></a>hyprcoloc is using gwasglue2 DataSet class object as input</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true"></a></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true"></a><span class="kw">print</span>(res_npc1l1_marginalised)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true"></a><span class="op">$</span>results</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true"></a>  iteration traits posterior_prob regional_prob candidate_snp</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>   None             <span class="ot">NA</span>        <span class="fl">0.0402</span>            <span class="ot">NA</span></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span>   None             <span class="ot">NA</span>        <span class="fl">0.0577</span>            <span class="ot">NA</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true"></a><span class="dv">3</span>         <span class="dv">3</span>   None             <span class="ot">NA</span>        <span class="fl">0.0082</span>            <span class="ot">NA</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true"></a><span class="dv">4</span>         <span class="dv">4</span>   None             <span class="ot">NA</span>        <span class="fl">0.0027</span>            <span class="ot">NA</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true"></a><span class="dv">5</span>         <span class="dv">5</span>   None             <span class="ot">NA</span>        <span class="fl">0.0012</span>            <span class="ot">NA</span></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true"></a><span class="dv">6</span>         <span class="dv">6</span>   None             <span class="ot">NA</span>        <span class="fl">0.0009</span>            <span class="ot">NA</span></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true"></a>  posterior_explained_by_snp       dropped_trait</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true"></a><span class="dv">1</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-111</span>_L1</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true"></a><span class="dv">2</span>                         <span class="ot">NA</span> ebi<span class="op">-</span>a<span class="op">-</span>GCST006867_L1</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true"></a><span class="dv">3</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-110</span>_L2</span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true"></a><span class="dv">4</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-109</span>_L1</span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true"></a><span class="dv">5</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-111</span>_L2</span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true"></a><span class="dv">6</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-110</span>_L1</span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true"></a></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true"></a><span class="kw">print</span>(res_npc1l1_marginalised)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true"></a><span class="op">$</span>results</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true"></a>  iteration traits posterior_prob regional_prob candidate_snp</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true"></a><span class="dv">1</span>         <span class="dv">1</span>   None             <span class="ot">NA</span>        <span class="fl">0.0402</span>            <span class="ot">NA</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true"></a><span class="dv">2</span>         <span class="dv">2</span>   None             <span class="ot">NA</span>        <span class="fl">0.0577</span>            <span class="ot">NA</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true"></a><span class="dv">3</span>         <span class="dv">3</span>   None             <span class="ot">NA</span>        <span class="fl">0.0082</span>            <span class="ot">NA</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true"></a><span class="dv">4</span>         <span class="dv">4</span>   None             <span class="ot">NA</span>        <span class="fl">0.0027</span>            <span class="ot">NA</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true"></a><span class="dv">5</span>         <span class="dv">5</span>   None             <span class="ot">NA</span>        <span class="fl">0.0012</span>            <span class="ot">NA</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true"></a><span class="dv">6</span>         <span class="dv">6</span>   None             <span class="ot">NA</span>        <span class="fl">0.0009</span>            <span class="ot">NA</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true"></a>  posterior_explained_by_snp       dropped_trait</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true"></a><span class="dv">1</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-111</span>_L1</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true"></a><span class="dv">2</span>                         <span class="ot">NA</span> ebi<span class="op">-</span>a<span class="op">-</span>GCST006867_L1</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true"></a><span class="dv">3</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-110</span>_L2</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true"></a><span class="dv">4</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-109</span>_L1</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true"></a><span class="dv">5</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-111</span>_L2</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true"></a><span class="dv">6</span>                         <span class="ot">NA</span>        ieu<span class="op">-</span>b<span class="dv">-110</span>_L1</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true"></a><span class="kw">attr</span>(,<span class="st">"class"</span>)</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true"></a>[<span class="dv">1</span>] <span class="st">"hyprcoloc"</span></span></code></pre></div>
 <ul>
 <li>LPA (Lipoprotein(A)) gene region Create dataset and harmonise trait against trait, trait against LD matrix</li>
 </ul>
@@ -444,7 +425,6 @@
 <span>                          ld_ref <span class="op">=</span> <span class="st">"/project/data/reference/ld/EUR"</span><span class="op">)</span>                        </span>
 <span> <span class="va">lpa</span><span class="op">@</span><span class="va">summary_sets</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">s</span></span>
 <span><span class="op">}</span></span>
-<span></span>
 <span><span class="va">lpa</span> <span class="op">&lt;-</span>  <span class="va">lpa</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">overlapSNP</span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/harmoniseData.html">harmoniseData</a></span><span class="op">(</span><span class="va">.</span>,tolerance <span class="op">=</span> <span class="fl">0.08</span>,action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -459,13 +439,11 @@
 <span>    <span class="co"># Outputs 1 DS (with at least 1 SS)</span></span>
 <span>    <span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/susieR/man/susie_rss.html" class="external-link">susie_rss</a></span><span class="op">(</span>R <span class="op">=</span> <span class="fu">getLDMatrix</span><span class="op">(</span><span class="va">lpa</span>,<span class="va">trait</span><span class="op">)</span>, summaryset <span class="op">=</span> <span class="fu">getSummarySet</span><span class="op">(</span><span class="va">lpa</span>, <span class="va">trait</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span> </span>
-<span></span>
 <span><span class="va">lpa_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Because not all datasets were marginalised, we are going to merge just the ones that were</p>
 <p>Try hyprcoloc with raw datasets.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">res_lpa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">nlpa</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">res_lpa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">nlpa</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_lpa</span><span class="op">)</span></span></code></pre></div>
 <p>Try hyprcoloc with marginalised datasets</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">

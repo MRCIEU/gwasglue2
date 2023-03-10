@@ -28,11 +28,11 @@ An S4 class to represent the Data Set
 
 \item{\code{incompatible_alleles_SNPs}}{A list of pairwise harmonising ouptput.}
 
-\item{\code{ld_matrices}}{A list of LD correlation matrices (default NA).}
-
 \item{\code{is_harmonisedLD}}{logical (default FALSE).}
 
 \item{\code{zscores}}{vector of calculated z-scores}
+
+\item{\code{susie_marginalised}}{logical (default FALSE).}
 
 \item{\code{susieR}}{susieR::susie_rss() output}
 

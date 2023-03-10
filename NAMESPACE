@@ -2,6 +2,7 @@
 
 export(DataSet)
 export(dataset_to_hyprcoloc)
+export(harmonise_ld)
 export(lbf_to_z_cont)
 export(susie_to_dataset)
 exportClasses(DataSet)
