@@ -15,3 +15,5 @@
 ^\.dockerignore$
 ^\.tests$
 ^\.devcontainer$
+^data$
+^\.vscode$

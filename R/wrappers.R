@@ -15,7 +15,7 @@ dataset_to_hyprcoloc <- function(dataset){
 	}))
 
     snp.id <- dataset@summary_sets[[1]]@ss$rsid 
-    ld.matrix <- dataset@ld_matrices[[1]]
+    ld.matrix <- dataset@ld_matrix
     effect.est <- matrix(ncol = length(dataset@summary_sets),nrow=length(snp.id))
     effect.se <- matrix(ncol = length(dataset@summary_sets),nrow=length(snp.id))
     
@@ -37,20 +37,20 @@ return(list(trait.names, snp.id, ld.matrix, effect.est, effect.se))
 
 
 #' Convert log Bayes Factor to summary stats
-#'
-#' @param lbf p-vector of log Bayes Factors for each SNP
+#' 
+#'  @param lbf p-vector of log Bayes Factors for each SNP
 #' @param n Overall sample size
 #' @param af p-vector of allele frequencies for each SNP
 #' @param prior_v Variance of prior distribution. SuSiE uses 50
-#'
+#' 
 #' @return tibble with lbf, af, beta, se, z
-#' @export 
+#' @export
 lbf_to_z_cont <- function(lbf, n, af, prior_v = 50){
   se = sqrt(1 / (2 * n * af * (1-af)))
   r = prior_v / (prior_v + se^2)
   z = sqrt((2 * lbf - log(sqrt(1-r)))/r)
   beta <- z * se
-  return(data.frame(beta, se))
+  return(data.frame(lbf, af, z, beta, se))
 }
 
 
@@ -60,6 +60,7 @@ lbf_to_z_cont <- function(lbf, n, af, prior_v = 50){
 #' @param lbf p-vector of log Bayes Factors for each SNP
 #' @param L credible set index number
 #' @return marginalised summaryset (beta, se and trait id)
+#' @export
 #' 
 create_summary_set_from_lbf <- function(summaryset, lbf, L){
   af <- summaryset@ss$eaf
@@ -82,6 +83,7 @@ create_summary_set_from_lbf <- function(summaryset, lbf, L){
 #' SusieR to DataSet
 #'
 #' #' susie_to_dataset is a wrapper function used inside ritarasteiro/susieR::susie_rss() to create a marginalised DataSet object
+#' Converts ABFs to summary statistics and creates a new SummarySet for each credible set. Returns object is a gwasglue2 DataSet class object. 
 #' @param summaryset gwasglue2 SummarySet object
 #' @param s susieR object
 #' @param R lD matrix
@@ -97,12 +99,15 @@ susie_to_dataset <- function(summaryset, s, R){
        ds <- DataSet()
       
       for(i in 1:ncredible_sets){
-        ds@summary_sets[[i]] <- create_summary_set_from_lbf(summaryset, s$lbf_variable[,i], L = i)
-        ds@ld_matrices[[i]] <- R
+        ds@summary_sets[[i]] <- create_summary_set_from_lbf(summaryset, s$lbf_variable[i,], L = i)
+        ds@ld_matrix <- R
       }
+
+      ds@susie_marginalised <- TRUE
 
     # ds@susieR <- s
     s <- ds
+    
     }
    return(s)
 }

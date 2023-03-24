@@ -55,7 +55,7 @@ RUN R -e "install.packages(c('devtools','methods'))"
 
 # Install R packages
 RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc',  \
-        'rmarkdown', 'knitr', 'commonmark', 'markdown','Rfast','httpgd')); \
+        'rmarkdown', 'knitr', 'commonmark', 'markdown','Rfast','httpgd','crayon')); \
         remotes::install_github('mrcieu/ieugwasr'); \
         remotes::install_github('mrcieu/TwoSampleMR');  \
         remotes::install_github('mrcieu/gwasvcf'); \

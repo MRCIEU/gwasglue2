@@ -54,6 +54,7 @@ s <- SummarySet(traits = traits, variants = variants, tools = tools) %>%
 #' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
 #' @param tolerance Inherited from harmoniseData() (default 0.08)
 #' @param action Inherited from harmoniseData() (Default 1)
+#' @export
 #'
 #' @return A harmonised gwasglue2 DataSet object
 
@@ -67,21 +68,23 @@ createDataSet <- function(traits, variants, tools, source="IEUopenGWAS", harmoni
                             source = source)
   ds@summary_sets[[i]] <- s
   }
-
+  ds <- overlapSNP(ds)
+    
   if (harmonise == TRUE){
-    ds <-  ds %>%
-    overlapSNP(.) %>%
-    harmoniseData(.,tolerance = tolerance,action = action)
+     ds <-  harmoniseData(ds,tolerance = tolerance, action = action)
   }
 
   return(ds)
 }
+
+
 
 #' Plot
 #'
 #' @param dataset gwasglue2 DataSet object
 #' @param type Type of plot (Only available "manhattan" plots at the moment)
 #' @param region Main title for the plot
+#' @export
 #'
 #' @return A plot
 plot_gwasglue <- function(dataset, type, region){
@@ -96,12 +99,14 @@ plot_gwasglue <- function(dataset, type, region){
     
     
       for (i in 1:ntraits){
-      plot(dataset@summary_sets[[i]]@ss$position, -log10(dataset@summary_sets[[i]]@ss$p), main = dataset@summary_sets[[i]]@metadata$trait, xlab = "position", ylab = "-log10(p-value)", pch=20 )
+        plot(dataset@summary_sets[[i]]@ss$position, -log10(dataset@summary_sets[[i]]@ss$p), main = "", xlab = "position", ylab = "-log10(p-value)", cex=0.8, pch=20)
+        mtext(dataset@summary_sets[[i]]@metadata$trait, side = 3, line = 0.5)
       }
-    mtext(region,                  
+    mtext(as.expression(bquote(bold(.(region)))),                  
           side = 3,
-          line = - 2,
-          outer = TRUE)
+          line = - 2.5,
+          outer = TRUE,
+          cex = 1.3)
   }
 }
 

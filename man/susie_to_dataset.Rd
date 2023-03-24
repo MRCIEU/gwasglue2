@@ -18,4 +18,5 @@ DataSet object
 }
 \description{
 #' susie_to_dataset is a wrapper function used inside ritarasteiro/susieR::susie_rss() to create a marginalised DataSet object
+Converts ABFs to summary statistics and creates a new SummarySet for each credible set. Returns object is a gwasglue2 DataSet class object.
 }

@@ -46,7 +46,6 @@ setMethod("overlapSNP", "DataSet", function(object) {
             return(object)
           })
 
-
 # Set and get methods for harmonise data
 
 #' Harmonise the alleles and effects between two summary sets
@@ -120,7 +119,6 @@ setMethod( "harmoniseData", "DataSet", function(object,tolerance = 0.08,action =
     return(object)
 }
 )
-
 
 setGeneric("isHarmonised",function(object) standardGeneric("isHarmonised"))
 setMethod("isHarmonised","DataSet",function(object) {

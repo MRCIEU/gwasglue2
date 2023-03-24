@@ -20,17 +20,16 @@ Depends:
     R (>= 4.0.0),
     methods
 Imports:
-    dplyr
+    dplyr,
+    crayon
 Suggests: 
     knitr,
     rmarkdown,
     ieugwasr,
-    gwasvcf,
     TwoSampleMR,
     testthat (>= 3.0.0),
     covr,
-    utils,
-    crayon
+    utils   
 Remotes:
     mrcieu/TwoSampleMR,
     mrcieu/gwasvcf,
@@ -46,6 +45,7 @@ Collate:
     'harmoniseLD_method.R'
     'harmonise_ld.R'
     'harmonise_method.R'
+    'meta.R'
     'summaryset.R'
     'utils.R'
     'wrappers.R'

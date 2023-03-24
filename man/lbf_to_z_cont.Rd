@@ -7,8 +7,6 @@
 lbf_to_z_cont(lbf, n, af, prior_v = 50)
 }
 \arguments{
-\item{lbf}{p-vector of log Bayes Factors for each SNP}
-
 \item{n}{Overall sample size}
 
 \item{af}{p-vector of allele frequencies for each SNP}
@@ -19,5 +17,5 @@ lbf_to_z_cont(lbf, n, af, prior_v = 50)
 tibble with lbf, af, beta, se, z
 }
 \description{
-Convert log Bayes Factor to summary stats
+@param lbf p-vector of log Bayes Factors for each SNP
 }

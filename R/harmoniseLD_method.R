@@ -37,7 +37,7 @@ setGeneric("harmoniseLDMatrix", function(object) standardGeneric("harmoniseLDMat
 setMethod( "harmoniseLDMatrix", "DataSet", function(object) {
   
   rsid_avail <- do.call(rbind, strsplit(rownames(object@ld_matrix), split="_"))[,1]
-
+  message("Gwasglue is now harmonising the SummarySets against the LD matrix")
   for (i in seq_along(object@summary_sets)){
     # message("Gwasglue is now harmonising ", object@summary_sets[[i]]@metadata$id, " the against LD matrix!")
  
@@ -58,7 +58,7 @@ setMethod( "harmoniseLDMatrix", "DataSet", function(object) {
   object@ld_matrix <- h[[2]]
   object@is_harmonisedLD <- TRUE
   
-  message("Data is harmonised!")
+  message("Done!")
   return(object)
 }
 )

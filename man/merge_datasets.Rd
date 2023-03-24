@@ -4,7 +4,7 @@
 \alias{merge_datasets}
 \title{Merge Datasets}
 \usage{
-merge_datasets(...)
+merge_datasets(datasets)
 }
 \arguments{
 \item{...}{A list of DataSet S4 objects}
