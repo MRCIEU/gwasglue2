@@ -11,16 +11,24 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = TRUE
 )
+```
+
+
+```{r  eval= FALSE}
+remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = TRUE) 
+remotes::install_github('ritarasteiro/susieR')
+
 ```
 
 ```{r setup}
 library(gwasglue2)
 library(TwoSampleMR)
 library(ieugwasr)
-library(hyprcoloc)
-library(susieR)
+library(susieR)     # fork that takes Summaryset
+library(hyprcoloc)  # fork that takes Dataset
+devtools::load_all("../") # this was added just for development
 ```
 
 There are two usecases for this tutorial 
@@ -73,8 +81,8 @@ Create the DataSet object
 
 ```{r}
 dataset <- DataSet(sumset1,sumset2) %>%
-  overlapSNP(.) %>%
-  harmoniseData(.,tolerance = 0.08,action = 2)
+  overlapVariants(.) %>%
+  harmoniseData(.,tolerance = 0.08, action = 2)
 ```
 
 Convert dataset to TwoSampleMR format
@@ -109,11 +117,19 @@ id_list <- ieugwasr::phewas(pval = 5e-6, variants=genomicrange, batch="ukb-a")$i
   unique()
 ```
 
-Obtain data
+First we will set the path to where the reference population plink files are located to build the LD matrix.
 
 ```{r}
-dataset <- gwasglue2::create_dataset(traits=id_list, variants=genomicrange) %>%
-  gwasglue2::annotate(ld_matrix="1000genomes_EUR")
+ld_ref <- "/project/data/reference/ld/EUR"
+#ld_ref <- "../data/ld/EUR"
+```
+
+and then obtain the data
+
+```{r}
+
+  dataset <- createDataSet(traits=id_list, variants =genomicrange, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink")
 ```
 
 Next, for each trait we need to perform finemapping. This will involve using SusieR to identify credible sets in the region for the trait, and then generate the conditional summary datasets for each credible set. Explanation:
@@ -124,370 +140,45 @@ Conditional summary datasets: Once credible sets are identified, we can try to e
 
 Use susieR to generate the credible sets for each dataset (e.g. some of them will have only 1, some will have more than 1. But all of them will have at least 1 because they have been selected to have an association in the region)
 
-```{r}
-dataset <- gwasglue2::annotate(dataset = ., credible_sets="susieR")
-```
-
-Finally, we can perform the colocalisation. Here we want to jointly colocalise across all the conditional summary datasets
-
-
-```{r}
-result <- dataset %>%
-  hyprcoloc::hyprcoloc(dataset=.)
-```
-## Alternative coloc example (WIP)
-
-```{r}
-library(gwasglue2)
-remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = FALSE, dependencies = TRUE) 
-remotes::install_github('ritarasteiro/susieR')
-library(susieR)     # fork that takes Summaryset
-library(hyprcoloc)  # fork that takes Dataset
-```
-
-We'll analyse the following IDs (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region. 
-
-
-```{r}
-chd_id <- "ieu-a-7"
-ldl_id <- "ieu-b-110"
-hdl_id <- "ieu-b-109"
-trig_id <- "ieu-b-111"
-t2d_id <- "ebi-a-GCST006867"
-hmgcr_chrpos <- "5:74132993-75132993"
-```
-
-
-Create summarysets
-
-```{r}
-ids <- c(chd_id, ldl_id, hdl_id, trig_id, t2d_id)
-# create s4 SummarySet objects (named sumset1...n) and fill metadata slot using the createSummarySets() in ieugwas_utils
-for (i in seq_along(ids)){
-  s <- createSummarySets(traits=ids[i],
-                          variants = "5:74132993-75132993",
-                          tools = c("finemap","coloc"),
-                          source = "IEUopenGWAS",
-                          ld_ref = "/project/data/reference/ld/EUR")                        
-  assign(paste0("sumset",i) , s)
-}
-```
-
-Create dataset and harmonise trait against trait, trait against LD matrix
-
-```{r}
-# create S4 DataSet object (hmgcr)
-ds_hmgcr <- DataSet(sumset1,sumset2,sumset3,sumset4,sumset5) %>%
-  overlapSNP(.) %>%
-  harmoniseData(.,tolerance = 0.08,action = 1) %>%
-  buildLDMatrix(., bfile = TRUE, plink_bin = "plink") %>%
-  harmoniseLDMatrix(.) 
-```
+TODO: Explain how we marginalise the summarysets using susieR Approximate Bayes Factors.
 
 After summary sets are harmonised, marginalise each summary set independently and create a new dataset with all marginalised summary sets merged
 
 ```{r}
 # do finemapping with susie
-ntraits <- getLength(ds_hmgcr)
-ds_hmgcr_marginalised <- lapply(1:ntraits, function(trait)
+ntraits <- getLength(dataset)
+dataset_marginalised <- lapply(1:ntraits, function(trait)
   {
     # Takes in 1 SS
     # Outputs 1 DS (with at least 1 SS)
-    ds <- susie_rss(R = getLDMatrix(ds_hmgcr,trait), summaryset = getSummarySet(ds_hmgcr, trait))
-}) 
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ieu-a-7), with the parameter values used. The summary statistics beta and se will not be marginalised.
-susieR is using gwasglue2 SummarySet class object as input
-susieR is using gwasglue2 SummarySet class object as input
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ieu-b-111), with the parameter values used. The summary statistics beta and se will not be marginalised.
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ebi-a-GCST006867), with the parameter values used. The summary statistics beta and se will not be marginalised.
-```
-Because not all datasets were marginalised, we are going to merge just the ones that were
-
-```{r}
-ds_hmgcr_marginalised <- merge_datasets(ds_hmgcr_marginalised[[2]], ds_hmgcr_marginalised[[3]])
+    ds <- susie_rss(R = getLDMatrix(dataset), summaryset = getSummarySet(dataset, trait))
+})
 ```
 
-Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)
+ Now we are going to merge the datasets. Note that the `merge_datasets()` function is just going to merge the marginalised datasets. 
 
 ```{r}
-res_hmgcr <- hyprcoloc(dataset = ds_hmgcr)
-hyprcoloc is using gwasglue2 DataSet class object as input
-print(res_hmgcr)
-$results
-  iteration                      traits posterior_prob regional_prob
-1         1          ieu-a-7, ieu-b-110         0.5940        0.6052
-2         2 ieu-b-109, ebi-a-GCST006867         0.9934        0.9997
-  candidate_snp posterior_explained_by_snp dropped_trait
-1       rs12916                     0.9996            NA
-2     rs2307111                     0.9932            NA
-attr(,"class")
-[1] "hyprcoloc"
+dataset_marginalised <- merge_datasets(dataset_marginalised)
+
+``` 
+
+ Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)
+
+```{r} 
+
+res_dataset <- hyprcoloc(dataset = dataset) 
+#hyprcoloc is using gwasglue2 DataSet class object as input
+print(res_dataset)
+
 ```
 
 Try hyprcoloc with marginalised datasets
 
 ```{r}
-res_hmgcr_marginalised <- hyprcoloc(dataset = ds_hmgcr_marginalised)
-hyprcoloc is using gwasglue2 DataSet class object as input
-print(res_hmgcr_marginalised)
-$results
-  iteration                     traits posterior_prob regional_prob
-1         1 ieu-b-110_L2, ieu-b-110_L3         0.7226        1.0000
-2         2 ieu-b-110_L1, ieu-b-110_L4         0.3766        0.5999
-  candidate_snp posterior_explained_by_snp dropped_trait
-1    rs59992948                     0.0106            NA
-2    rs16872674                     0.0087            NA
-attr(,"class")
-[1] "hyprcoloc"
-```
 
-Also try with these other regions:
+res_dataset_marginalised <- hyprcoloc(dataset = dataset_marginalised)
+print(res_dataset_marginalised)
 
 
-```{r}
-pcsk9_chrpos <- "1:55005221-56005221"
-npc1l1_chrpos <- "7:44052134-45052134"
-lpa_chrpos <- "6:155952514-165952514"
-```
-
-
-* PCSK9 (proprotein convertase subtilisin/kexin type 9) gene region
-
-Create dataset and harmonise trait against trait, trait against LD matrix (note that we are not saving the SummarySet objects separately, but filling them directly to the DataSet).
-
-
-```{r}
-# create S4 DataSet object (pcsk9)
-pcsk9_chrpos <- "1:55005221-56005221"
-pcsk9 <- DataSet()
-for (i in seq_along(ids)){
-  s <- createSummarySets(traits=ids[i],
-                          variants = "1:55005221-56005221",
-                          tools = c("finemap","coloc"),
-                          source = "IEUopenGWAS",
-                          ld_ref = "/project/data/reference/ld/EUR")                        
- pcsk9@summary_sets[[i]] <- s
-}
-pcsk9 <-  pcsk9 %>%
-  overlapSNP(.) %>%
-  harmoniseData(.,tolerance = 0.08,action = 1) %>%
-  buildLDMatrix(., bfile = TRUE, plink_bin = "plink") %>%
-  harmoniseLDMatrix(.) 
-```
-
-Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged
-
-```{r}
-# do finemapping with susie
-ntraits <- getLength(pcsk9)
-pcsk9_marginalised <- lapply(1:ntraits, function(trait)
-  {
-    # Takes in 1 SS
-    # Outputs 1 DS (with at least 1 SS)
-    ds <- susie_rss(R = getLDMatrix(pcsk9,trait), summaryset = getSummarySet(pcsk9, trait))
-}) 
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ieu-a-7), with the parameter values used. The summary statistics beta and se will not be marginalised.
-susieR is using gwasglue2 SummarySet class object as input
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ieu-b-109), with the parameter values used. The summary statistics beta and se will not be marginalised.
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ieu-b-111), with the parameter values used. The summary statistics beta and se will not be marginalised.
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ebi-a-GCST006867), with the parameter values used. The summary statistics beta and se will not be marginalised.
-```
-Because not all datasets were marginalised, we are going to merge just the ones that were
-
-```{r}
-ds_hmgcr_marginalised <- merge_datasets(ds_hmgcr_marginalised[[2]])
-```
-
-
-Try hyprcoloc with raw datasets. 
-
-```{r}
-res_pcsk9 <- hyprcoloc(dataset = pcsk9)
-hyprcoloc is using gwasglue2 DataSet class object as input
-print(res_pcsk9)
-$results
-  iteration traits posterior_prob regional_prob candidate_snp
-1         1   None             NA        0.1472            NA
-2         2   None             NA        0.0003            NA
-3         3   None             NA        0.0001            NA
-4         4   None             NA        0.0001            NA
-  posterior_explained_by_snp    dropped_trait
-1                         NA        ieu-b-110
-2                         NA          ieu-a-7
-3                         NA ebi-a-GCST006867
-4                         NA        ieu-b-109
-attr(,"class")
-[1] "hyprcoloc"
-```
-
-Try hyprcoloc with marginalised datasets
-
-```{r}
-res_pcsk9_marginalised <- hyprcoloc(dataset =pcsk9_marginalised)
-hyprcoloc is using gwasglue2 DataSet class object as input
-print(res_pcsk9_marginalised)
-$results
-  iteration traits posterior_prob regional_prob candidate_snp
-1         1   None             NA        0.6947            NA
-2         2   None             NA        0.4759            NA
-3         3   None             NA        0.3103            NA
-4         4   None             NA        0.0017            NA
-5         5   None             NA        0.0010            NA
-6         6   None             NA        0.0001            NA
-7         7   None             NA        0.0003            NA
-8         8   None             NA        0.0001            NA
-9         9   None             NA        0.0001            NA
-  posterior_explained_by_snp dropped_trait
-1                         NA  ieu-b-110_L6
-2                         NA  ieu-b-110_L1
-3                         NA  ieu-b-110_L5
-4                         NA  ieu-b-110_L2
-5                         NA  ieu-b-110_L7
-6                         NA  ieu-b-110_L4
-7                         NA  ieu-b-110_L8
-8                         NA  ieu-b-110_L3
-9                         NA  ieu-b-110_L9
-attr(,"class")
-[1] "hyprcoloc"
-```
-
-* NPC1L1 (NPC1 like intracellular cholesterol transporter 1) gene region
-Create dataset and harmonise trait against trait, trait against LD matrix
-
-```{r}
-# create S4 DataSet object (npc1l1)
-npc1l1_chrpos <- "7:44052134-45052134"
-npc1l1 <- DataSet()
-for (i in seq_along(ids)){
-  s <- createSummarySets(traits=ids[i],
-                          variants = "7:44052134-45052134",
-                          tools = c("finemap","coloc"),
-                          source = "IEUopenGWAS",
-                          ld_ref = "/project/data/reference/ld/EUR")                        
- npc1l1@summary_sets[[i]] <- s
-}
-npc1l1 <-  npc1l1 %>%
-  overlapSNP(.) %>%
-  harmoniseData(.,tolerance = 0.08,action = 1) %>%
-  buildLDMatrix(., bfile = TRUE, plink_bin = "plink") %>%
-  harmoniseLDMatrix(.) 
-```
-
-Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged
-
-```{r}
-ntraits <- getLength( npc1l1)
-npc1l1_marginalised <- lapply(1:ntraits, function(trait)
-  {
-    # Takes in 1 SS
-    # Outputs 1 DS (with at least 1 SS)
-    ds <- susie_rss(R = getLDMatrix(npc1l1,trait), summaryset = getSummarySet( npc1l1, trait))
-}) 
-susieR is using gwasglue2 SummarySet class object as input
-WARNING: There is no credible sets for this trait (ieu-a-7), with the parameter values used. The summary statistics beta and se will not be marginalised.
-susieR is using gwasglue2 SummarySet class object as input
-susieR is using gwasglue2 SummarySet class object as input
-susieR is using gwasglue2 SummarySet class object as input
-susieR is using gwasglue2 SummarySet class object as input
-```
-Because not all datasets were marginalised, we are going to merge just the ones that were
-
-```{r}
-npc1l1_marginalised <- merge_datasets(npc1l1_marginalised[[2]],npc1l1_marginalised[[3]],npc1l1_marginalised[[4]],npc1l1_marginalised[[5]])
-```
-
-
-Try hyprcoloc with raw datasets. 
-
-```{r}
-res_npc1l1 <- hyprcoloc(dataset = npc1l1)
-hyprcoloc is using gwasglue2 DataSet class object as input
-print(res_npc1l1)
-$results
-  iteration traits posterior_prob regional_prob candidate_snp
-1         1   None             NA        0.0348            NA
-2         2   None             NA        0.2827            NA
-3         3   None             NA        0.0370            NA
-4         4   None             NA        0.0041            NA
-  posterior_explained_by_snp    dropped_trait
-1                         NA        ieu-b-110
-2                         NA        ieu-b-111
-3                         NA ebi-a-GCST006867
-4                         NA        ieu-b-109
-attr(,"class")
-[1] "hyprcoloc
-```
-Try hyprcoloc with marginalised datasets
-```{r}
-res_npc1l1_marginalised <- hyprcoloc(dataset =npc1l1_marginalised)
-hyprcoloc is using gwasglue2 DataSet class object as input
-print(res_npc1l1_marginalised)
-$results
-  iteration traits posterior_prob regional_prob candidate_snp
-1         1   None             NA        0.0402            NA
-2         2   None             NA        0.0577            NA
-3         3   None             NA        0.0082            NA
-4         4   None             NA        0.0027            NA
-5         5   None             NA        0.0012            NA
-6         6   None             NA        0.0009            NA
-  posterior_explained_by_snp       dropped_trait
-1                         NA        ieu-b-111_L1
-2                         NA ebi-a-GCST006867_L1
-3                         NA        ieu-b-110_L2
-4                         NA        ieu-b-109_L1
-5                         NA        ieu-b-111_L2
-6                         NA        ieu-b-110_L1
-attr(,"class")
-[1] "hyprcoloc"
-```
-* LPA (Lipoprotein(A)) gene region
-Create dataset and harmonise trait against trait, trait against LD matrix
-```{r}
-# create S4 DataSet object (lpa)
-lpa_chrpos <- "6:155952514-165952514"
-lpa <- DataSet()
-for (i in seq_along(ids)){
-  s <- createSummarySets(traits=ids[i],
-                          variants = "6:155952514-165952514",
-                          tools = c("finemap","coloc"),
-                          source = "IEUopenGWAS",
-                          ld_ref = "/project/data/reference/ld/EUR")                        
- lpa@summary_sets[[i]] <- s
-}
-lpa <-  lpa %>%
-  overlapSNP(.) %>%
-  harmoniseData(.,tolerance = 0.08,action = 1) %>%
-  buildLDMatrix(., bfile = TRUE, plink_bin = "plink") %>%
-  harmoniseLDMatrix(.) 
-```
-Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged
-```{r}
-ntraits <- getLength(lpa)
-npc1l1_marginalised <- lapply(1:ntraits, function(trait)
-  {
-    # Takes in 1 SS
-    # Outputs 1 DS (with at least 1 SS)
-    ds <- susie_rss(R = getLDMatrix(lpa,trait), summaryset = getSummarySet(lpa, trait))
-}) 
-lpa_marginalised <- merge_datasets()
-```
-Because not all datasets were marginalised, we are going to merge just the ones that were
-```{r}
-```
-Try hyprcoloc with raw datasets. 
-```{r}
-res_lpa <- hyprcoloc(dataset = nlpa)
-print(res_lpa)
-```
-Try hyprcoloc with marginalised datasets
-```{r}
-res_lpa_marginalised <- hyprcoloc(dataset =lpa_marginalised)
-print(res_lpa_marginalised)
-```
+**NOTE:** In this example there was no colocalisation. In tutorial 2, we tried to do a meta analysis  to see if we improve our results.
+   
