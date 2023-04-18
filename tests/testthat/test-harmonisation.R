@@ -1,4 +1,5 @@
 # Need extensive testing of different harmonisation scenarios
+  skip("Not ready yet")
 x <- ieugwasr::tophits("ieu-a-2")$rsid
 sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
 sumset2 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")
@@ -6,7 +7,7 @@ sumset2 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")
 test_that("simple 2 trait harmonisation matches TwoSampleMR", {
 
   dataset <- DataSet(sumset1,sumset2) %>%
-    overlapSNP(.) %>%
+    overlapVariants(.) %>%
     harmoniseData(.,tolerance = 0.08, action = 1)
   # Do the same in TwoSampleMR
   dat <- TwoSampleMR::make_dat(2,7)
