@@ -27,7 +27,7 @@
 harmonise <- function(rsid, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
 {
 
-  orig_SNP<-rsid
+  orig_SNP <- rsid
 
   SNP_index<-sapply(1:length(rsid),function(i)sum(rsid[1:i]==rsid[i]))
   rsid <- paste0(rsid,"_",SNP_index)

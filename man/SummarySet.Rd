@@ -16,7 +16,7 @@ SummarySet(ss, traits, variants, tools)
 \item{tools}{Array of methods that gwasglue2 ids going to convert the summarySet to (eg. "mr")}
 }
 \value{
-A SummarySet S4 object.
+A gwasglue2 SummarySet object.
 }
 \description{
 SummarySet function

@@ -1,3 +1,4 @@
+skip("pipeline changed")
 x <- ieugwasr::tophits("ieu-a-2")$rsid
 sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
 sumset2 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")

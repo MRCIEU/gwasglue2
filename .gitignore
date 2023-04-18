@@ -3,7 +3,7 @@
 .Rdata
 .httr-oauth
 .DS_Store
-inst/files
 inst/poc
 inst/s4_tutorials
 .dockerignore
+data/

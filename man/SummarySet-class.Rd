@@ -21,9 +21,5 @@ An S4 class to represent the Summary Set
 \item{\code{tools}}{The tools that gwasglue2 is going to convert to (default NA).}
 
 \item{\code{mr_label}}{Exposure/Outcome (default NA).}
-
-\item{\code{ld_ref}}{The prefix of the plink files (eg. EUR) used to build the LD correlation matrix (default NA).}
-
-\item{\code{pop}}{The population code in ieugwasr (eg. EUR) used to build the LD correlation matrix (default NA).}
 }}
 

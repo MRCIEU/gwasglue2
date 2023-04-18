@@ -25,6 +25,10 @@ usethis::use_build_ignore("docker/", escape = TRUE)
 usethis::use_build_ignore(".dockerignore/", escape = TRUE)
 usethis::use_build_ignore(".tests/", escape = TRUE)
 usethis::use_build_ignore(".devcontainer/", escape = TRUE)
+usethis::use_build_ignore("data/", escape = TRUE)
+
+usethis::use_git_ignore("data/")
+
 
 usethis::use_news_md()
 

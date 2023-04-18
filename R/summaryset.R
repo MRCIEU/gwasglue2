@@ -7,8 +7,6 @@
 #' @slot variants The RSID/variants associated with ss (default NA).
 #' @slot tools The tools that gwasglue2 is going to convert to (default NA).
 #' @slot mr_label Exposure/Outcome (default NA).
-#' @slot ld_ref The prefix of the plink files (eg. EUR) used to build the LD correlation matrix (default NA).
-#' @slot pop The population code in ieugwasr (eg. EUR) used to build the LD correlation matrix (default NA).
 setClass("SummarySet",
   slots = c(
     source = "character",
@@ -16,9 +14,7 @@ setClass("SummarySet",
     metadata = "data.frame",
     variants = "character",
     tools = "character",
-    mr_label = "character",
-    ld_ref = "character",
-    pop = "character"
+    mr_label = "character"
   ),
   prototype = prototype(
     source = NA_character_,
@@ -26,9 +22,7 @@ setClass("SummarySet",
     metadata = data.frame(NA),
     variants = NA_character_,
     tool = NA_character_,
-    mr_label = NA_character_,
-    ld_ref = NA_character_,
-    pop = NA_character_
+    mr_label = NA_character_
   ),
   contains = class(dplyr::tibble())
 )
@@ -41,7 +35,7 @@ setClass("SummarySet",
 #' @param variants Array of SNPs rsids
 #' @param tools Array of methods that gwasglue2 ids going to convert the summarySet to (eg. "mr") 
 #' @importFrom methods new
-#' @return A SummarySet S4 object.
+#' @return A gwasglue2 SummarySet object.
 SummarySet <- function(ss, traits, variants, tools) {
   new("SummarySet",
    ss = createSumset(traits = traits, variants = variants),
@@ -70,6 +64,7 @@ setMethod("setMetadata", "SummarySet",
             }
             return(object)
           })
+          
 
 setGeneric("getMetadata", function(object) standardGeneric("getMetadata"))
 setMethod("getMetadata", "SummarySet",
@@ -81,6 +76,35 @@ setMethod("getSource", "SummarySet",
           function(object) {
             return(object@source)
           })
+
+# Set method to create an internal id
+setGeneric("setVariantid", function(object) standardGeneric("setVariantid"))
+setMethod("setVariantid", "SummarySet", function(object) {
+  sumstats <- getSummaryData(object)
+  nvariants <- dim(sumstats)[1] 
+  variantid <- lapply(1:nvariants, function(i){
+    x <- sort(c(sumstats[i,]$ea,sumstats[i,]$nea))
+    if (nchar(x[1]) > 10 || nchar(x[2]) <= 10){
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_",x[2]) 
+    }
+    if (nchar(x[1]) <= 10 || nchar(x[2]) > 10){
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_",x[1],"_#",digest::digest(x[2],algo= "murmur32")) 
+    }
+    if (nchar(x[1]) > 10 || nchar(x[2]) > 10){
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_#",digest::digest(x[2],algo= "murmur32")) 
+    } else {
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_",x[1],"_",x[2]) 
+    }
+  }) 
+
+  object@ss[,"variantid"] <- unlist(variantid)
+  return(object)
+})
+ 
+
+
+
+
 
 # Set and get methods for RSID
 setGeneric("setRSID",function(object,variants) standardGeneric("setRSID"))
@@ -115,22 +139,6 @@ setMethod("getTool","SummarySet",
           }
 )
 
-# Set and get methods for ld_ref
-setGeneric("setLDref",function(object,ld_ref) standardGeneric("setLDref"))
-setMethod( "setLDref", "SummarySet",
-           function(object,ld_ref) {
-             object@ld_ref <- ld_ref
-             message(paste("Gwasglue is going to harmonise data against ", object@ld_ref, "LD correlation matrix"))
-             return(object)
-           }
-)
-
-setGeneric("getLDref",function(object) standardGeneric("getLDref"))
-setMethod("getLDref","SummarySet",
-          function(object) {
-            return(object@ld_ref)
-          }
-)
 
 # Set and get methods for mr_label
 setGeneric("setMRlabel",function(object,mr_label) standardGeneric("setMRlabel"))

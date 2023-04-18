@@ -4,12 +4,12 @@
 \alias{harmoniseData}
 \title{Harmonise the alleles and effects between two summary sets}
 \usage{
-harmoniseData(object, tolerance, action)
+harmoniseData(object, tolerance, action, strand)
 }
 \arguments{
 \item{object}{The DataSet object}
 
-\item{tolerance}{Tolerance value (default 0.08).}
+\item{tolerance}{Tolerance value.}
 
 \item{action}{Level of strictness in dealing with SNPs.
 \itemize{
@@ -17,6 +17,8 @@ harmoniseData(object, tolerance, action)
 \item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 \item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 }}
+
+\item{strand}{dna strand orientation  (Default "forward", other option "reverse")}
 }
 \description{
 Harmonise the alleles and effects between two summary sets
