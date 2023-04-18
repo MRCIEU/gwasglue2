@@ -38,7 +38,7 @@ return(list(trait.names, snp.id, ld.matrix, effect.est, effect.se))
 
 #' Convert log Bayes Factor to summary stats
 #' 
-#'  @param lbf p-vector of log Bayes Factors for each SNP
+#' @param lbf p-vector of log Bayes Factors for each SNP
 #' @param n Overall sample size
 #' @param af p-vector of allele frequencies for each SNP
 #' @param prior_v Variance of prior distribution. SuSiE uses 50

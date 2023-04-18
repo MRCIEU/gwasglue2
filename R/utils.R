@@ -1,6 +1,6 @@
 #' Merge Datasets 
 #'
-#' @param ... A list of DataSet S4 objects
+#' @param datasets A list of DataSet S4 objects
 #' @return  A DataSet S4 object  with input DataSets merged
 merge_datasets <- function(datasets) {
     n_datasets <- length(datasets)
@@ -18,7 +18,7 @@ merge_datasets <- function(datasets) {
             }     
     }
 	# For now I am assuming that in all datasets the following slots are the same
-    # ds@overlap_SNPs <- datasets[[1]]@overlap_SNPs
+    # ds@overlap_variants <- datasets[[1]]@overlap_variants
     # ds@is_resized <- datasets[[1]]@is_resized
     # ds@is_harmonised <- datasets[[1]]@is_harmonised
     # ds@overall_dropped_SNPs <- datasets[[1]]@overall_dropped_SNPs
@@ -35,8 +35,8 @@ merge_datasets <- function(datasets) {
 }
 
 
-
-
+# Not in function
+ "%ni%" <- Negate("%in%")
 
 
 # @title Utility function to display warning messages as they occur (from susieR)

@@ -29,7 +29,9 @@ Suggests:
     TwoSampleMR,
     testthat (>= 3.0.0),
     covr,
-    utils   
+    utils,
+    digest,
+    graphics  
 Remotes:
     mrcieu/TwoSampleMR,
     mrcieu/gwasvcf,
@@ -45,7 +47,6 @@ Collate:
     'harmoniseLD_method.R'
     'harmonise_ld.R'
     'harmonise_method.R'
-    'meta.R'
     'summaryset.R'
     'utils.R'
     'wrappers.R'

@@ -48,17 +48,18 @@ s <- SummarySet(traits = traits, variants = variants, tools = tools) %>%
 #' A function to create a DataSet object and harmonise data against data
 #'
 #' @param traits ID of GWAS studies to query
-#' @param variants Array of SNPs rsids
+#' @param variants Array of variants rsids
 #' @param tools Array of methods that gwasglue2 is going to convert the summarySet to (eg. "mr") 
 #' @param source ID of Data Source to set the DataSet @slot metadata (Default and only option: IEUopenGWAS). 
 #' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
 #' @param tolerance Inherited from harmoniseData() (default 0.08)
 #' @param action Inherited from harmoniseData() (Default 1)
+#' @param strand dna strand orientation  (Default "forward", other option "reverse")
 #' @export
 #'
 #' @return A harmonised gwasglue2 DataSet object
 
-createDataSet <- function(traits, variants, tools, source="IEUopenGWAS", harmonise = TRUE, tolerance = 0.08,action = 1){
+createDataSet <- function(traits, variants, tools, source="IEUopenGWAS", harmonise = TRUE, tolerance = 0.08,action = 1, strand = "forward"){
 
   ds <- DataSet()
   for (i in seq_along(traits)){
@@ -68,10 +69,14 @@ createDataSet <- function(traits, variants, tools, source="IEUopenGWAS", harmoni
                             source = source)
   ds@summary_sets[[i]] <- s
   }
-  ds <- overlapSNP(ds)
+  ds <- overlapVariants(ds, strand = strand)
     
-  if (harmonise == TRUE){
-     ds <-  harmoniseData(ds,tolerance = tolerance, action = action)
+  if (harmonise == TRUE && strand == "forward"){
+     ds <-  harmoniseData(ds,tolerance = tolerance, action = action, strand = "forward")
+  }
+
+  if (harmonise == TRUE && strand == "reverse"){
+     ds <-  harmoniseData(ds,tolerance = tolerance, action = action, strand = "reverse")
   }
 
   return(ds)
@@ -83,11 +88,11 @@ createDataSet <- function(traits, variants, tools, source="IEUopenGWAS", harmoni
 #'
 #' @param dataset gwasglue2 DataSet object
 #' @param type Type of plot (Only available "manhattan" plots at the moment)
-#' @param region Main title for the plot
+#' @param title Main title for the plot
 #' @export
 #'
 #' @return A plot
-plot_gwasglue <- function(dataset, type, region){
+plot_gwasglue <- function(dataset, type, title){
   
   if(type == "manhattan"){
     ntraits <- getLength(dataset)
@@ -102,7 +107,7 @@ plot_gwasglue <- function(dataset, type, region){
         plot(dataset@summary_sets[[i]]@ss$position, -log10(dataset@summary_sets[[i]]@ss$p), main = "", xlab = "position", ylab = "-log10(p-value)", cex=0.8, pch=20)
         mtext(dataset@summary_sets[[i]]@metadata$trait, side = 3, line = 0.5)
       }
-    mtext(as.expression(bquote(bold(.(region)))),                  
+    mtext(as.expression(bquote(bold(.(title)))),
           side = 3,
           line = - 2.5,
           outer = TRUE,

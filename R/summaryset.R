@@ -64,6 +64,7 @@ setMethod("setMetadata", "SummarySet",
             }
             return(object)
           })
+          
 
 setGeneric("getMetadata", function(object) standardGeneric("getMetadata"))
 setMethod("getMetadata", "SummarySet",
@@ -75,6 +76,35 @@ setMethod("getSource", "SummarySet",
           function(object) {
             return(object@source)
           })
+
+# Set method to create an internal id
+setGeneric("setVariantid", function(object) standardGeneric("setVariantid"))
+setMethod("setVariantid", "SummarySet", function(object) {
+  sumstats <- getSummaryData(object)
+  nvariants <- dim(sumstats)[1] 
+  variantid <- lapply(1:nvariants, function(i){
+    x <- sort(c(sumstats[i,]$ea,sumstats[i,]$nea))
+    if (nchar(x[1]) > 10 || nchar(x[2]) <= 10){
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_",x[2]) 
+    }
+    if (nchar(x[1]) <= 10 || nchar(x[2]) > 10){
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_",x[1],"_#",digest::digest(x[2],algo= "murmur32")) 
+    }
+    if (nchar(x[1]) > 10 || nchar(x[2]) > 10){
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_#",digest::digest(x[2],algo= "murmur32")) 
+    } else {
+      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_",x[1],"_",x[2]) 
+    }
+  }) 
+
+  object@ss[,"variantid"] <- unlist(variantid)
+  return(object)
+})
+ 
+
+
+
+
 
 # Set and get methods for RSID
 setGeneric("setRSID",function(object,variants) standardGeneric("setRSID"))
