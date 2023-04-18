@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = TRUE
+  eval = FALSE
 )
 ```
 
@@ -31,36 +31,23 @@ remotes::install_github('ritarasteiro/susieR')
 ```
 
 ```{r setup}
-library(gwasglue2)
+#library(gwasglue2)
+devtools::load_all("../") # this was added just for development
 library(susieR)     # fork that takes Summaryset
 library(hyprcoloc)  # fork that takes Dataset
-devtools::load_all("../") # this was added just for development
+
 ```
 
 ### HMGCR gene
-We'll analyse the following IDs (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region. 
+We'll analyse the following traits (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region. 
 
 First we will set the path to where the reference population plink files are located to build the LD matrix.
 
 ```{r}
 ld_ref <- "/project/data/reference/ld/EUR"
-#ld_ref <- "../data/ld/EUR"
 ```
 
-
-We will start by performing a meta-analysis for the `chd` trait, using the `ieu-a-7` and `ukb-d-I9_IHD` MRC IEU OpenGWAS study IDs.
-
-
-```{r eval= FALSE}
-# create gwasglue2 DataSet object (hmgcr)
-hmgcr_chrpos <- "5:74132993-75132993"
-
-chd_dat <- createDataSet(traits=c("ieu-a-7", "ukb-d-I9_IHD"), variants = hmgcr_chrpos, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
-  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink") 
- 
-chd_meta <- meta_analyse(chd_dat, method="fixed")
-```
-
+Then we choose the data for each trait and set the IEU IDs. 
 
 
 
@@ -89,7 +76,7 @@ Before starting with the fine mapping and colocalisation analyses, we are going 
 ```{r fig.dim = c(8, 12)}
 # plot gwasglue2 DataSet object (hmgcr)
 
-plot_gwasglue(hmgcr, type="manhattan", region = "HMGCR")
+plot_gwasglue(hmgcr, type="manhattan", title = "HMGCR")
 
 ```
 
@@ -145,6 +132,15 @@ lpa_chrpos <- "6:160952515-161087407"
 
 Create dataset and harmonise trait against trait, trait against LD matrix (note that we are not saving the SummarySet objects separately, but filling them directly to the DataSet).
 
+```{r eval= FALSE}
+# create gwasglue2 DataSet object (hmgcr)
+pcsk9_chrpos <- "1:55005221-56005221"
+
+chd_dat <- createDataSet(traits=c("ieu-a-7", "ukb-d-I9_IHD"), variants = pcsk9_chrpos, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink") 
+ 
+chd_meta <- meta_analyse(chd_dat, method="fixed")
+```
 
 ```{r}
 # create gwasglue2 DataSet object (pcsk9)
@@ -158,7 +154,7 @@ Manhattan plots for each trait in the DataSet.
 ```{r fig.dim = c(8, 12)}
 # plot gwasglue2 DataSet object (pcsk9)
 
-plot_gwasglue(pcsk9, type="manhattan", region = "PCSK9")
+plot_gwasglue(pcsk9, type="manhattan", title = "PCSK9")
 
 
 ```
@@ -214,7 +210,7 @@ Manhattan plots for each trait in the DataSet.
 ```{r fig.dim = c(8, 12)}
 # plot gwasglue2 DataSet object (npc1l1)
 
-plot_gwasglue(npc1l1, type="manhattan", region ="NPC1L1")
+plot_gwasglue(npc1l1, type="manhattan", title ="NPC1L1")
 ```
 
 Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged 
@@ -267,7 +263,7 @@ Manhattan plots for each trait in the DataSet.
 ```{r fig.dim = c(8, 12)}
 # plot gwasglue2 DataSet object (lpa)
 
- plot_gwasglue(lpa, type="manhattan", region = "LPA")
+ plot_gwasglue(lpa, type="manhattan", title = "LPA")
 
 ```
 

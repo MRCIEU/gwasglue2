@@ -4,14 +4,14 @@
 \alias{plot_gwasglue}
 \title{Plot}
 \usage{
-plot_gwasglue(dataset, type, region)
+plot_gwasglue(dataset, type, title)
 }
 \arguments{
 \item{dataset}{gwasglue2 DataSet object}
 
 \item{type}{Type of plot (Only available "manhattan" plots at the moment)}
 
-\item{region}{Main title for the plot}
+\item{title}{Main title for the plot}
 }
 \value{
 A plot

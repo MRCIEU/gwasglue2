@@ -12,7 +12,7 @@ An S4 class to represent the Data Set
 \describe{
 \item{\code{summary_sets}}{A list of SummarySet objects (default NA).}
 
-\item{\code{overlap_SNPs}}{among all SummarySets}
+\item{\code{overlap_variants}}{among all SummarySets}
 
 \item{\code{is_resized}}{logical (default FALSE).}
 
@@ -27,6 +27,8 @@ An S4 class to represent the Data Set
 \item{\code{ambiguous_SNPs}}{A list of pairwise harmonising ouptput.}
 
 \item{\code{incompatible_alleles_SNPs}}{A list of pairwise harmonising ouptput.}
+
+\item{\code{ld_matrix}}{LD matrix buoild from reference population}
 
 \item{\code{is_harmonisedLD}}{logical (default FALSE).}
 

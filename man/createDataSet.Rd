@@ -11,13 +11,14 @@ createDataSet(
   source = "IEUopenGWAS",
   harmonise = TRUE,
   tolerance = 0.08,
-  action = 1
+  action = 1,
+  strand = "forward"
 )
 }
 \arguments{
 \item{traits}{ID of GWAS studies to query}
 
-\item{variants}{Array of SNPs rsids}
+\item{variants}{Array of variants rsids}
 
 \item{tools}{Array of methods that gwasglue2 is going to convert the summarySet to (eg. "mr")}
 
@@ -28,6 +29,8 @@ createDataSet(
 \item{tolerance}{Inherited from harmoniseData() (default 0.08)}
 
 \item{action}{Inherited from harmoniseData() (Default 1)}
+
+\item{strand}{dna strand orientation  (Default "forward", other option "reverse")}
 }
 \value{
 A harmonised gwasglue2 DataSet object
