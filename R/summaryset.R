@@ -30,7 +30,7 @@ setClass("SummarySet",
 
 #' SummarySet function
 #'
-#' @param ss GWASb summary statistics
+#' @param sumstats GWASb summary statistics
 #' @importFrom methods new
 #' @return A gwasglue2 SummarySet object.
 SummarySet <- function(sumstats) {
