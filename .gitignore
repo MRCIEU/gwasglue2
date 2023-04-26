@@ -7,3 +7,5 @@ inst/poc
 inst/s4_tutorials
 .dockerignore
 data/
+.vscode/launch.json
+.devcontainer/devcontainer.json

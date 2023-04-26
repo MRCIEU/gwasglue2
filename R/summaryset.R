@@ -30,19 +30,15 @@ setClass("SummarySet",
 
 #' SummarySet function
 #'
-#' @param ss It uses createSumset function to call ieugwasR and fill @slot ss
-#' @param traits ID of GWAS studies to query
-#' @param variants Array of SNPs rsids
-#' @param tools Array of methods that gwasglue2 ids going to convert the summarySet to (eg. "mr") 
+#' @param ss GWASb summary statistics
 #' @importFrom methods new
 #' @return A gwasglue2 SummarySet object.
-SummarySet <- function(ss, traits, variants, tools) {
+SummarySet <- function(sumstats) {
   new("SummarySet",
-   ss = createSumset(traits = traits, variants = variants),
-    tools = tools,
-    variants = variants
+    ss = sumstats
   )
 }
+
 
 # Get Methods for summary set data (similar in Dataset class)
 setGeneric("getSummaryData", function(object) standardGeneric("getSummaryData"))
@@ -52,12 +48,12 @@ setMethod("getSummaryData", "SummarySet",
           })
 # Set and get methods for Metadata and Source
 # (for now Metadata needs to be in data.frame format: same as ieugwasr::gwasinfo)
-setGeneric("setMetadata", function(object, metadata, source, traits) standardGeneric("setMetadata"))
+setGeneric("setMetadata", function(object, metadata, source, id) standardGeneric("setMetadata"))
 setMethod("setMetadata", "SummarySet",
-          function(object, metadata, source,traits) {
+          function(object, metadata, source,id) {
             object@source <- source
             if (source == "IEUopenGWAS"){
-              object@metadata <- as.data.frame(ieugwasr::gwasinfo(traits))
+              object@metadata <- as.data.frame(ieugwasr::gwasinfo(id))
             }
             else{
               object@metadata <- as.data.frame(metadata)
@@ -85,15 +81,15 @@ setMethod("setVariantid", "SummarySet", function(object) {
   variantid <- lapply(1:nvariants, function(i){
     x <- sort(c(sumstats[i,]$ea,sumstats[i,]$nea))
     if (nchar(x[1]) > 10 || nchar(x[2]) <= 10){
-      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_",x[2]) 
+      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_",x[2]) 
     }
     if (nchar(x[1]) <= 10 || nchar(x[2]) > 10){
-      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_",x[1],"_#",digest::digest(x[2],algo= "murmur32")) 
+      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_",x[1],"_#",digest::digest(x[2],algo= "murmur32")) 
     }
     if (nchar(x[1]) > 10 || nchar(x[2]) > 10){
-      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_#",digest::digest(x[2],algo= "murmur32")) 
+      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_#",digest::digest(x[2],algo= "murmur32")) 
     } else {
-      id <- paste0(sumstats[i,]$chr,"_", sumstats[i,]$position,"_",x[1],"_",x[2]) 
+      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_",x[1],"_",x[2]) 
     }
   }) 
 
@@ -156,22 +152,6 @@ setMethod("getMRlabel","SummarySet",
           }
 )
 
-#
-# # Set and get methods for Trait
-# setGeneric("setTrait",function(object,traits) standardGeneric("setTrait"))
-# setMethod( "setTrait", "SummarySet",
-#            function(object,traits) {
-#              object@traits <- unique(traits)
-#              return(object)
-#            }
-# )
-#
-# setGeneric("getTrait",function(object) standardGeneric("getTrait"))
-# setMethod("getTrait","SummarySet",
-#           function(object) {
-#             return(object@traits)
-#           }
-# )
 
 
 

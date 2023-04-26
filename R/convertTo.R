@@ -26,14 +26,14 @@ setMethod("convertForTwoSampleMR", "DataSet", function(object) {
       !is.na(object@summary_sets[[i]]@ss$SNP)
     # Exposure
     if (object@summary_sets[[i]]@mr_label == "exposure"){
-      c <-which(colnames(object@summary_sets[[i]]@ss) != c("SNP","mr_keep"))
+      c <- colnames(object@summary_sets[[i]]@ss) %ni% c("SNP","mr_keep")
       colnames(object@summary_sets[[i]]@ss)[c] <- paste0(colnames(object@summary_sets[[i]]@ss)[c], ".exposure")
       #  add extra column named "exposure"
       object@summary_sets[[i]]@ss$exposure <- "exposure" #TODO change how to fill this column?
     }
     # Outcome
     if (object@summary_sets[[i]]@mr_label == "outcome"){
-      c <-which(colnames(object@summary_sets[[i]]@ss) != c("SNP","mr_keep"))
+      c <- colnames(object@summary_sets[[i]]@ss) %ni% c("SNP","mr_keep")
       colnames(object@summary_sets[[i]]@ss)[c] <- paste0(colnames(object@summary_sets[[i]]@ss)[c], ".outcome")
       #  add extra column named "outcome"
       object@summary_sets[[i]]@ss$outcome <- "outcome"
@@ -44,6 +44,3 @@ setMethod("convertForTwoSampleMR", "DataSet", function(object) {
   return(object)
 }
 )
-
-
-
