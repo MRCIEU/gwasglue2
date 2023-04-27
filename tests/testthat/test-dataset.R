@@ -1,13 +1,18 @@
-skip("pipeline changed")
+
 x <- ieugwasr::tophits("ieu-a-2")$rsid
-sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
-sumset2 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")
+d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
+d2 <- ieugwasr::associations(variants = x, id = "ieu-a-7")
+sumset1 <- constructSummarySet(d1, tools = "mr", source = "IEUopenGWAS", id = "ieu-a-2")
+sumset2 <- constructSummarySet(d2, tools ="mr", source = "IEUopenGWAS", id = "ieu-a-7")
+
+
+
 
 test_that("compare against 2samplemr", {
  
   dataset <- DataSet(sumset1,sumset2) %>%
-    overlapSNP(.) %>%
-    harmoniseData(.,tolerance = 0.08, action = 1)
+    overlapVariants(.) %>%
+    harmoniseData(.,tolerance = 0.08, action = 1,strand = "forward")
   dataset
   expect_equal(length(dataset@summary_sets), 2)
 })
