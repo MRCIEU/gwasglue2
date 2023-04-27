@@ -44,7 +44,8 @@ We'll analyse the following traits (chd - cardiac heart disease; ldl - low-densi
 First we will set the path to where the reference population plink files are located to build the LD matrix.
 
 ```{r}
-ld_ref <- "/project/data/reference/ld/EUR"
+#ld_ref <- "/project/data/reference/ld/EUR"
+ld_ref <- "../data/ld/EUR"
 ```
 
 Then we choose the data for each trait and set the IEU IDs. 
@@ -65,9 +66,16 @@ ids <- c(chd_id, ldl_id, hdl_id, trig_id, t2d_id)
 Create a gwasglue 2 DataSet object  and harmonise trait against trait, trait against LD matrix
 
 ```{r}
-# create gwasglue2 DataSet object (hmgcr)
+
+# Get GWAS summary statistics
 hmgcr_chrpos <- "5:74132993-75132993"
-hmgcr <- createDataSet(traits=ids, variants = hmgcr_chrpos, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+hmgcr_data <- lapply(seq_along(ids), function(i){
+    s <- ieugwasr::associations(variants = hmgcr_chrpos, id = ids[i])
+})
+
+
+# create gwasglue2 DataSet object (hmgcr)
+hmgcr <- createDataSet(hmgcr_data,ids=ids, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1,strand= "forward") %>% 
   harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink") 
 ```
 
