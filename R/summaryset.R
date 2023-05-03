@@ -30,7 +30,7 @@ setClass("SummarySet",
 
 #' SummarySet function
 #'
-#' @param sumstats GWASb summary statistics
+#' @param sumstats GWAS summary statistics
 #' @importFrom methods new
 #' @return A gwasglue2 SummarySet object.
 SummarySet <- function(sumstats) {
@@ -39,30 +39,48 @@ SummarySet <- function(sumstats) {
   )
 }
 
-
-# Get Methods for summary set data (similar in Dataset class)
+#' Get Method to retrieve the GWAS Summary Statistics  from the SummarySet 
+#'
+#' @param object A SummarySet  S4 object
+#' @return A tibble with GWAS summary statistics
+#' @export
+#' @docType methods
+#' @rdname getSummaryData-methods
 setGeneric("getSummaryData", function(object) standardGeneric("getSummaryData"))
+#' @rdname getSummaryData-methods
 setMethod("getSummaryData", "SummarySet",
           function(object) {
             return(object@ss)
+
           })
 # Set and get methods for Metadata and Source
-# (for now Metadata needs to be in data.frame format: same as ieugwasr::gwasinfo)
-setGeneric("setMetadata", function(object, metadata, source, id) standardGeneric("setMetadata"))
+
+
+#' Set Method to store metadata in the SummarySet 
+#'
+#' @param object A SummarySet  S4 object
+#' @param metadata A dataframe with metadata information
+#' @return A  SummarySet  S4 object with slot metadata stored
+#' @export
+#' @docType methods
+#' @rdname setMetadata-methods
+setGeneric("setMetadata", function(object, metadata) standardGeneric("setMetadata"))
+#' @rdname setMetadata-methods
 setMethod("setMetadata", "SummarySet",
-          function(object, metadata, source,id) {
-            object@source <- source
-            if (source == "IEUopenGWAS"){
-              object@metadata <- as.data.frame(ieugwasr::gwasinfo(id))
-            }
-            else{
-              object@metadata <- as.data.frame(metadata)
-            }
+          function(object,metadata) {
+            object@metadata <- as.data.frame(metadata)
             return(object)
           })
           
-
+#' Get Method to retrieve the metadata stored in the SummarySet 
+#'
+#' @param object A SummarySet  S4 object
+#' @return The metadata
+#' @export
+#' @docType methods
+#' @rdname getMetadata-methods
 setGeneric("getMetadata", function(object) standardGeneric("getMetadata"))
+#' @rdname getMetadata-methods
 setMethod("getMetadata", "SummarySet",
           function(object) {
             return(object@metadata)
@@ -73,8 +91,15 @@ setMethod("getSource", "SummarySet",
             return(object@source)
           })
 
-# Set method to create an internal id
+#' Set Method to create an internal Variant ID for the SummarySet 
+#'
+#' @param object A SummarySet  S4 object
+#' @return A extra '"variantid"' column in the  slot @ss
+#' @export
+#' @docType methods
+#' @rdname setVariantid-methods
 setGeneric("setVariantid", function(object) standardGeneric("setVariantid"))
+#' @rdname setVariantid-methods
 setMethod("setVariantid", "SummarySet", function(object) {
   sumstats <- getSummaryData(object)
   nvariants <- dim(sumstats)[1] 
