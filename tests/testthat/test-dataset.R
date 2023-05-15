@@ -1,18 +1,21 @@
+library(dplyr)
+library(ieugwasr)
 
 x <- ieugwasr::tophits("ieu-a-2")$rsid
 d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
 d2 <- ieugwasr::associations(variants = x, id = "ieu-a-7")
-sumset1 <- constructSummarySet(d1, tools = "mr", source = "IEUopenGWAS", id = "ieu-a-2")
-sumset2 <- constructSummarySet(d2, tools ="mr", source = "IEUopenGWAS", id = "ieu-a-7")
-
-
-
-
-test_that("compare against 2samplemr", {
+data <-list (d1,d2)
  
-  dataset <- DataSet(sumset1,sumset2) %>%
-    overlapVariants(.) %>%
-    harmoniseData(.,tolerance = 0.08, action = 1,strand = "forward")
+meta1 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-2"))
+meta2 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-7"))
+meta <- list(meta1,meta2)
+
+
+
+
+
+test_that("compare against 2samplemr", { 
+dataset <- create_dataset(data, metadata = meta, tools = c("mr"), harmonise = TRUE, tolerance = 0.08, action = 1)
   dataset
   expect_equal(length(dataset@summary_sets), 2)
 })

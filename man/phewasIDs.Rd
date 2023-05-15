@@ -9,9 +9,9 @@ phewasIDs(variants, batch, pval)
 \arguments{
 \item{variants}{Array of variants}
 
-\item{batch}{Vector of batch IDs to search across. If \code{c()} (default) then returns all batches. Iherited fromieugwasr::phewas}
+\item{batch}{Vector of batch IDs to search across. If \code{c()} (default) then returns all batches. Iherited fromieugwasr::phewas  # nolint: line_length_linter.}
 
-\item{pval}{p-value threshold. Default = \code{0.00001}. Iherited from ieugwasr::phewas}
+\item{pval}{p-value threshold. Default = \code{0.00001}. Inherited from ieugwasr::phewas # nolint: line_length_linter.}
 }
 \value{
 id_list Array with traits ids

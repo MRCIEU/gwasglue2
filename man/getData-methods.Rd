@@ -4,20 +4,23 @@
 \name{getData}
 \alias{getData}
 \alias{getData,DataSet-method}
-\title{Get Methods for summaryset tibble (similar in Summaryset class)}
+\title{Get Method to retrieve the GWAS Summary Statistics}
 \usage{
 getData(object, index)
 
 \S4method{getData}{DataSet}(object, index)
 }
 \arguments{
-\item{object}{A DataSet S4 object}
+\item{object}{A gwasglue2 DataSet object}
 
-\item{index}{index of SummarySet within DataSet}
+\item{index}{Index of gwasglue2 SummarySet objects within DataSet}
 }
 \value{
-summaryset tibble
+A tibble with GWAS summary statistics
 }
 \description{
-Get Methods for summaryset tibble (similar in Summaryset class)
+Get Method to retrieve the GWAS Summary Statistics
+}
+\seealso{
+Similar to \code{\link[=getSummaryData]{getSummaryData()}}
 }

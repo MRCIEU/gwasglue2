@@ -7,7 +7,7 @@
 SummarySet(sumstats)
 }
 \arguments{
-\item{sumstats}{GWASb summary statistics}
+\item{sumstats}{GWAS summary statistics}
 }
 \value{
 A gwasglue2 SummarySet object.

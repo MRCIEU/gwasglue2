@@ -7,7 +7,7 @@
 DataSet(...)
 }
 \arguments{
-\item{...}{Array of SummarySet object names.}
+\item{...}{Array of gwasglue2 SummarySet object names.}
 }
 \value{
 A gwasglue2 DataSet object

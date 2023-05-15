@@ -2,7 +2,8 @@
 % Please edit documentation in R/constructors.R
 \name{createSumset}
 \alias{createSumset}
-\title{A function to call the summary statistics associated with specific traits and variants chosen}
+\title{A function to call the summary statistics associated
+with specific traits and variants chosen}
 \usage{
 createSumset(traits, variants)
 }
@@ -15,5 +16,6 @@ createSumset(traits, variants)
 A tibble with the summary statistics for variant association.
 }
 \description{
-A function to call the summary statistics associated with specific traits and variants chosen
+A function to call the summary statistics associated
+with specific traits and variants chosen
 }

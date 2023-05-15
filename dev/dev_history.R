@@ -7,12 +7,13 @@ load_all()
 
 # Checks
 devtools::check()
-devtools::document()
+devtools::document() # update namespace, etc
 pkgdown::build_site()
 
 
 
 roxygen2::update_collate(".")
+
 
 
 
@@ -31,6 +32,9 @@ usethis::use_git_ignore("data/")
 
 
 usethis::use_news_md()
+
+# debug vignettes
+build_vignettes(quiet=TRUE)
 
 
 # ********************************************************

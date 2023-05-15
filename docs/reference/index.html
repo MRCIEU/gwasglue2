@@ -89,19 +89,20 @@
         <dd>A function to clump the top hit variants</dd>
       </dl><dl><dt>
           
-          <code><a href="constructSummarySet.html">constructSummarySet()</a></code> 
+          <code><a href="createSumset.html">createSumset()</a></code> 
         </dt>
-        <dd>A function to create a gwasglue2 SummarySet object</dd>
+        <dd>A function to call the summary statistics associated
+with specific traits and variants chosen</dd>
       </dl><dl><dt>
           
-          <code><a href="createDataSet.html">createDataSet()</a></code> 
+          <code><a href="create_dataset.html">create_dataset()</a></code> 
         </dt>
         <dd>Creates a DataSet object and harmonise data against data</dd>
       </dl><dl><dt>
           
-          <code><a href="createSumset.html">createSumset()</a></code> 
+          <code><a href="create_metadata.html">create_metadata()</a></code> 
         </dt>
-        <dd>A function to call the summary statistics associated with specific traits and variants chosen</dd>
+        <dd>Reads metadata and converts it to gwasglue2 format</dd>
       </dl><dl><dt>
           
           <code><a href="create_summary_set_from_lbf.html">create_summary_set_from_lbf()</a></code> 
@@ -109,22 +110,67 @@
         <dd>Create SummarySet from log Bayes Factor</dd>
       </dl><dl><dt>
           
+          <code><a href="create_summaryset.html">create_summaryset()</a></code> 
+        </dt>
+        <dd>A function to create a gwasglue2 SummarySet object</dd>
+      </dl><dl><dt>
+          
           <code><a href="dataset_to_hyprcoloc.html">dataset_to_hyprcoloc()</a></code> 
         </dt>
         <dd>DataSet to hyprcoloc</dd>
       </dl><dl><dt>
           
+          <code><a href="dimData-methods.html">dimData()</a></code> 
+        </dt>
+        <dd>Dimensions of the GWAS Summary Statistics data</dd>
+      </dl><dl><dt>
+          
           <code><a href="getData-methods.html">getData()</a></code> 
         </dt>
-        <dd>Get Methods for summaryset tibble (similar in Summaryset class)</dd>
+        <dd>Get Method to retrieve the GWAS Summary Statistics</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getLength-methods.html">getLength()</a></code> 
+        </dt>
+        <dd>Size of the DataSet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getMRlabel-methods.html">getMRlabel()</a></code> 
+        </dt>
+        <dd>Get Method to retrieve the Mendelian randomization (MR) label linked to the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getMetadata-methods.html">getMetadata()</a></code> 
+        </dt>
+        <dd>Get Method to retrieve the metadata stored in the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getRSID-methods.html">getRSID()</a></code> 
+        </dt>
+        <dd>Get Method to retrieve RSID/variants stored in the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getSummaryData-methods.html">getSummaryData()</a></code> 
+        </dt>
+        <dd>Get Method to retrieve the GWAS Summary Statistics  from the SummarySet</dd>
       </dl><dl><dt>
           
           <code><a href="getSummarySet-methods.html">getSummarySet()</a></code> 
         </dt>
-        <dd>Get Methods for SummarySet</dd>
+        <dd>Get Method to retrieve the gwasglue2 SummarySet object</dd>
       </dl><dl><dt>
           
-          <code><a href="harmoniseData.html">harmoniseData()</a></code> 
+          <code><a href="getTool-methods.html">getTool()</a></code> 
+        </dt>
+        <dd>Get Method to retrieve the tools stored in the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getVariants-methods.html">getVariants()</a></code> 
+        </dt>
+        <dd>Get Method to retrieve RSID/variants stored in the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="harmoniseData-methods.html">harmoniseData()</a></code> 
         </dt>
         <dd>Harmonise the alleles and effects between two summary sets</dd>
       </dl><dl><dt>
@@ -144,6 +190,11 @@
         <dd>Merge Datasets</dd>
       </dl><dl><dt>
           
+          <code><a href="overlapVariants-methods.html">overlapVariants()</a></code> 
+        </dt>
+        <dd>Look for overlapped variants between SummarySets in the DataSet and Resize</dd>
+      </dl><dl><dt>
+          
           <code><a href="phewasIDs.html">phewasIDs()</a></code> 
         </dt>
         <dd>PHEWAS_ids</dd>
@@ -152,6 +203,36 @@
           <code><a href="plot_gwasglue.html">plot_gwasglue()</a></code> 
         </dt>
         <dd>Plot</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setMRlabel-methods.html">setMRlabel()</a></code> 
+        </dt>
+        <dd>Set Method to store the Mendelian randomization (MR) label in the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setMetadata-methods.html">setMetadata()</a></code> 
+        </dt>
+        <dd>Set Method to store metadata in the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setRSID-methods.html">setRSID()</a></code> 
+        </dt>
+        <dd>Set Method to store RSID/variants in the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setTool-methods.html">setTool()</a></code> 
+        </dt>
+        <dd>Set Method to store the tools that gwasglue2 is going to convert the SummarySet to</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setVariantid-methods.html">setVariantid()</a></code> 
+        </dt>
+        <dd>Set Method to create an internal Variant ID for the SummarySet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setVariants-methods.html">setVariants()</a></code> 
+        </dt>
+        <dd>Set Method to store RSID/variants in the SummarySet</dd>
       </dl><dl><dt>
           
           <code><a href="susie_to_dataset.html">susie_to_dataset()</a></code> 

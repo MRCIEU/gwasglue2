@@ -50,13 +50,21 @@ x <- ieugwasr::tophits("ieu-a-2")$rsid
 d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
 d2 <- ieugwasr::associations(variants = x, id = "ieu-a-7")
 ```
+
+Obtain the metadata and create a metadata object
+
+```{r}
+m1 <- ieugwasr::gwasinfo( "ieu-a-2")
+m2 <- ieugwasr::gwasinfo( "ieu-a-7")
+meta1 <-create_metadata(m1)
+meta2 <-create_metadata(m2)
+
+```
 Construct the Summary Sets and set the tool and metadata (it uses ieugwasr::gwasinfo() with the source and id arguments)
 
 ```{r}
-sumset1 <- constructSummarySet(d1, tools = "mr", source = "IEUopenGWAS", id = "ieu-a-2")
-sumset1
-sumset2 <- constructSummarySet(d2, tools ="mr", source = "IEUopenGWAS", id = "ieu-a-7")
-sumset2
+sumset1 <- create_summaryset(d1, metadata=meta1, tools = "mr")
+sumset2 <- create_summaryset(d2, metadata=meta2, tools ="mr")
 
 ```
 
@@ -84,8 +92,8 @@ Create the DataSet object
 
 ```{r}
 dataset <- DataSet(sumset1,sumset2) %>%
-  overlapVariants(.) %>%
-  harmoniseData(.,tolerance = 0.08, action = 1, strand = "forward")
+  overlapVariants(., strand = "forward") %>%
+  harmoniseData(.,tolerance = 0.08, action = 1)
 ```
 
 Convert dataset to TwoSampleMR format
@@ -123,8 +131,8 @@ id_list <- ieugwasr::phewas(pval = 5e-6, variants=genomicrange, batch="ukb-a")$i
 First we will set the path to where the reference population plink files are located to build the LD matrix.
 
 ```{r}
-ld_ref <- "/project/data/reference/ld/EUR"
-#ld_ref <- "../data/ld/EUR"
+#ld_ref <- "/project/data/reference/ld/EUR"
+ld_ref <- "data/ld/EUR"
 ```
 
 and then obtain the data
@@ -135,9 +143,14 @@ data <- lapply(seq_along(id_list), function(i){
     s <- ieugwasr::associations(variants = genomicrange, id = id_list[i])
 })
 
+# get metadata and create metadata objects
+metadata <- lapply(seq_along(id_list), function(i){
+  m <- create_metadata(ieugwasr::gwasinfo(id_list[i])) 
+})
+
 
 # create gwasglue2 DataSet object 
-  dataset <- createDataSet(data, ids=id_list, tools = c("finemap","coloc"), source = "IEUopenGWAS", harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+  dataset <- create_dataset(data, metadata = metadata, tools = c("finemap","coloc"), harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
   harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink")
 ```
 
@@ -187,7 +200,6 @@ Try hyprcoloc with marginalised datasets
 
 res_dataset_marginalised <- hyprcoloc(dataset = dataset_marginalised)
 print(res_dataset_marginalised)
+```
 
-
-**NOTE:** In this example there was no colocalisation. In tutorial 2, we tried to do a meta analysis  to see if we improve our results.
-   
+**NOTE:** In this example there was no colocalisation. 
