@@ -151,16 +151,16 @@ create_summaryset <- function (data = tibble(),
     metadata = create_metadata()
   }
   # checks on metadata using data info
-  if (is.na(metadata$id)){ 
+  if ("id" %in% colnames(metadata) && "id" %in% colnames(data) && is.na(metadata$id)){ 
     metadata$id <- unique(data$id)
     }
-  if (is.na(metadata$sample_size) && !all(is.na(data$n))){
+  if ("sample_size" %in% colnames(metadata) && "n" %in% colnames(data) && is.na(metadata$sample_size) && !all(is.na(data$n))){
     metadata$sample_size <- max(data$n, na.rm = TRUE)
     }
-  if (is.na(metadata$nsnp)){ 
+  if ("nsnp" %in% colnames(metadata) && is.na(metadata$nsnp)){ 
     metadata$nsnp <- dim(data)[1]
     }
-  if (is.na(metadata$trait)){ 
+  if ("trait" %in% colnames(metadata) && "trait" %in% colnames(data) && is.na(metadata$trait)){ 
     metadata$trait <- unique(data$trait)
     }
 
@@ -212,11 +212,12 @@ standardise <- function(d)
 #' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"`.
 #' @param id_col The default is `"id"`.
 #' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"`
+#' @param ... Other columns
 #' @seealso [create_metadata()] to create a metadata object
 #' @return A harmonised gwasglue2 DataSet object
 #' @export
 create_dataset <- function(data = list(),
-                          metadata = list(NULL),
+                          metadata = NULL,
                           tools = NULL,
                           harmonise = TRUE,
                           tolerance = 0.08,
@@ -233,9 +234,13 @@ create_dataset <- function(data = list(),
                           other_allele_col = "nea",
                           eaf_col = "eaf",
                           id_col = "id",
-                          trait_col = "trait") {
+                          trait_col = "trait",
+                          ...) {
 
   ds <- DataSet()
+  if (is.null(metadata)){
+    metadata = vector("list", length(data))
+  }
   for (i in seq_along(data)){
     s <- create_summaryset(data= data[[i]],
         metadata = metadata[[i]],

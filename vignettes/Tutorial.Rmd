@@ -104,7 +104,7 @@ dataset_mr <- convertForTwoSampleMR(dataset)
 
 Perform the MR analysis
 ```{r}
-mr_result <-  merge(dataset_mr@summary_sets[[1]]@ss,dataset_mr@summary_sets[[2]]@ss, by = c("SNP", "mr_keep"))  %>%
+mr_result <-  merge(getData(dataset_mr,1),getData(dataset_mr,2), by = c("SNP", "mr_keep"))  %>%
   TwoSampleMR::mr(., method_list="mr_ivw")
 
 mr_result
