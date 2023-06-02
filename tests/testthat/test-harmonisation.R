@@ -12,7 +12,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -37,7 +37,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -64,7 +64,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -94,7 +94,7 @@ lapply(seq_along(ids), function(i) {
 # df <- lapply(seq_along(ids), function(i) {
 #   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-# dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 2)
+# dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 2)
 
 
 # result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -120,7 +120,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 2)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 2)
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
   d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
@@ -143,7 +143,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -167,7 +167,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -191,7 +191,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -215,7 +215,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -239,7 +239,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -263,7 +263,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
   d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
@@ -287,7 +287,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
@@ -313,7 +313,7 @@ ids <- 1:2
 df <- lapply(seq_along(ids), function(i) {
   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
 
-dataset <- create_dataset(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
 
 
 result <- lapply(seq_along(dataset@summary_sets), function(i) {
