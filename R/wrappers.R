@@ -63,6 +63,9 @@ lbf_to_z_cont <- function(lbf, n, af, prior_v = 50){
 #' @export
 #' 
 create_summary_set_from_lbf <- function(summaryset, lbf, L){
+  if (is.null(getMetadata(summaryset)$sample_size) || is.na(getMetadata(summaryset)$sample_size)){
+      stop("No sample size information in metadata for this SummarySet. More details on how to add to metadata in 'help(gwasglue2::create_metadata)' and 'help(gwasglue2::getMetadata)'." )
+  }
   af <- summaryset@ss$eaf
   n <- summaryset@metadata$sample_size
   

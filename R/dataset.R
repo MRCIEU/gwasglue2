@@ -65,7 +65,7 @@ setClass("DataSet",
 #' @return  A gwasglue2 DataSet object
 #' @export 
 DataSet <- function(...) {
-  new("DataSet", summary_sets = list(...))
+  new("DataSet", summary_sets = as.list(...))
 }
 
 
