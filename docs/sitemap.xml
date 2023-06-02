@@ -22,6 +22,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/meta.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -56,6 +59,12 @@
   </url>
   <url>
     <loc>/reference/create_dataset.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_dataset_from_tibble.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_meta_summaryset.html</loc>
   </url>
   <url>
     <loc>/reference/create_metadata.html</loc>

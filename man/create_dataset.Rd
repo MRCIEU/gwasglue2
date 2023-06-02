@@ -2,78 +2,35 @@
 % Please edit documentation in R/constructors.R
 \name{create_dataset}
 \alias{create_dataset}
-\title{Creates a DataSet object and harmonise data against data}
+\title{Creates a DataSet object using gwasglue2 SummarySet objects, and harmonise data against data}
 \usage{
 create_dataset(
   data = list(),
-  metadata = NULL,
-  tools = NULL,
   harmonise = TRUE,
   tolerance = 0.08,
   action = 1,
-  strand = "forward",
-  beta_col = "beta",
-  se_col = "se",
-  samplesize_col = "n",
-  pvalue_col = "p",
-  chr_col = "chr",
-  position_col = "position",
-  rsid_col = "rsid",
-  effect_allele_col = "ea",
-  other_allele_col = "nea",
-  eaf_col = "eaf",
-  id_col = "id",
-  trait_col = "trait",
-  ...
+  strand = "forward"
 )
 }
 \arguments{
 \item{data}{A list of gwasglue2 SummarySet objects}
 
-\item{metadata}{A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset.}
-
-\item{tools}{Array of methods that gwasglue2 is going to convert the summarySet to (eg. "mr")}
-
 \item{harmonise}{logical (default TRUE). It harmonises the summary sets in the DataSet against each other.}
 
 \item{tolerance}{Inherited from harmoniseData() (default 0.08)}
 
-\item{action}{Inherited from harmoniseData() (Default 1)}
+\item{action}{Inherited from harmoniseData() (Default 1)
+\itemize{
+\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+\item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+}}
 
 \item{strand}{dna strand orientation  (Default "forward", other option "reverse")}
-
-\item{beta_col}{Name of column with effect sizes. The default is \code{"beta"}.}
-
-\item{se_col}{Name of column with standard errors. The default is \code{"se"}.}
-
-\item{samplesize_col}{Column name for sample size. The default is \code{"n"}.}
-
-\item{pvalue_col}{Name of column with p-value. The default is \code{"p"}.}
-
-\item{chr_col}{Column name for chromosome . The default is \code{"chr"}.}
-
-\item{position_col}{Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is \code{"position"}.}
-
-\item{rsid_col}{Required name of column with variants rs IDs. The default is \code{"rsid"}.}
-
-\item{effect_allele_col}{Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is \code{"ea"}.}
-
-\item{other_allele_col}{Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is \verb{"nea}.}
-
-\item{eaf_col}{Name of column with effect allele frequency. The default is \code{"eaf"}.}
-
-\item{id_col}{The default is \code{"id"}.}
-
-\item{trait_col}{Column name for the column with phenotype name corresponding the the variant. The default is \code{"trait"}}
-
-\item{...}{Other columns}
 }
 \value{
 A harmonised gwasglue2 DataSet object
 }
 \description{
-Creates a DataSet object and harmonise data against data
-}
-\seealso{
-\code{\link[=create_metadata]{create_metadata()}} to create a metadata object
+Creates a DataSet object using gwasglue2 SummarySet objects, and harmonise data against data
 }

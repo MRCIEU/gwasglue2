@@ -2,7 +2,7 @@
 % Please edit documentation in R/constructors.R
 \name{create_metadata}
 \alias{create_metadata}
-\title{Reads metadata and converts it to gwasglue2 format}
+\title{Metadata object}
 \usage{
 create_metadata(
   metadata = NULL,
@@ -20,7 +20,7 @@ create_metadata(
 )
 }
 \arguments{
-\item{metadata}{A dataframe with metadata information.}
+\item{metadata}{A dataframe with metadata information. Not required.}
 
 \item{id}{GWAS study ID.}
 
@@ -48,5 +48,5 @@ create_metadata(
 A metadata list.
 }
 \description{
-Reads metadata and converts it to gwasglue2 format
+Reads metadata and converts it to gwasglue2 format.
 }
