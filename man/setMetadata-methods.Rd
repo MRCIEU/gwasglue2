@@ -6,12 +6,12 @@
 \alias{setMetadata,SummarySet-method}
 \title{Set Method to store metadata in the SummarySet}
 \usage{
-setMetadata(object, metadata)
+setMetadata(summary_set, metadata)
 
-\S4method{setMetadata}{SummarySet}(object, metadata)
+\S4method{setMetadata}{SummarySet}(summary_set, metadata)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object.}
+\item{summary_set}{A gwasglue2 SummarySet object.}
 
 \item{metadata}{A dataframe with metadata information}
 }

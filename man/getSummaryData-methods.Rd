@@ -6,12 +6,12 @@
 \alias{getSummaryData,SummarySet-method}
 \title{Get Method to retrieve the GWAS Summary Statistics  from the SummarySet}
 \usage{
-getSummaryData(object)
+getSummaryData(summary_set)
 
-\S4method{getSummaryData}{SummarySet}(object)
+\S4method{getSummaryData}{SummarySet}(summary_set)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object.}
+\item{summary_set}{A gwasglue2 SummarySet object.}
 }
 \value{
 A tibble with GWAS summary statistics

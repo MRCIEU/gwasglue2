@@ -6,12 +6,12 @@
 \alias{setMRlabel,SummarySet-method}
 \title{Set Method to store the Mendelian randomization (MR) label in the SummarySet}
 \usage{
-setMRlabel(object, mr_label)
+setMRlabel(summary_set, mr_label)
 
-\S4method{setMRlabel}{SummarySet}(object, mr_label)
+\S4method{setMRlabel}{SummarySet}(summary_set, mr_label)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object}
+\item{summary_set}{A gwasglue2 SummarySet object}
 
 \item{mr_label}{MR label for SummarySet. It can be either \code{"exposure"} or \code{"outcome"}}
 }

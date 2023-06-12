@@ -16,7 +16,7 @@ test_that("twosamplemr gives the same as gwasglue2", {
   #  create dataset and convert it to mr format
   dataset <- lapply(seq_along(ids), function(i){
     # create summarysets
-    dt <- create_summaryset(ieugwasr::associations(variants = x, id =ids[i]), metadata=metadata[i])   %>% 
+    dt <- create_summaryset(ieugwasr::associations(variants = x, id =ids[i]), metadata=metadata[[i]])   %>% 
       setMRlabel(., mr_label = mr_labels[i])
   }) %>%
     # create dataset

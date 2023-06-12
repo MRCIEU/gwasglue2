@@ -6,12 +6,12 @@
 \alias{dimData,SummarySet-method}
 \title{Dimensions of the GWAS Summary Statistics data}
 \usage{
-dimData(object)
+dimData(summary_set)
 
-\S4method{dimData}{SummarySet}(object)
+\S4method{dimData}{SummarySet}(summary_set)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object}
+\item{summary_set}{A gwasglue2 SummarySet object}
 }
 \value{
 The dimensions of the GWAS Summary Statistics data

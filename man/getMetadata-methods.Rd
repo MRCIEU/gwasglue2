@@ -6,12 +6,12 @@
 \alias{getMetadata,SummarySet-method}
 \title{Get Method to retrieve the metadata stored in the SummarySet}
 \usage{
-getMetadata(object)
+getMetadata(summary_set)
 
-\S4method{getMetadata}{SummarySet}(object)
+\S4method{getMetadata}{SummarySet}(summary_set)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object.}
+\item{summary_set}{A gwasglue2 SummarySet object.}
 }
 \value{
 The gwasglue2 SummarySet metadata

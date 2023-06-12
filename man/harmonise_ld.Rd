@@ -4,22 +4,12 @@
 \alias{harmonise_ld}
 \title{Harmonise data against LD matrix}
 \usage{
-harmonise_ld(
-  dataset,
-  ld_ref = NULL,
-  pop = FALSE,
-  bfile = FALSE,
-  plink_bin = NULL
-)
+harmonise_ld(dataset, bfile = NULL, plink_bin = NULL)
 }
 \arguments{
 \item{dataset}{The DataSet gwasglue2 object}
 
-\item{ld_ref}{If bfile = TRUE, corresponds to the path and prefix of the plink files used to build the LD correlation matrix. If pop = TRUE, it corresponds to the population code in ieugwasr (eg. EUR) instead (default NULL).}
-
-\item{pop}{logical (default FALSE)}
-
-\item{bfile}{logical (default FALSE)}
+\item{bfile}{It corresponds to the path and prefix of the plink files used to build the LD correlation matrix.}
 
 \item{plink_bin}{Path to the plink executable}
 }
@@ -27,5 +17,5 @@ harmonise_ld(
 The DataSet gwasglue2 object harmonised
 }
 \description{
-Function to create a LDmatrix gwasglue2 object and set the @slot ld_matrix using ieugwasr::ld_matrix()
+Function to create a LDmatrix gwasglue2 object and set the @slot ld_matrix u
 }

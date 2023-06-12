@@ -6,12 +6,12 @@
 \alias{setVariantid,SummarySet-method}
 \title{Set Method to create an internal Variant ID for the SummarySet}
 \usage{
-setVariantid(object)
+setVariantid(summary_set)
 
-\S4method{setVariantid}{SummarySet}(object)
+\S4method{setVariantid}{SummarySet}(summary_set)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object}
+\item{summary_set}{A gwasglue2 SummarySet object}
 }
 \value{
 A extra '"variantid"' column in the  GWAS summary statistics tibble. The @rdname getSummaryData-methods can be used to retrieve it.

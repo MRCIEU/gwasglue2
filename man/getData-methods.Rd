@@ -6,12 +6,12 @@
 \alias{getData,DataSet-method}
 \title{Get Method to retrieve the GWAS Summary Statistics}
 \usage{
-getData(object, index)
+getData(dataset, index)
 
-\S4method{getData}{DataSet}(object, index)
+\S4method{getData}{DataSet}(dataset, index)
 }
 \arguments{
-\item{object}{A gwasglue2 DataSet object}
+\item{dataset}{A gwasglue2 DataSet object}
 
 \item{index}{Index of gwasglue2 SummarySet objects within DataSet}
 }

@@ -88,23 +88,25 @@ getMRlabel(sumset2)
 ```
 
 
-Create the DataSet object
+Create the DataSet object and Convert it to TwoSampleMR format
 
 ```{r}
-dataset <- DataSet(sumset1,sumset2) %>%
-  overlapVariants(., strand = "forward") %>%
-  harmoniseData(.,tolerance = 0.08, action = 1)
+
+  #  create dataset and convert it to mr format
+summary_sets <- list(sumset1,sumset2)
+ 
+    # create dataset
+    dataset <- create_dataset(summary_sets, harmonise = TRUE, tolerance = 0.08, action = 1)  %>%
+    # Convert dataset to TwoSampleMR format
+   convertForTwoSampleMR(.)
+
 ```
 
-Convert dataset to TwoSampleMR format
 
-```{r}
-dataset_mr <- convertForTwoSampleMR(dataset)
-```
 
 Perform the MR analysis
 ```{r}
-mr_result <-  merge(getData(dataset_mr,1),getData(dataset_mr,2), by = c("SNP", "mr_keep"))  %>%
+mr_result <-  merge(getData(dataset,1),getData(dataset,2), by = c("SNP", "mr_keep"))  %>%
   TwoSampleMR::mr(., method_list="mr_ivw")
 
 mr_result
@@ -112,9 +114,16 @@ mr_result
 ```
 
 
-## 2. Regional genotype-phenotype map (WIP)
+## 2. Regional genotype-phenotype map
 
-We need to first define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)
+First, we will set the path to where the reference population plink bed files are located to build the LD matrix
+
+```{r}
+#bed_ref <- "/project/data/reference/ld/EUR"
+bed_ref <- "../data/ld/EUR"
+```
+
+and define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)
 
 ```{r}
 genomicrange <- "22:43714200-44995307"
@@ -128,30 +137,30 @@ id_list <- ieugwasr::phewas(pval = 5e-6, variants=genomicrange, batch="ukb-a")$i
   unique()
 ```
 
-First we will set the path to where the reference population plink files are located to build the LD matrix.
+
+and then obtain the metadata for each trait
 
 ```{r}
-#ld_ref <- "/project/data/reference/ld/EUR"
-ld_ref <- "data/ld/EUR"
-```
-
-and then obtain the data
-
-```{r}
-# Get GWAS summary statistics
-data <- lapply(seq_along(id_list), function(i){
-    s <- ieugwasr::associations(variants = genomicrange, id = id_list[i])
-})
-
 # get metadata and create metadata objects
 metadata <- lapply(seq_along(id_list), function(i){
   m <- create_metadata(ieugwasr::gwasinfo(id_list[i])) 
 })
+```
 
+
+Finally, we create the summarysets for each trait and the ``dataset``, which comprise all the summarysets. Then we harmonise trait against trait followed by each trait against a LD matrix. 
+```{r}
 
 # create gwasglue2 DataSet object 
-  dataset <- create_dataset(data, metadata = metadata, tools = c("finemap","coloc"), harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
-  harmonise_ld(., ld_ref = ld_ref, bfile = TRUE, plink_bin = "plink")
+
+  dataset <- lapply(seq_along(id_list), function(i){
+    # create summarysets
+    dt <- create_summaryset(ieugwasr::associations(variants = genomicrange, id = id_list[i]), metadata=metadata[[i]])
+  }) %>%
+    # create dataset
+    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+    # harmonise dataset against LD matrix
+    harmonise_ld(., bfile = bed_ref , plink_bin = "plink")
 ```
 
 Next, for each trait we need to perform finemapping. This will involve using SusieR to identify credible sets in the region for the trait, and then generate the conditional summary datasets for each credible set. Explanation:

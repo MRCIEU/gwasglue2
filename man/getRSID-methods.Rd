@@ -6,12 +6,12 @@
 \alias{getRSID,SummarySet-method}
 \title{Get Method to retrieve RSID/variants stored in the SummarySet}
 \usage{
-getRSID(object)
+getRSID(summary_set)
 
-\S4method{getRSID}{SummarySet}(object)
+\S4method{getRSID}{SummarySet}(summary_set)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object}
+\item{summary_set}{A gwasglue2 SummarySet object}
 }
 \value{
 The RSID/variants

@@ -6,12 +6,12 @@
 \alias{setRSID,SummarySet-method}
 \title{Set Method to store RSID/variants in the SummarySet}
 \usage{
-setRSID(object, variants)
+setRSID(summary_set, variants)
 
-\S4method{setRSID}{SummarySet}(object, variants)
+\S4method{setRSID}{SummarySet}(summary_set, variants)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object}
+\item{summary_set}{A gwasglue2 SummarySet object}
 
 \item{variants}{The RSID/variants associated with the GWAS summary statistics}
 }

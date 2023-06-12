@@ -6,12 +6,12 @@
 \alias{getMRlabel,SummarySet-method}
 \title{Get Method to retrieve the Mendelian randomization (MR) label linked to the SummarySet}
 \usage{
-getMRlabel(object)
+getMRlabel(summary_set)
 
-\S4method{getMRlabel}{SummarySet}(object)
+\S4method{getMRlabel}{SummarySet}(summary_set)
 }
 \arguments{
-\item{object}{A gwasglue2 SummarySet object}
+\item{summary_set}{A gwasglue2 SummarySet object}
 }
 \value{
 The MR label associated with the SummarySet
