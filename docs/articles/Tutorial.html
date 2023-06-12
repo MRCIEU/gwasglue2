@@ -131,51 +131,56 @@
 <span></span>
 <span><span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/getMRlabel-methods.html">getMRlabel</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span></span></code></pre></div>
-<p>Create the DataSet object</p>
+<p>Create the DataSet object and Convert it to TwoSampleMR format</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataSet.html">DataSet</a></span><span class="op">(</span><span class="va">sumset1</span>,<span class="va">sumset2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/overlapVariants-methods.html">overlapVariants</a></span><span class="op">(</span><span class="va">.</span>, strand <span class="op">=</span> <span class="st">"forward"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/harmoniseData-methods.html">harmoniseData</a></span><span class="op">(</span><span class="va">.</span>,tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p>Convert dataset to TwoSampleMR format</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dataset_mr</span> <span class="op">&lt;-</span> <span class="fu">convertForTwoSampleMR</span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span>  <span class="co">#  create dataset and convert it to mr format</span></span>
+<span><span class="va">summary_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sumset1</span>,<span class="va">sumset2</span><span class="op">)</span></span>
+<span> </span>
+<span>    <span class="co"># create dataset</span></span>
+<span>    <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_dataset.html">create_dataset</a></span><span class="op">(</span><span class="va">summary_sets</span>, harmonise <span class="op">=</span> <span class="cn">TRUE</span>, tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="co"># Convert dataset to TwoSampleMR format</span></span>
+<span>   <span class="fu">convertForTwoSampleMR</span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></code></pre></div>
 <p>Perform the MR analysis</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mr_result</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="fu"><a href="../reference/getData-methods.html">getData</a></span><span class="op">(</span><span class="va">dataset_mr</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="../reference/getData-methods.html">getData</a></span><span class="op">(</span><span class="va">dataset_mr</span>,<span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SNP"</span>, <span class="st">"mr_keep"</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mr_result</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="fu"><a href="../reference/getData-methods.html">getData</a></span><span class="op">(</span><span class="va">dataset</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="../reference/getData-methods.html">getData</a></span><span class="op">(</span><span class="va">dataset</span>,<span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SNP"</span>, <span class="st">"mr_keep"</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="va">.</span>, method_list<span class="op">=</span><span class="st">"mr_ivw"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mr_result</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="regional-genotype-phenotype-map-wip">2. Regional genotype-phenotype map (WIP)<a class="anchor" aria-label="anchor" href="#regional-genotype-phenotype-map-wip"></a>
+<h2 id="regional-genotype-phenotype-map">2. Regional genotype-phenotype map<a class="anchor" aria-label="anchor" href="#regional-genotype-phenotype-map"></a>
 </h2>
-<p>We need to first define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)</p>
+<p>First, we will set the path to where the reference population plink bed files are located to build the LD matrix</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#bed_ref &lt;- "/project/data/reference/ld/EUR"</span></span>
+<span><span class="va">bed_ref</span> <span class="op">&lt;-</span> <span class="st">"../data/ld/EUR"</span></span></code></pre></div>
+<p>and define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">genomicrange</span> <span class="op">&lt;-</span> <span class="st">"22:43714200-44995307"</span></span></code></pre></div>
 <p>We need to scan OpenGWAS for traits that have a significant associations in this region</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">id_list</span> <span class="op">&lt;-</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/phewas.html" class="external-link">phewas</a></span><span class="op">(</span>pval <span class="op">=</span> <span class="fl">5e-6</span>, variants<span class="op">=</span><span class="va">genomicrange</span>, batch<span class="op">=</span><span class="st">"ukb-a"</span><span class="op">)</span><span class="op">$</span><span class="va">id</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>First we will set the path to where the reference population plink files are located to build the LD matrix.</p>
+<p>and then obtain the metadata for each trait</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#ld_ref &lt;- "/project/data/reference/ld/EUR"</span></span>
-<span><span class="va">ld_ref</span> <span class="op">&lt;-</span> <span class="st">"data/ld/EUR"</span></span></code></pre></div>
-<p>and then obtain the data</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get GWAS summary statistics</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/associations.html" class="external-link">associations</a></span><span class="op">(</span>variants <span class="op">=</span> <span class="va">genomicrange</span>, id <span class="op">=</span> <span class="va">id_list</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># get metadata and create metadata objects</span></span>
+<code class="sourceCode R"><span><span class="co"># get metadata and create metadata objects</span></span>
 <span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">gwasinfo</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> </span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span></span>
-<span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>Finally, we create the summarysets for each trait and the <code>dataset</code>, which comprise all the summarysets. Then we harmonise trait against trait followed by each trait against a LD matrix.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># create gwasglue2 DataSet object </span></span>
-<span>  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_dataset.html">create_dataset</a></span><span class="op">(</span><span class="va">data</span>, metadata <span class="op">=</span> <span class="va">metadata</span>, tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"finemap"</span>,<span class="st">"coloc"</span><span class="op">)</span>, harmonise <span class="op">=</span> <span class="cn">TRUE</span>, tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/harmonise_ld.html">harmonise_ld</a></span><span class="op">(</span><span class="va">.</span>, ld_ref <span class="op">=</span> <span class="va">ld_ref</span>, bfile <span class="op">=</span> <span class="cn">TRUE</span>, plink_bin <span class="op">=</span> <span class="st">"plink"</span><span class="op">)</span></span></code></pre></div>
+<span></span>
+<span>  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="co"># create summarysets</span></span>
+<span>    <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/associations.html" class="external-link">associations</a></span><span class="op">(</span>variants <span class="op">=</span> <span class="va">genomicrange</span>, id <span class="op">=</span> <span class="va">id_list</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>, metadata<span class="op">=</span><span class="va">metadata</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="co"># create dataset</span></span>
+<span>    <span class="fu"><a href="../reference/create_dataset.html">create_dataset</a></span><span class="op">(</span><span class="va">.</span>, harmonise <span class="op">=</span> <span class="cn">TRUE</span>, tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>    <span class="co"># harmonise dataset against LD matrix</span></span>
+<span>    <span class="fu"><a href="../reference/harmonise_ld.html">harmonise_ld</a></span><span class="op">(</span><span class="va">.</span>, bfile <span class="op">=</span> <span class="va">bed_ref</span> , plink_bin <span class="op">=</span> <span class="st">"plink"</span><span class="op">)</span></span></code></pre></div>
 <p>Next, for each trait we need to perform finemapping. This will involve using SusieR to identify credible sets in the region for the trait, and then generate the conditional summary datasets for each credible set. Explanation:</p>
 <p>Credible set: If a trait is inferred to have e.g. 3 causal variants in the genomic region then there will be 3 credible sets. Each credible set is essentially a cluster of SNPs close by, it will include 1 or more SNPs that are candidates to be the causal variant.</p>
 <p>Conditional summary datasets: Once credible sets are identified, we can try to estimate what the summary data results would have looked like for each credible set after accounting for all the other credible sets. So in this example there would be 3 conditional summary datasets, each with a single peak in a different location.</p>
