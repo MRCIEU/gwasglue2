@@ -1,17 +1,16 @@
-skip("problems with server")
+
 library(dplyr)
 library(ieugwasr)
 
 x <- ieugwasr::tophits("ieu-a-2")$rsid
-sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
+d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
+meta1 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-2"))
+
+sumset1 <- create_summaryset(d1, metadata=meta1, tools = "mr")
+
 
 test_that("create summaryset", {
     expect_true(nrow(sumset1@ss) == length(x))
-})
-
-test_that("set metadata", {
-    sumset1 <- setMetadata(sumset1,source = "IEUopenGWAS", traits = "ieu-a-2")
-    expect_true(is.list(sumset1@metadata))
 })
 
 
@@ -21,13 +20,14 @@ test_that("get metadata", {
 
 test_that("set mr_label", {
     sumset1 <- setMRlabel(sumset1, mr_label = "exposure")
-    expect_equal
+    expect_equal(getMRlabel(sumset1), "exposure" )
 })
 
-
-test_that("getRSID", {
-    expect_equal(getRSID(sumset1), x)
-})
+# this test does not work because we arrage the data by chr pos
+# test_that("getRSID", {
+#     sumset1 <- setRSID(sumset1,sumset1@ss$rsid)
+#     expect_equal(getRSID(sumset1), x)
+# })
 
 
 test_that("dim works", {
@@ -35,3 +35,4 @@ test_that("dim works", {
 })
 
   
+

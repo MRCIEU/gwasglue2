@@ -4,20 +4,20 @@
 \name{getSummarySet}
 \alias{getSummarySet}
 \alias{getSummarySet,DataSet-method}
-\title{Get Methods for SummarySet}
+\title{Get Method to retrieve the gwasglue2 SummarySet object}
 \usage{
 getSummarySet(object, index)
 
 \S4method{getSummarySet}{DataSet}(object, index)
 }
 \arguments{
-\item{object}{A DataSet S4 object}
+\item{object}{A gwasglue2 DataSet objec}
 
-\item{index}{index of SummarySet within DataSet}
+\item{index}{Index of gwasglue2 SummarySet objects within DataSet}
 }
 \value{
-summarySet object
+summarySet gwasglue2 SummarySet object
 }
 \description{
-Get Methods for SummarySet
+Get Method to retrieve the gwasglue2 SummarySet object
 }

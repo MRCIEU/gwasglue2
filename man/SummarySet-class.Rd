@@ -14,7 +14,7 @@ An S4 class to represent the Summary Set
 
 \item{\code{ss}}{A tibble with the GWAS summary statistics (default NA).}
 
-\item{\code{metadata}}{A data.frame with the metadata associated to ss (default NA).}
+\item{\code{metadata}}{A list with the metadata associated to ss (default NA).}
 
 \item{\code{variants}}{The RSID/variants associated with ss (default NA).}
 

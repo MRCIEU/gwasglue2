@@ -1,11 +1,12 @@
 setGeneric("buildLDMatrix", function(object, ...) standardGeneric("buildLDMatrix"))
 setMethod("buildLDMatrix", "DataSet", function(object, ld_ref = NULL, pop = FALSE, bfile = FALSE, plink_bin = NULL){
+
      message("Building LD matrix")
       if (pop == TRUE){
-        object@ld_matrix <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[1]]@variants, pop = ld_ref, with_alleles = TRUE, bfile = FALSE,plink_bin = plink_bin))
+        object@ld_matrix <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[1]]@ss$rsid, pop = ld_ref, with_alleles = TRUE, bfile = FALSE,plink_bin = plink_bin))
       }
       if (bfile == TRUE){
-        object@ld_matrix <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[1]]@variants, pop=FALSE, with_alleles=TRUE, bfile=ld_ref, plink_bin=plink_bin))
+        object@ld_matrix <- suppressWarnings(ieugwasr::ld_matrix(object@summary_sets[[1]]@ss$rsid, pop=FALSE, with_alleles=TRUE, bfile=ld_ref, plink_bin=plink_bin))
       }
 
       rsid_avail <- rownames(object@ld_matrix)

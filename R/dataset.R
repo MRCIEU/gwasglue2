@@ -60,7 +60,7 @@ setClass("DataSet",
 
 #' DataSet function
 #'
-#' @param ... Array of SummarySet object names.
+#' @param ... Array of gwasglue2 SummarySet object names.
 #' @importFrom methods new
 #' @return  A gwasglue2 DataSet object
 #' @export 
@@ -69,11 +69,12 @@ DataSet <- function(...) {
 }
 
 
-#' Get Methods for summaryset tibble (similar in Summaryset class)
+#' Get Method to retrieve the GWAS Summary Statistics
 #'
-#' @param object A DataSet S4 object
-#' @param index index of SummarySet within DataSet
-#' @return summaryset tibble
+#' @param object A gwasglue2 DataSet object
+#' @param index Index of gwasglue2 SummarySet objects within DataSet
+#' @return A tibble with GWAS summary statistics
+#' @seealso Similar to [getSummaryData()]
 #' @export
 #' @docType methods
 #' @rdname getData-methods
@@ -86,11 +87,11 @@ setMethod("getData", "DataSet",
 
 
 
-#' Get Methods for SummarySet 
+#' Get Method to retrieve the gwasglue2 SummarySet object
 #'
-#' @param object A DataSet S4 object
-#' @param index index of SummarySet within DataSet
-#' @return summarySet object
+#' @param object A gwasglue2 DataSet objec
+#' @param index Index of gwasglue2 SummarySet objects within DataSet
+#' @return summarySet gwasglue2 SummarySet object
 #' @export
 #' @docType methods
 #' @rdname getSummarySet-methods
@@ -103,8 +104,15 @@ setMethod("getSummarySet", "DataSet",
           })
 
 
-# Get Methods for length of DAtaset
+#' Size of the DataSet 
+#'
+#' @param object A gwasglue2 DataSet objec
+#' @return Number of gwasglue2 SummarySet objects within the DataSet
+#' @export
+#' @docType methods
+#' @rdname getLength-methods
 setGeneric("getLength", function(object) standardGeneric("getLength"))
+#' @rdname getLength-methods
 setMethod("getLength", "DataSet",
           function(object) {
             return(length(object@summary_sets))

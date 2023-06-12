@@ -46,16 +46,31 @@
     <loc>/reference/clumpTophits.html</loc>
   </url>
   <url>
+    <loc>/reference/constructSummarySet.html</loc>
+  </url>
+  <url>
     <loc>/reference/createDataSet.html</loc>
   </url>
   <url>
     <loc>/reference/createSumset.html</loc>
   </url>
   <url>
+    <loc>/reference/create_dataset.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_metadata.html</loc>
+  </url>
+  <url>
     <loc>/reference/create_summary_set_from_lbf.html</loc>
   </url>
   <url>
+    <loc>/reference/create_summaryset.html</loc>
+  </url>
+  <url>
     <loc>/reference/dataset_to_hyprcoloc.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dimData-methods.html</loc>
   </url>
   <url>
     <loc>/reference/getData-DataSet-method.html</loc>
@@ -64,13 +79,37 @@
     <loc>/reference/getData-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/getLength-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getMRlabel-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getMetadata-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getRSID-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getSummaryData-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/getSummarySet-DataSet-method.html</loc>
   </url>
   <url>
     <loc>/reference/getSummarySet-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/getTool-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getVariants-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/harmonise.html</loc>
+  </url>
+  <url>
+    <loc>/reference/harmoniseData-methods.html</loc>
   </url>
   <url>
     <loc>/reference/harmoniseData.html</loc>
@@ -97,10 +136,31 @@
     <loc>/reference/mv_harmonise_data.html</loc>
   </url>
   <url>
+    <loc>/reference/overlapVariants-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/phewasIDs.html</loc>
   </url>
   <url>
     <loc>/reference/plot_gwasglue.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setMRlabel-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setMetadata-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setRSID-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setTool-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setVariantid-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setVariants-methods.html</loc>
   </url>
   <url>
     <loc>/reference/susie_to_dataset.html</loc>

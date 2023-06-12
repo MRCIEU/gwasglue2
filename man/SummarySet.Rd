@@ -4,16 +4,10 @@
 \alias{SummarySet}
 \title{SummarySet function}
 \usage{
-SummarySet(ss, traits, variants, tools)
+SummarySet(sumstats)
 }
 \arguments{
-\item{ss}{It uses createSumset function to call ieugwasR and fill @slot ss}
-
-\item{traits}{ID of GWAS studies to query}
-
-\item{variants}{Array of SNPs rsids}
-
-\item{tools}{Array of methods that gwasglue2 ids going to convert the summarySet to (eg. "mr")}
+\item{sumstats}{GWAS summary statistics}
 }
 \value{
 A gwasglue2 SummarySet object.

@@ -35,46 +35,51 @@
 # switch effect allele to be the alphabetical allele
 # arrange dataset by variant_id
 
-
-
-setGeneric("overlapVariants",function(object, ... ) standardGeneric("overlapVariants"))
+#' Look for overlapped variants between SummarySets in the DataSet and Resize
+#' 
+#' @param object The gwasglue2 DataSet object
+#' @param strand The direction of the DNA sequence `forward` or `reverse` (Default `forward`)
+#' @return The gwasglue2 DataSet object resized
+#' @docType methods
+#' @rdname overlapVariants-methods
+setGeneric("overlapVariants",function(object, strand) standardGeneric("overlapVariants"))
+#' @rdname overlapVariants-methods
 setMethod("overlapVariants", "DataSet", function(object, strand = "forward") {
-  # SummarySet is already  arraged alphabetical by rsid  (see createSumset())
+  # SummarySet is already  standardised in create_summaryset()
   
   if(strand == "forward"){
-    # internal identifier variantid that looks like chr_pos_a1_a2
-    for (i in seq_along(object@summary_sets)){
-      object@summary_sets[[i]] <- setVariantid(object@summary_sets[[i]])
-    }
     # Find overlapped variants among all summarySets using variantid
     variants_list <- sapply(1:length(object@summary_sets), function(i) list(object@summary_sets[[i]]@ss$variantid))
     overlap <- Reduce(intersect, variants_list)
+
 
     #TODO if length(object@overlap_variants) == dim(object@summary_sets[[i]]@ss)[1] message(no resizing)
     #TODO if chr_pos not available then rsid_a1_a2 ?
 
     message("We are  now resizing the SummarySets")
     for (i in seq_along(object@summary_sets)) {
-      object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss[which(object@summary_sets[[i]]@ss$variantid %in% overlap), ] %>% dplyr::arrange(., variantid)
+      object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss[which(object@summary_sets[[i]]@ss$variantid %in% overlap), ] %>% dplyr::arrange(., variantid, chr, position, ea, nea)
     }
     
+     object@overlap_variants <- unique(object@summary_sets[[1]]@ss$rsid)
     message("\nThere are ", length(overlap), " variants in common among all SummarySets")
-    object@overlap_variants <- object@summary_sets[[1]]@ss$rsid
+   
   }
   
   if(strand == "reverse"){
   
     # Find overlapped variants among all summarySets
      #  check for multiallelic variants and drop them
+    #  TODO probably will vave to change this to use chr:position instead of rsid
     variants_list <- sapply(1:length(object@summary_sets), function(i){
-      variants <- list(object@summary_sets[[i]]@ss$rsid[which(object@summary_sets[[i]]@ss$rsid%ni% names(which(table(object@summary_sets[[i]]@ss$rsid) > 1)))])
+      variants <- list(object@summary_sets[[i]]@ss$rsid[which(object@summary_sets[[i]]@ss$rsid %ni% names(which(table(object@summary_sets[[i]]@ss$rsid) > 1)))])
     })
   
     overlap <- Reduce(intersect, variants_list)
     message("We are  now resizing the SummarySets")
               
     for (i in seq_along(object@summary_sets)) {
-      object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss[which(object@summary_sets[[i]]@ss$rsid %in% object@overlap_variants), ] %>% dplyr::arrange(., rsid)
+      object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss[which(object@summary_sets[[i]]@ss$rsid %in% overlap), ] %>% dplyr::arrange(., variantid, chr, position, ea, nea)
     }
    
 
@@ -89,46 +94,47 @@ setMethod("overlapVariants", "DataSet", function(object, strand = "forward") {
   return(object)
 })
 
+
+
 # Set and get methods for harmonise data
 
 #' Harmonise the alleles and effects between two summary sets
-#' @param object The DataSet object
+#' 
+#' @param object The gwasglue2 DataSet object
 #' @param action Level of strictness in dealing with SNPs.
 #' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
 #' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @param tolerance Tolerance value.
-#' @param strand dna strand orientation  (Default "forward", other option "reverse")
-#' 
-setGeneric("harmoniseData", function(object, tolerance, action, strand) standardGeneric("harmoniseData"))
-setMethod( "harmoniseData", "DataSet", function(object, tolerance = 0.08, action = 2, strand = "forward"){
+#' @return The gwasglue2 DataSet object harmonised
+#' @docType methods
+#' @rdname harmoniseData-methods
+setGeneric("harmoniseData", function(object, tolerance, action) standardGeneric("harmoniseData"))
+#' @rdname harmoniseData-methods
+setMethod( "harmoniseData", "DataSet", function(object, tolerance = 0.08, action = 2){
   
   
 
   message("Gwasglue is now harmonising! ")
   for (i in seq_along(object@summary_sets)[-1]){
-    count <- i - 1
-    
-    # We are always going to harmonise agaist the firts SummarySet
-    dat1 <- object@summary_sets[[1]]@ss
-    if (strand == "forward"){rsid <- dat1$variantid}
-    if (strand == "reverse"){rsid <- dat1$rsid}
-    if (strand != "forward" && strand != "reverse"){
-        warning("Set the 'strand' parameter to either 'forward' or 'reverse'."); break}
-    A1 <- dat1$ea
-    A2 <- dat1$nea
-    fA <- dat1$eaf
-    betaA <- dat1$beta
+      count <- i - 1
+      
+      # We are always going to harmonise agaist the firts SummarySet and use variantid instead of rsid
+      dat1 <- object@summary_sets[[1]]@ss
+      rsid <- dat1$variantid
+      A1 <- dat1$ea
+      A2 <- dat1$nea
+      fA <- dat1$eaf
+      betaA <- dat1$beta
 
-    dat2 <-object@summary_sets[[i]]@ss
-    message("\nHarmonising ", dat1$id[1], " and ", dat2$id[1],"\n")
+      dat2 <-object@summary_sets[[i]]@ss
+      message("\nHarmonising ", dat1$id[1], " and ", dat2$id[1],"\n")
 
-    B1 <- dat2$ea
-    B2 <- dat2$nea
-    betaB <- dat2$beta
-    fB <- dat2$eaf
+      B1 <- dat2$ea
+      B2 <- dat2$nea
+      betaB <- dat2$beta
+      fB <- dat2$eaf
 
-    if (strand == "forward"){
       h <- harmonise(rsid, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance=tolerance, action=action)
 
       # remove extra columns
@@ -151,35 +157,7 @@ setMethod( "harmoniseData", "DataSet", function(object, tolerance = 0.08, action
       # object@ambiguous_SNPs[[count]] <-  h$variantid[h$ambiguous == TRUE]
       # # names(object@ambiguous_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1])
       # object@incompatible_alleles_SNPs[[count]] <-  h$variantid[h$remove == TRUE]
-      # # names(object@incompatible_alleles_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1])
-
-    }
-    if (strand == "reverse"){
-      h <- harmonise(rsid, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance=tolerance, action=action)
-      # remove extra columns
-      h1 <-h[,c("rsid","A1","A2","betaA","fA")]
-      h1 <- dplyr::rename(h1, c(ea = A1, nea = A2, beta = betaA, eaf = fA))
-      h2 <-h[,c("rsid","B1","B2","betaB","fB")]
-      h2 <- dplyr::rename(h2, c(ea = B1, nea = B2, beta = betaB, eaf = fB))
-      # replace c(ea, nea, beta, eaf) columns
-      dat1 <- merge(subset(dat1, select=-c(ea, nea, beta, eaf)), h1, by="rsid")
-      dat2 <- merge(subset(dat2, select=-c(ea, nea, beta, eaf)), h2, by="rsid")
-
-      object@summary_sets[[1]]@ss <- dplyr::as_tibble(dat1) #TODO check if there is any condition where dat1 changes?
-      object@summary_sets[[i]]@ss <- dplyr::as_tibble(dat2)
-
-    # TODO fill slots
-    object@dropped_SNPs[[count]] <-  h$rsid[h$keep == FALSE]
-    #   # names(object@dropped_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1])
-    #   object@palindromic_SNPs[[count]] <-  h$rsid[h$palindromic == TRUE]
-    #   # names(object@palindromic_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1])
-    #   object@ambiguous_SNPs[[count]] <-  h$rsid[h$ambiguous == TRUE]
-    #   # names(object@ambiguous_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1])
-    #   object@incompatible_alleles_SNPs[[count]] <-  h$rsid[h$remove == TRUE]
-    #   # names(object@incompatible_alleles_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1]) 
-    }
-
-    
+      # # names(object@incompatible_alleles_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1]) 
   }
   message("\nDone harmonising!")
   
@@ -188,33 +166,23 @@ setMethod( "harmoniseData", "DataSet", function(object, tolerance = 0.08, action
   # at the end of harmonisation remove all union(object@dropped_SNPs)
   if(length(object@dropped_SNPs) != 0){
 
-  dropped_SNPs <- sapply(1:length(object@dropped_SNPs), function(i) c(object@dropped_SNPs[[i]]))
-  dropped_SNPs <- Reduce(union, dropped_SNPs)
+    dropped_SNPs <- sapply(1:length(object@dropped_SNPs), function(i) c(object@dropped_SNPs[[i]]))
+    dropped_SNPs <- Reduce(union, dropped_SNPs)
 
-  object@overall_dropped_SNPs <- dropped_SNPs
-  message("\nThere are ", length(dropped_SNPs), " variants to remove among all SummarySets after harmonising")
+    object@overall_dropped_SNPs <- dropped_SNPs
+    message("\nThere are ", length(dropped_SNPs), " variants to remove among all SummarySets after harmonising")
 
-  #TODO if length(object@overall_dropped_SNPs) == dim(object@summary_sets[[i]]@ss)[1] message(no resizing)
-  message("We are  now resizing the SummarySets")
- 
- if (strand == "forward"){
-  for (i in seq_along(object@summary_sets)) {
-      object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss[which(object@summary_sets[[i]]@ss$variantid %ni% dropped_SNPs), ]
-  }
- }
-if (strand == "forward"){
-  for (i in seq_along(object@summary_sets)) {
-      object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss[which(object@summary_sets[[i]]@ss$rsid %ni% dropped_SNPs), ]
-    }
-}
-
-  }
-
+    #TODO if length(object@overall_dropped_SNPs) == dim(object@summary_sets[[i]]@ss)[1] message(no resizing)
+    message("We are  now resizing the SummarySets")
   
-  message("Done!\n")
+    for (i in seq_along(object@summary_sets)) {
+        object@summary_sets[[i]]@ss <- object@summary_sets[[i]]@ss[which(object@summary_sets[[i]]@ss$variantid %ni% dropped_SNPs), ]
+    }
+    message("Done!\n")
+  }
 
-    object@is_harmonised <- TRUE
-    return(object)
+  object@is_harmonised <- TRUE
+  return(object)
 }
 )
 
@@ -223,3 +191,4 @@ setMethod("isHarmonised","DataSet",function(object) {
   return(object@is_harmonised)
 }
 )
+

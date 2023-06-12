@@ -1,13 +1,21 @@
-skip("pipeline changed")
-x <- ieugwasr::tophits("ieu-a-2")$rsid
-sumset1 <- SummarySet(traits = "ieu-a-2", variants = x, tools = "mr")
-sumset2 <- SummarySet(traits="ieu-a-7", variants=x,tools ="mr")
+library(dplyr)
+library(ieugwasr)
 
-test_that("compare against 2samplemr", {
+x <- ieugwasr::tophits("ieu-a-2")$rsid
+d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
+d2 <- ieugwasr::associations(variants = x, id = "ieu-a-7")
+data <-list (d1,d2)
  
-  dataset <- DataSet(sumset1,sumset2) %>%
-    overlapSNP(.) %>%
-    harmoniseData(.,tolerance = 0.08, action = 1)
+meta1 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-2"))
+meta2 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-7"))
+meta <- list(meta1,meta2)
+
+
+
+
+
+test_that("compare against 2samplemr", { 
+dataset <- create_dataset(data, metadata = meta, tools = c("mr"), harmonise = TRUE, tolerance = 0.08, action = 1)
   dataset
   expect_equal(length(dataset@summary_sets), 2)
 })
