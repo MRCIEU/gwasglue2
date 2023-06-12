@@ -39,10 +39,65 @@ create_metadata <- function(metadata = NULL,
   return(metadata)
 }
 
-            
+#' A function to create a gwasglue2 SummarySet object from different sources and formats
+#' 
+#' @param data GWAS summary statistics.
+#' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
+#' @seealso [create_metadata()] to create a metadata object
+#' @param type Input @param data type. Default is '"tibble"'. 
+#' @param beta_col Name of column with effect sizes. The default is `"beta"`.
+#' @param se_col Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"`.
+#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea`.
+#' @param pvalue_col Name of column with p-value. The default is `"p"`.
+#' @param samplesize_col Column name for sample size. The default is `"n"`.
+#' @param chr_col Column name for chromosome . The default is `"chr"`.
+#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"`.
+#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"`.
+#' @param id_col GWAS study ID column. The default is `"id"`.
+#' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"` 
+#' @param ... Other columns
+#' @return A gwasglue2 SummarySet object
+#' @export 
+create_summaryset <- function (data,
+                              metadata = NULL,
+                              type = "tibble",
+                              beta_col = "beta",
+                              se_col = "se",
+                              samplesize_col = "n",
+                              pvalue_col = "p",
+                              chr_col = "chr",
+                              position_col = "position",
+                              rsid_col = "rsid",
+                              effect_allele_col = "ea",
+                              other_allele_col = "nea",
+                              eaf_col = "eaf",
+                              id_col = "id",
+                              trait_col = "trait",
+                              ...) {
+  if (type == "tibble") {
+    s <- create_summaryset_from_tibble(data = data,
+                              metadata = metadata,
+                              beta_col =  beta_col,
+                              se_col = se_col,
+                              samplesize_col = samplesize_col,
+                              pvalue_col = pvalue_col,
+                              chr_col = chr_col,
+                              position_col = position_col,
+                              rsid_col = rsid_col,
+                              effect_allele_col = effect_allele_col,
+                              other_allele_col = other_allele_col,
+                              eaf_col = eaf_col,
+                              id_col = id_col,
+                              trait_col = trait_col,
+                              ...)
+  }
+  return(s)
+}           
 
 
-#' A function to create a gwasglue2 SummarySet object
+#' A function to create a gwasglue2 SummarySet object from a tibble
 #' 
 #' @param data GWAS summary statistics. A tibble
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
@@ -62,7 +117,7 @@ create_metadata <- function(metadata = NULL,
 #' @param ... Other columns
 #' @return A gwasglue2 SummarySet object
 #' @export 
-create_summaryset <- function (data = tibble(),
+create_summaryset_from_tibble <- function (data = tibble(),
                               metadata = NULL,
                               beta_col = "beta",
                               se_col = "se",
@@ -128,7 +183,7 @@ create_summaryset <- function (data = tibble(),
     setVariantid(.) %>%
     setRSID(.,.@ss$rsid)
     return(s)
-   }
+}
 
 
 standardise <- function(d)
@@ -145,7 +200,7 @@ standardise <- function(d)
 
 #' Creates a DataSet object using gwasglue2 SummarySet objects, and harmonise data against data
 #'
-#' @param data A list of gwasglue2 SummarySet objects
+#' @param summary_sets A list of gwasglue2 SummarySet objects
 #' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
 #' @param tolerance Inherited from harmoniseData() (default 0.08)
 #' @param action Inherited from harmoniseData() (Default 1)
@@ -155,13 +210,13 @@ standardise <- function(d)
 #' @param strand dna strand orientation  (Default "forward", other option "reverse")
 #' @return A harmonised gwasglue2 DataSet object
 #' @export 
-create_dataset <- function(data=list(),
+create_dataset <- function(summary_sets=list(),
                           harmonise = TRUE,
                           tolerance = 0.08,
                           action = 1,
                           strand = "forward") {
 
-  ds <- DataSet(data) %>% overlapVariants(., strand = strand)
+  ds <- DataSet(summary_sets) %>% overlapVariants(., strand = strand)
     
   if (harmonise == TRUE) {
      ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
@@ -251,6 +306,47 @@ create_dataset_from_tibble <- function(data = list(),
 }
 
 
+#' Add a SummarySet to a DataSet 
+#'
+#' @param summary_sets one or more gwasglue2 Summarysets objects to add to an existent DataSet object. If more than one it should be a list
+#' @param dataset The gwasglue2 DataSet object to add to
+##' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
+#' @param tolerance Inherited from harmoniseData() (default 0.08)
+#' @param action Inherited from harmoniseData() (Default 1)
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+#' @param strand dna strand orientation  (Default "forward", other option "reverse")
+#' @return A harmonised gwasglue2 DataSet object with input SummarySets added
+#' @export 
+add_summaryset <- function(summary_sets,
+                          dataset,
+                          harmonise = TRUE,
+                          tolerance = 0.08,
+                          action = 1,
+                          strand = "forward") {
+  
+  l <- length(dataset@summary_sets)
+  
+  if(length(summary_sets) == 0){
+     dataset@summary_sets[[l + 1]] <- summary_sets
+  }else {
+    for(i in seq_along(summary_sets)){
+    dataset@summary_sets[[l + i]] <- summary_sets[[i]]
+    }
+  }
+
+  message("\nSummarySet added to DataSet")
+  
+  ds <- dataset %>% overlapVariants(., strand = strand)
+    
+  if (harmonise == TRUE) {
+     ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+  }
+  return(ds)
+
+} 
+
 
 #' Merge Datasets 
 #'
@@ -258,7 +354,7 @@ create_dataset_from_tibble <- function(data = list(),
 #' @return  A gwasglue2 DataSet object  with input DataSets merged
 merge_datasets <- function(datasets) {
     n_datasets <- length(datasets)
-	  ds <- DataSet()
+	  ds <- DataSet(list())
     count <- 1
     for(i in 1:n_datasets){
       if (isS4(datasets[[i]]) == FALSE){
