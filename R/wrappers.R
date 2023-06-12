@@ -14,7 +14,7 @@ dataset_to_hyprcoloc <- function(dataset){
 		t <- dataset@summary_sets[[i]]@metadata$id
 	}))
 
-    snp.id <- dataset@summary_sets[[1]]@ss$rsid 
+    snp.id <- dataset@summary_sets[[1]]@ss$variantid
     ld.matrix <- dataset@ld_matrix
     effect.est <- matrix(ncol = length(dataset@summary_sets),nrow=length(snp.id))
     effect.se <- matrix(ncol = length(dataset@summary_sets),nrow=length(snp.id))
@@ -99,7 +99,7 @@ susie_to_dataset <- function(summaryset, s, R){
       warning_message(paste0("There is no credible sets for this trait (",summaryset@metadata$id,"), with the parameter values used. The summary statistics beta and se will not be marginalised."))
 
     } else{
-       ds <- DataSet()
+       ds <- DataSet(list())
       
       for(i in 1:ncredible_sets){
         ds@summary_sets[[i]] <- create_summary_set_from_lbf(summaryset, s$lbf_variable[i,], L = i)
