@@ -6,7 +6,7 @@
 \usage{
 create_dataset(
   data = list(),
-  metadata = list(NULL),
+  metadata = NULL,
   tools = NULL,
   harmonise = TRUE,
   tolerance = 0.08,
@@ -23,7 +23,8 @@ create_dataset(
   other_allele_col = "nea",
   eaf_col = "eaf",
   id_col = "id",
-  trait_col = "trait"
+  trait_col = "trait",
+  ...
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ create_dataset(
 \item{id_col}{The default is \code{"id"}.}
 
 \item{trait_col}{Column name for the column with phenotype name corresponding the the variant. The default is \code{"trait"}}
+
+\item{...}{Other columns}
 }
 \value{
 A harmonised gwasglue2 DataSet object
