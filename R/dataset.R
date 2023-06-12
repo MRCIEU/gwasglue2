@@ -71,67 +71,67 @@ DataSet <- function(...) {
 
 #' Get Method to retrieve the GWAS Summary Statistics
 #'
-#' @param object A gwasglue2 DataSet object
+#' @param dataset A gwasglue2 DataSet object
 #' @param index Index of gwasglue2 SummarySet objects within DataSet
 #' @return A tibble with GWAS summary statistics
 #' @seealso Similar to [getSummaryData()]
 #' @export
 #' @docType methods
 #' @rdname getData-methods
-setGeneric("getData", function(object,index) standardGeneric("getData"))
+setGeneric("getData", function(dataset,index) standardGeneric("getData"))
 #' @rdname getData-methods
 setMethod("getData", "DataSet",
-          function(object,index) {
-            return(object@summary_sets[[index]]@ss)
+          function(dataset,index) {
+            return(dataset@summary_sets[[index]]@ss)
           })
 
 
 
 #' Get Method to retrieve the gwasglue2 SummarySet object
 #'
-#' @param object A gwasglue2 DataSet objec
+#' @param dataset A gwasglue2 DataSet objec
 #' @param index Index of gwasglue2 SummarySet objects within DataSet
 #' @return summarySet gwasglue2 SummarySet object
 #' @export
 #' @docType methods
 #' @rdname getSummarySet-methods
-setGeneric("getSummarySet", function(object,index) standardGeneric("getSummarySet"))
+setGeneric("getSummarySet", function(dataset,index) standardGeneric("getSummarySet"))
 
 #' @rdname getSummarySet-methods
 setMethod("getSummarySet", "DataSet",
-          function(object,index) {
-            return(object@summary_sets[[index]])
+          function(dataset,index) {
+            return(dataset@summary_sets[[index]])
           })
 
 
 #' Size of the DataSet 
 #'
-#' @param object A gwasglue2 DataSet objec
+#' @param dataset A gwasglue2 DataSet objec
 #' @return Number of gwasglue2 SummarySet objects within the DataSet
 #' @export
 #' @docType methods
 #' @rdname getLength-methods
-setGeneric("getLength", function(object) standardGeneric("getLength"))
+setGeneric("getLength", function(dataset) standardGeneric("getLength"))
 #' @rdname getLength-methods
 setMethod("getLength", "DataSet",
-          function(object) {
-            return(length(object@summary_sets))
+          function(dataset) {
+            return(length(dataset@summary_sets))
           })
 
 # Set and get methods for zscores
-setGeneric("setZscores", function(object) standardGeneric("setZscores"))
-setMethod( "setZscores", "DataSet",function(object) {
+setGeneric("setZscores", function(dataset) standardGeneric("setZscores"))
+setMethod( "setZscores", "DataSet",function(dataset) {
   message("Calculating zscores")
-  for (i in seq_along(object@summary_sets)){
-  object@zscores[[i]] <- object@summary_sets[[i]]@ss$beta/object@summary_sets[[i]]@ss$se
+  for (i in seq_along(dataset@summary_sets)){
+  dataset@zscores[[i]] <- dataset@summary_sets[[i]]@ss$beta/dataset@summary_sets[[i]]@ss$se
   }
- return(object)
+ return(dataset)
     }
 )
 
-setGeneric("getZscores",function(object,...) standardGeneric("getZscores"))
+setGeneric("getZscores",function(dataset,...) standardGeneric("getZscores"))
 setMethod("getZscores", "DataSet",
-          function(object,index) {
-            return(object@zscores[[index]])
+          function(dataset,index) {
+            return(dataset@zscores[[index]])
           })
 

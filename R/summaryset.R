@@ -38,70 +38,70 @@ SummarySet <- function(sumstats) {
 
 #' Get Method to retrieve the GWAS Summary Statistics  from the SummarySet 
 #'
-#' @param object A gwasglue2 SummarySet object.
+#' @param summary_set A gwasglue2 SummarySet object.
 #' @return A tibble with GWAS summary statistics
 #' @export
 #' @docType methods
 #' @rdname getSummaryData-methods
-setGeneric("getSummaryData", function(object) standardGeneric("getSummaryData"))
+setGeneric("getSummaryData", function(summary_set) standardGeneric("getSummaryData"))
 #' @rdname getSummaryData-methods
 setMethod("getSummaryData", "SummarySet",
-          function(object) {
-            return(object@ss)
+          function(summary_set) {
+            return(summary_set@ss)
 
           })
 
 
 #' Set Method to store metadata in the SummarySet 
 #'
-#' @param object A gwasglue2 SummarySet object.
+#' @param summary_set A gwasglue2 SummarySet object.
 #' @param metadata A dataframe with metadata information
 #' @return gwasglue2 SummarySet object with metadata stored
 #' @export
 #' @docType methods
 #' @rdname setMetadata-methods
-setGeneric("setMetadata", function(object, metadata) standardGeneric("setMetadata"))
+setGeneric("setMetadata", function(summary_set, metadata) standardGeneric("setMetadata"))
 #' @rdname setMetadata-methods
 setMethod("setMetadata", "SummarySet",
-          function(object,metadata) {
-            object@metadata <- as.list(metadata)
-            return(object)
+          function(summary_set,metadata) {
+            summary_set@metadata <- as.list(metadata)
+            return(summary_set)
           })
           
 #' Get Method to retrieve the metadata stored in the SummarySet 
 #'
-#' @param object A gwasglue2 SummarySet object.
+#' @param summary_set A gwasglue2 SummarySet object.
 #' @return The gwasglue2 SummarySet metadata
 #' @export
 #' @docType methods
 #' @rdname getMetadata-methods
-setGeneric("getMetadata", function(object) standardGeneric("getMetadata"))
+setGeneric("getMetadata", function(summary_set) standardGeneric("getMetadata"))
 #' @rdname getMetadata-methods
 setMethod("getMetadata", "SummarySet",
-          function(object) {
-            return(object@metadata)
+          function(summary_set) {
+            return(summary_set@metadata)
           })
 
 
 
 
-setGeneric("getSource", function(object) standardGeneric("getSource"))
+setGeneric("getSource", function(summary_set) standardGeneric("getSource"))
 setMethod("getSource", "SummarySet",
-          function(object) {
-            return(object@source)
+          function(summary_set) {
+            return(summary_set@source)
           })
 
 #' Set Method to create an internal Variant ID for the SummarySet 
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @return A extra '"variantid"' column in the  GWAS summary statistics tibble. The @rdname getSummaryData-methods can be used to retrieve it.
 #' @export
 #' @docType methods
 #' @rdname setVariantid-methods
-setGeneric("setVariantid", function(object) standardGeneric("setVariantid"))
+setGeneric("setVariantid", function(summary_set) standardGeneric("setVariantid"))
 #' @rdname setVariantid-methods
-setMethod("setVariantid", "SummarySet", function(object) {
-  sumstats <- getSummaryData(object)
+setMethod("setVariantid", "SummarySet", function(summary_set) {
+  sumstats <- getSummaryData(summary_set)
   nvariants <- dim(sumstats)[1] 
   variantid <- lapply(1:nvariants, function(i){
     x <- sort(c(sumstats[i,]$ea,sumstats[i,]$nea))
@@ -118,134 +118,134 @@ setMethod("setVariantid", "SummarySet", function(object) {
     }
   }) 
 
-  object@ss[,"variantid"] <- unlist(variantid)
-  return(object)
+  summary_set@ss[,"variantid"] <- unlist(variantid)
+  return(summary_set)
 })
  
 
 #' Set Method to store RSID/variants in the SummarySet
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @param variants The RSID/variants associated with the GWAS summary statistics
 #' @seealso Similar to [setVariants()]
 #' @return The gwasglue2 SummarySet object with RSID/variants stored
 #' @export
 #' @docType methods
 #' @rdname setRSID-methods
-setGeneric("setRSID",function(object,variants) standardGeneric("setRSID"))
+setGeneric("setRSID",function(summary_set,variants) standardGeneric("setRSID"))
 #' @rdname setRSID-methods
 setMethod( "setRSID", "SummarySet",
-           function(object,variants) {
-             object@variants <- variants
-             return(object)
+           function(summary_set,variants) {
+             summary_set@variants <- variants
+             return(summary_set)
            }
 )
 
 #' Get Method to retrieve RSID/variants stored in the SummarySet
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @seealso Similar to [getVariants()]
 #' @return The RSID/variants
 #' @export
 #' @docType methods
 #' @rdname getRSID-methods
-setGeneric("getRSID",function(object) standardGeneric("getRSID"))
+setGeneric("getRSID",function(summary_set) standardGeneric("getRSID"))
 #' @rdname getRSID-methods
 setMethod("getRSID","SummarySet",
-          function(object) {
-            return(object@variants)
+          function(summary_set) {
+            return(summary_set@variants)
           }
 )
 
 #' Set Method to store RSID/variants in the SummarySet
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @param variants The RSID/variants associated with the GWAS summary statistics
 #' @return The gwasglue2 SummarySet object with RSID/variants stored
 #' @seealso Similar to [setRSID()]
 #' @export
 #' @docType methods
 #' @rdname setVariants-methods
-setGeneric("setVariants",function(object,variants) standardGeneric("setVariants"))
+setGeneric("setVariants",function(summary_set,variants) standardGeneric("setVariants"))
 #' @rdname setVariants-methods
 setMethod( "setVariants", "SummarySet",
-           function(object,variants) {
-             object@variants <- variants
-             return(object)
+           function(summary_set,variants) {
+             summary_set@variants <- variants
+             return(summary_set)
            }
 )
 
 #' Get Method to retrieve RSID/variants stored in the SummarySet
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @seealso Similar to [getRSID()]
 #' @return The RSID/variants
 #' @export
 #' @docType methods
 #' @rdname getVariants-methods
-setGeneric("getVariants",function(object) standardGeneric("getVariants"))
+setGeneric("getVariants",function(summary_set) standardGeneric("getVariants"))
 #' @rdname getVariants-methods
 setMethod("getVariants","SummarySet",
-          function(object) {
-            return(object@variants)
+          function(summary_set) {
+            return(summary_set@variants)
           }
 )
 
 
 #' Set Method to store the Mendelian randomization (MR) label in the SummarySet
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @param mr_label MR label for SummarySet. It can be either `"exposure"` or `"outcome"`
 #' @return The gwasglue2 SummarySet object with the MR labels stored
 #' @export
 #' @docType methods
 #' @rdname setMRlabel-methods
-setGeneric("setMRlabel",function(object,mr_label) standardGeneric("setMRlabel"))
+setGeneric("setMRlabel",function(summary_set,mr_label) standardGeneric("setMRlabel"))
 #' @rdname setMRlabel-methods
 setMethod( "setMRlabel", "SummarySet",
-           function(object,mr_label) {
-             object@mr_label <- mr_label
-             return(object)
+           function(summary_set,mr_label) {
+             summary_set@mr_label <- mr_label
+             return(summary_set)
            }
 )
 
 #' Get Method to retrieve the Mendelian randomization (MR) label linked to the SummarySet
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @return The MR label associated with the SummarySet
 #' @export
 #' @docType methods
 #' @rdname getMRlabel-methods
-setGeneric("getMRlabel",function(object) standardGeneric("getMRlabel"))
+setGeneric("getMRlabel",function(summary_set) standardGeneric("getMRlabel"))
 #' @rdname getMRlabel-methods
 setMethod("getMRlabel","SummarySet",
-          function(object) {
-            return(object@mr_label)
+          function(summary_set) {
+            return(summary_set@mr_label)
           }
 )
 
 
 
 
-# setGeneric("getZscores",function(object) standardGeneric("getZscores"))
+# setGeneric("getZscores",function(summary_set) standardGeneric("getZscores"))
 # setMethod("getZscores","SummarySet",
-#           function(object) {
-#             return(object@zscores)
+#           function(summary_set) {
+#             return(summary_set@zscores)
 #           }
 # )
 
 
 #' Dimensions of the GWAS Summary Statistics data
 #'
-#' @param object A gwasglue2 SummarySet object
+#' @param summary_set A gwasglue2 SummarySet object
 #' @return The dimensions of the GWAS Summary Statistics data
 #' @export
 #' @docType methods
 #' @rdname dimData-methods
-setGeneric("dimData",function(object) standardGeneric("dimData"))
+setGeneric("dimData",function(summary_set) standardGeneric("dimData"))
 #' @rdname dimData-methods
-setMethod("dimData", "SummarySet", function(object) {
-    return(dim(object@ss))
+setMethod("dimData", "SummarySet", function(summary_set) {
+    return(dim(summary_set@ss))
 })
 
 
