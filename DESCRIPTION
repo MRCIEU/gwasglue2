@@ -31,7 +31,8 @@ Suggests:
     covr,
     utils,
     digest,
-    graphics  
+    graphics,
+    stats 
 Remotes:
     mrcieu/TwoSampleMR,
     mrcieu/gwasvcf,
@@ -47,6 +48,8 @@ Collate:
     'harmoniseLD_method.R'
     'harmonise_ld.R'
     'harmonise_method.R'
+    'meta.R'
+    'plot.R'
     'summaryset.R'
     'utils.R'
     'wrappers.R'

@@ -18,8 +18,6 @@ An S4 class to represent the Summary Set
 
 \item{\code{variants}}{The RSID/variants associated with ss (default NA).}
 
-\item{\code{tools}}{The tools that gwasglue2 is going to convert to (default NA).}
-
 \item{\code{mr_label}}{Exposure/Outcome (default NA).}
 }}
 

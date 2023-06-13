@@ -1,41 +1,35 @@
-
-
-
-
+# Unit testing for MR analyses
 
 test_that("twosamplemr gives the same as gwasglue2", {
 
-x <- ieugwasr::tophits("ieu-a-2")$rsid
-d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
-d2 <- ieugwasr::associations(variants = x, id = "ieu-a-7")
- 
-meta1 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-2"))
-meta2 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-7"))
-meta <- list(meta1,meta2)
+  # look for the tophit variants
+  x <- ieugwasr::tophits("ieu-a-2")$rsid 
+  # set study ids and mr_labels
+  ids <- c("ieu-a-2",  "ieu-a-7")
+  mr_labels <- c( "exposure", "outcome")
 
+  # get metadata and create metadata objects
+  metadata <- lapply(seq_along(ids), function(i){
+    m <- create_metadata(ieugwasr::gwasinfo(ids[i])) 
+  })
 
-  ##############################################
-  #Using TwoSampleMR harmonising function
-  # create S4 DataSet object
-  sumset1 <- create_summaryset(d1, metadata=meta1, tools = "mr")
-  sumset2 <- create_summaryset(d2, metadata=meta2, tools ="mr")
-  sumset1 <-setMRlabel(sumset1, mr_label = "exposure")
-  sumset2 <-setMRlabel(sumset2, mr_label = "outcome")
-  dataset <- DataSet(sumset1,sumset2) %>%
-  overlapVariants(., strand = "forward") %>%
-  harmoniseData(.,tolerance = 0.08, action = 1)
-
-
-  # Convert dataset to TwoSampleMR format
-  dataset_mr <- convertForTwoSampleMR(dataset)
+  #  create dataset and convert it to mr format
+  dataset <- lapply(seq_along(ids), function(i){
+    # create summarysets
+    dt <- create_summaryset(ieugwasr::associations(variants = x, id =ids[i]), metadata=metadata[i])   %>% 
+      setMRlabel(., mr_label = mr_labels[i])
+  }) %>%
+    # create dataset
+    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1)  %>%
+    # Convert dataset to TwoSampleMR format
+   convertForTwoSampleMR(.)
 
 
   # Perform the MR analysis 
-  mr_result1 <-  merge(getData(dataset_mr,1),getData(dataset_mr,2), by = c("SNP", "mr_keep"))  %>%
+  mr_result1 <-  merge(getData(dataset,1),getData(dataset,2), by = c("SNP", "mr_keep"))  %>%
     TwoSampleMR::mr(., method_list="mr_ivw") %>% 
     select(id.exposure, id.outcome, method, nsnp, b, se, pval)
 
-  # TODO: convert this to a test
  mr_result2 <- TwoSampleMR::make_dat("ieu-a-2","ieu-a-7") %>%
     TwoSampleMR::mr(., method_list="mr_ivw") %>% 
     select(id.exposure, id.outcome, method, nsnp, b, se, pval)

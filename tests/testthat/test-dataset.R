@@ -1,22 +1,26 @@
 library(dplyr)
 library(ieugwasr)
 
-x <- ieugwasr::tophits("ieu-a-2")$rsid
-d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
-d2 <- ieugwasr::associations(variants = x, id = "ieu-a-7")
-data <-list (d1,d2)
- 
-meta1 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-2"))
-meta2 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-7"))
-meta <- list(meta1,meta2)
-
-
-
-
 
 test_that("compare against 2samplemr", { 
-dataset <- create_dataset(data, metadata = meta, tools = c("mr"), harmonise = TRUE, tolerance = 0.08, action = 1)
-  dataset
+
+  # lookk for the tophit variants
+  x <- ieugwasr::tophits("ieu-a-2")$rsid 
+  ids <- c("ieu-a-2",  "ieu-a-7")
+
+  # get metadata and create metadata objects
+  metadata <- lapply(seq_along(ids), function(i){
+    m <- create_metadata(ieugwasr::gwasinfo(ids[i])) 
+  })
+
+# create dataset using create_summaryset() and create_dataset()
+  dataset <- lapply(seq_along(ids), function(i){
+     # create summarysets
+    dt <- create_summaryset(ieugwasr::associations(variants = x, id =ids[i]), metadata=metadata[i])
+  }) %>%
+    # create dataset
+    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1)
+      
   expect_equal(length(dataset@summary_sets), 2)
 })
 

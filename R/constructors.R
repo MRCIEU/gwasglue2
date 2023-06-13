@@ -1,48 +1,11 @@
-# ieugwasr Functions
-
-#' A function to clump the top hit variants
-#'
-#' @param traits ID of GWAS studies to query
-#' @param clump Logical (default TRUE)
-#' @param source  IEU (default)
-#'
-#' @return Array of SNPs rsids
-clumpTophits <- function(traits,  clump = TRUE, source = ieugwasr::check_access_token()) {
-  ch  <- ieugwasr::tophits(traits[1], clump = clump)
-  snps <- ch$rsid
-  return(snps)
-}
-
-#' PHEWAS_ids
-#' @param variants Array of variants
-#' @param pval p-value threshold. Default = `0.00001`. Inherited from ieugwasr::phewas # nolint: line_length_linter.
-#' @param batch Vector of batch IDs to search across. If `c()` (default) then returns all batches. Iherited fromieugwasr::phewas  # nolint: line_length_linter.
-#' @return id_list Array with traits ids
-phewasIDs <- function(variants, batch, pval) {
-  id_list <- unique(ieugwasr::phewas(pval = pval, variants = variants, batch = batch)$id) 
-  return(id_list)
-}
-
-#' A function to call the summary statistics associated
-#' with specific traits and variants chosen
-#'
-#' @param traits ID of GWAS studies to query
-#' @param variants Array of SNPs rsids
-#'
-#' @return A tibble with the summary statistics for variant association.
-createSumset <- function(traits,variants) {
-  x <- ieugwasr::associations(variants = variants, id = traits)
-  x <- dplyr::arrange(x,rsid)
-  return(x)
-}
-
 # NOTES: sample_size Sample size.  (first look at sumstats and look for max. If Na then some analyses wiil not run. Have a message in analyses for user add meta info)
 # nsnp Number of variants in the study. Optional (length of the summary stats)_
 # build   genome build version. Optional ? message
 
-#' Reads metadata and converts it to gwasglue2 format
+#' @title Metadata object
+#' @description Reads metadata and converts it to gwasglue2 format.
 #' 
-#' @param metadata A dataframe with metadata information.
+#' @param metadata A dataframe with metadata information. Not required.
 #' @param id GWAS study ID.
 #' @param sample_size Sample size.
 #' @param nsnp Number of variants in the study.
@@ -84,7 +47,6 @@ create_metadata <- function(metadata = NULL,
 #' @param data GWAS summary statistics. A tibble
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
-#' @param tools Array of methods that gwasglue2 is going to convert the summarySet to (eg. "mr") 
 #' @param beta_col Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Name of column with standard errors. The default is `"se"`.
 #' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
@@ -100,11 +62,8 @@ create_metadata <- function(metadata = NULL,
 #' @param ... Other columns
 #' @return A gwasglue2 SummarySet object
 #' @export 
-
-
 create_summaryset <- function (data = tibble(),
                               metadata = NULL,
-                              tools,
                               beta_col = "beta",
                               se_col = "se",
                               samplesize_col = "n",
@@ -167,14 +126,9 @@ create_summaryset <- function (data = tibble(),
   s <- SummarySet(sumstats = data) %>%
     setMetadata(., metadata) %>%
     setVariantid(.) %>%
-    setRSID(.,.@ss$rsid) %>%
-    setTool(., tools = tools)
-
+    setRSID(.,.@ss$rsid)
     return(s)
    }
-
-
-
 
 
 standardise <- function(d)
@@ -189,16 +143,43 @@ standardise <- function(d)
     d
 }
 
-
-
-#' Creates a DataSet object and harmonise data against data
+#' Creates a DataSet object using gwasglue2 SummarySet objects, and harmonise data against data
 #'
 #' @param data A list of gwasglue2 SummarySet objects
-#' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset. 
-#' @param tools Array of methods that gwasglue2 is going to convert the summarySet to (eg. "mr") 
 #' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
 #' @param tolerance Inherited from harmoniseData() (default 0.08)
 #' @param action Inherited from harmoniseData() (Default 1)
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+#' @param strand dna strand orientation  (Default "forward", other option "reverse")
+#' @return A harmonised gwasglue2 DataSet object
+#' @export 
+create_dataset <- function(data=list(),
+                          harmonise = TRUE,
+                          tolerance = 0.08,
+                          action = 1,
+                          strand = "forward") {
+
+  ds <- DataSet(data) %>% overlapVariants(., strand = strand)
+    
+  if (harmonise == TRUE) {
+     ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+  }
+  return(ds)
+}
+
+
+#' Creates a DataSet object using GWAS summary statistics, and harmonise data against data
+#'
+#' @param data A list of GWAS summary data (tibles)
+#' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset. 
+#' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
+#' @param tolerance Inherited from harmoniseData() (default 0.08)
+#' @param action Inherited from harmoniseData() (Default 1)
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @param strand dna strand orientation  (Default "forward", other option "reverse")
 #' @param beta_col Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Name of column with standard errors. The default is `"se"`.
@@ -216,9 +197,8 @@ standardise <- function(d)
 #' @seealso [create_metadata()] to create a metadata object
 #' @return A harmonised gwasglue2 DataSet object
 #' @export
-create_dataset <- function(data = list(),
+create_dataset_from_tibble <- function(data = list(),
                           metadata = NULL,
-                          tools = NULL,
                           harmonise = TRUE,
                           tolerance = 0.08,
                           action = 1,
@@ -237,14 +217,13 @@ create_dataset <- function(data = list(),
                           trait_col = "trait",
                           ...) {
 
-  ds <- DataSet()
+  ds <- DataSet(list())
   if (is.null(metadata)){
     metadata = vector("list", length(data))
   }
   for (i in seq_along(data)){
     s <- create_summaryset(data= data[[i]],
         metadata = metadata[[i]],
-        tools = tools,
         source = source,
         beta_col = beta_col,
         se_col = se_col,
@@ -273,35 +252,39 @@ create_dataset <- function(data = list(),
 
 
 
-#' Plot
+#' Merge Datasets 
 #'
-#' @param dataset gwasglue2 DataSet object
-#' @param type Type of plot (Only available "manhattan" plots at the moment)
-#' @param title Main title for the plot
-#' @export
-#'
-#' @return A plot
-plot_gwasglue <- function(dataset, type, title){
-  
-  if(type == "manhattan"){
-    ntraits <- getLength(dataset)
-    nb_rows <- ceiling(ntraits/2)
-     # Add main title
+#' @param datasets A list of gwasglue2 DataSet objects
+#' @return  A gwasglue2 DataSet object  with input DataSets merged
+merge_datasets <- function(datasets) {
+    n_datasets <- length(datasets)
+	  ds <- DataSet()
+    count <- 1
+    for(i in 1:n_datasets){
+      if (isS4(datasets[[i]]) == FALSE){
+         next
+         }
+       n_ss <- length(datasets[[i]]@summary_sets)
+       ds@ld_matrix <- datasets[[i]]@ld_matrix
+       for(j in 1:n_ss){
+            ds@summary_sets[[count]] <- datasets[[i]]@summary_sets[[j]]
+            count <- count + 1
+            }     
+    }
+	# For now I am assuming that in all datasets the following slots are the same
+    # ds@overlap_variants <- datasets[[1]]@overlap_variants
+    # ds@is_resized <- datasets[[1]]@is_resized
+    # ds@is_harmonised <- datasets[[1]]@is_harmonised
+    # ds@overall_dropped_SNPs <- datasets[[1]]@overall_dropped_SNPs
+    # ds@dropped_SNPs <- datasets[[1]]@dropped_SNPs
+    # ds@palindromic_SNPs <- datasets[[1]]@palindromic_SNPs
+    # ds@ambiguous_SNPs <- datasets[[1]]@ambiguous_SNPs
+    # ds@incompatible_alleles_SNPs <- datasets[[1]]@incompatible_alleles_SNPs
     
-    
-    par(mfrow=c(nb_rows, 2))
-    
-    
-      for (i in 1:ntraits){
-        plot(dataset@summary_sets[[i]]@ss$position, -log10(dataset@summary_sets[[i]]@ss$p), main = "", xlab = "position", ylab = "-log10(p-value)", cex=0.8, pch=20)
-        mtext(dataset@summary_sets[[i]]@metadata$trait, side = 3, line = 0.5)
-      }
-    mtext(as.expression(bquote(bold(.(title)))),
-          side = 3,
-          line = - 2.5,
-          outer = TRUE,
-          cex = 1.3)
-  }
-}
+    # ds@is_harmonisedLD <- datasets[[1]]@is_harmonisedLD
+    # ds@zscores <- datasets[[1]]@zscores
+    # ds@is_converted <- datasets[[1]]@is_converted
 
+    return(ds)
+}
 

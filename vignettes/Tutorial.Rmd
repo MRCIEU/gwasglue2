@@ -63,8 +63,8 @@ meta2 <-create_metadata(m2)
 Construct the Summary Sets and set the tool and metadata (it uses ieugwasr::gwasinfo() with the source and id arguments)
 
 ```{r}
-sumset1 <- create_summaryset(d1, metadata=meta1, tools = "mr")
-sumset2 <- create_summaryset(d2, metadata=meta2, tools ="mr")
+sumset1 <- create_summaryset(d1, metadata=meta1)
+sumset2 <- create_summaryset(d2, metadata=meta2)
 
 ```
 

@@ -6,7 +6,7 @@ x <- ieugwasr::tophits("ieu-a-2")$rsid
 d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
 meta1 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-2"))
 
-sumset1 <- create_summaryset(d1, metadata=meta1, tools = "mr")
+sumset1 <- create_summaryset(d1, metadata=meta1)
 
 
 test_that("create summaryset", {

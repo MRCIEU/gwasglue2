@@ -5,7 +5,6 @@
 #' @slot ss A tibble with the GWAS summary statistics (default NA).
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
-#' @slot tools The tools that gwasglue2 is going to convert to (default NA).
 #' @slot mr_label Exposure/Outcome (default NA).
 setClass("SummarySet",
   slots = c(
@@ -13,7 +12,6 @@ setClass("SummarySet",
     ss = "tbl_df",
     metadata = "list", 
     variants = "character",
-    tools = "character",
     mr_label = "character"
   ),
   prototype = prototype(
@@ -21,7 +19,6 @@ setClass("SummarySet",
     ss = NA_character_,
     metadata = list(NA),
     variants = NA_character_,
-    tool = NA_character_,
     mr_label = NA_character_
   ),
   contains = class(dplyr::tibble())
@@ -191,41 +188,6 @@ setGeneric("getVariants",function(object) standardGeneric("getVariants"))
 setMethod("getVariants","SummarySet",
           function(object) {
             return(object@variants)
-          }
-)
-
-
-#' Set Method to store the tools that gwasglue2 is going to convert the SummarySet to
-#'
-#' @param object A gwasglue2 SummarySet object
-#' @param tools The tools
-#' @return The gwasglue2 SummarySet object with the tools stored
-#' @export
-#' @docType methods
-#' @rdname setTool-methods
-setGeneric("setTool",function(object,tools) standardGeneric("setTool"))
-#' @rdname setTool-methods
-setMethod( "setTool", "SummarySet",
-           function(object, tools) {
-             if(!is.null(tools)){
-              object@tools <- tools
-             message(paste("Gwasglue is going to convert data to ", list(object@tools)))
-          }  
-             return(object)
-           }
-)
-#' Get Method to retrieve the tools stored in the SummarySet
-#'
-#' @param object A gwasglue2 SummarySet object
-#' @return The tools
-#' @export
-#' @docType methods
-#' @rdname getTool-methods
-setGeneric("getTool",function(object) standardGeneric("getTool"))
-#' @rdname getTool-methods
-setMethod("getTool","SummarySet",
-          function(object) {
-            return(object@tools)
           }
 )
 
