@@ -13,7 +13,7 @@ meta.F <- function(beta, se){
 }
 
 
-meta_analyse <- function(dataset, method = "fixed"){
+meta_estimates <- function(dataset, method = "fixed"){
 length_dt <- getLength(dataset)
 nsnps <- dim(getData(dataset,1))[1]
 beta <- matrix(ncol = length_dt, nrow = nsnps)
@@ -49,7 +49,7 @@ meta_analysis <- function(dataset, method = "fixed") {
 
   lapply(1:length_dt, function(i) {
     if (is.null(getMetadata(getSummarySet(dataset,i))$sample_size) || is.na(getMetadata(getSummarySet(dataset,i))$sample_size)){
-      stop("No sample size information in metadata for at least one of the SummarySets. More details on how to add to metadata in 'help(gwasglue2::create_metadata)' and 'help(gwasglue2::getMetadata)'." )
+      stop("No sample size information in metadata for at least one of the SummarySets. More details on how to add to metadata in 'help(gwasglue2::create_metadata)' and 'help(gwasglue2::SetMetadata)'." )
     }
     })
 
@@ -90,7 +90,7 @@ meta_analysis <- function(dataset, method = "fixed") {
                             meta_analysis = TRUE
                             )
   # create the summary statistics tibble
-  meta_dt <- meta_analyse(dataset, method = method) %>% mutate(n = n_meta, 
+  meta_dt <- meta_estimates(dataset, method = method) %>% mutate(n = n_meta, 
                                     chr = getData(dataset,1)$chr, 
                                     position = getData(dataset,1)$position,
                                     rsid = getData(dataset,1)$rsid,
