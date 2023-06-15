@@ -52,21 +52,61 @@ setMethod("getSummaryData", "SummarySet",
           })
 
 
-#' Set Method to store metadata in the SummarySet 
+#' Set Method to add metadata to the SummarySet 
 #'
 #' @param summary_set A gwasglue2 SummarySet object.
-#' @param metadata A dataframe with metadata information
+#' @param id GWAS study ID.
+#' @param sample_size Sample size.
+#' @param nsnp Number of variants in the study.
+#' @param trait  Phenotype name corresponding the the variant.
+#' @param sd Trait standard deviation.
+#' @param unit TODO 
+#' @param ncontrol TODO
+#' @param build   genome build version.
+#' @param population  Study sample population.
+#' @param ncase Number of cases in study.
 #' @return gwasglue2 SummarySet object with metadata stored
 #' @export
 #' @docType methods
 #' @rdname setMetadata-methods
-setGeneric("setMetadata", function(summary_set, metadata) standardGeneric("setMetadata"))
+setGeneric("setMetadata", function(summary_set,
+                           id = getMetadata(summary_set)$id,
+                           sample_size = getMetadata(summary_set)$sample_size,
+                           nsnp = getMetadata(summary_set)$nsnp,
+                           trait = getMetadata(summary_set)$trait,
+                           sd = getMetadata(summary_set)$sd,
+                           unit = getMetadata(summary_set)$unit,
+                           ncontrol = getMetadata(summary_set)$ncontrol, 
+                           build = getMetadata(summary_set)$build,
+                           population = getMetadata(summary_set)$population,
+                           ncase = getMetadata(summary_set)$ncase) standardGeneric("setMetadata"))
 #' @rdname setMetadata-methods
 setMethod("setMetadata", "SummarySet",
-          function(summary_set,metadata) {
-            summary_set@metadata <- as.list(metadata)
-            return(summary_set)
-          })
+          function(summary_set,
+            id,
+            sample_size,
+            nsnp,
+            trait,
+            sd,
+            unit,
+            ncontrol, 
+            build,
+            population,
+            ncase) {
+            
+ summary_set@metadata$id <- id
+ summary_set@metadata$sample_size <- sample_size
+ summary_set@metadata$nsnp <- nsnp
+ summary_set@metadata$trait <- trait
+ summary_set@metadata$sd <- sd
+ summary_set@metadata$unit <- unit
+ summary_set@metadata$ncontrol <- ncontrol
+ summary_set@metadata$build <- build
+ summary_set@metadata$population <- population
+ summary_set@metadata$ncase <- ncase
+
+  return(summary_set)
+})
           
 #' Get Method to retrieve the metadata stored in the SummarySet 
 #'
