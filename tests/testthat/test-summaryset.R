@@ -1,16 +1,15 @@
 
 library(dplyr)
-library(ieugwasr)
 
-x <- ieugwasr::tophits("ieu-a-2")$rsid
-d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
-meta1 <-create_metadata(ieugwasr::gwasinfo( "ieu-a-2"))
+d1 <- as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
+m1 <- read.table(system.file("tests", "ieu-a-2_metadata.txt", package="gwasglue2"))
+meta1 <-create_metadata(m1)
 
-sumset1 <- create_summaryset(d1, metadata=meta1)
+sumset1 <- create_summaryset(d1, metadata = meta1)
 
 
 test_that("create summaryset", {
-    expect_true(nrow(sumset1@ss) == length(x))
+    expect_true(nrow(sumset1@ss) == dim(d1)[1])
 })
 
 

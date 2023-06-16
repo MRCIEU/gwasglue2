@@ -1,12 +1,11 @@
 # Need extensive testing of different harmonisation scenarios
 library(dplyr)
 
-
-
+scenarios <- as_tibble(read.csv(system.file("tests", "harmonisation_scenarios.csv", package="gwasglue2")))
 
 test_that("harmonisation scenario: easy", {
 test <- "easy"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+
 ids <- 1:2
 
 df <- lapply(seq_along(ids), function(i) {
@@ -30,7 +29,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario: alphabetical", {
 test <- "alphabetical"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -57,7 +56,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario: flip1", {
 test <- "flip1"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -113,7 +112,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  palindrome_flip", {
 test <-  "palindrome_flip"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -136,7 +135,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  palindrome_noflip", {
 test <-  "palindrome_noflip"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -160,7 +159,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  easy_indels", {
 test <-  "easy_indels"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -184,7 +183,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  indels_flip1", {
 test <-  "indels_flip1"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -208,7 +207,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  indels_drop1", {
 test <-  "indels_drop1"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -232,7 +231,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  multiallele1", {
 test <-  "multiallele1"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -256,7 +255,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  multiallele2", {
 test <-  "multiallele2"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -280,7 +279,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  multiallele3", {
 test <-  "multiallele3"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 
@@ -306,7 +305,7 @@ lapply(seq_along(ids), function(i) {
 
 test_that("harmonisation scenario:  multiallele4", {
 test <-  "multiallele4"
-scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
+# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
 ids <- 1:2
 
 

@@ -1,0 +1,2 @@
+"id" "trait" "subcategory" "sample_size" "year" "category" "build" "population" "priority" "consortium" "nsnp" "pmid" "mr" "sd" "ontology" "sex" "group_name" "author" "unit"
+"1" "ieu-a-2" "Body mass index" "Anthropometric" 339224 2015 "Risk factor" "HG19/GRCh37" "Mixed" 1 "GIANT" 2555511 25673413 1 4.77 NA "Males and Females" "public" "Locke AE" "SD (kg/m^2)"

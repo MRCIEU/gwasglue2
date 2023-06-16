@@ -1,0 +1,2 @@
+"id" "trait" "subcategory" "sample_size" "year" "category" "build" "population" "priority" "consortium" "nsnp" "pmid" "mr" "ncontrol" "ncase" "ontology" "sex" "group_name" "author" "unit"
+"1" "ieu-a-7" "Coronary heart disease" "Cardiovascular" 184305 2015 "Disease" "HG19/GRCh37" "Mixed" 1 "CARDIoGRAMplusC4D" 9455779 26343387 1 123504 60801 NA "Males and Females" "public" "Nikpay" "log odds"
