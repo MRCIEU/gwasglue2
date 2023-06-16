@@ -137,7 +137,7 @@ create_summaryset_from_tibble <- function (data = tibble(),
   # Check column names and change them to ieugwasr nomenclature
   data_cols <- names(data)  
   ieu_req <- c("beta", "se", "p", "chr",  "position", "rsid", "ea",  "nea")
-  ieu_optional <- c("n", "rsid", "eaf", "id", "trait")
+  # ieu_optional <- c("n", "rsid", "eaf", "id", "trait")
   req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, rsid_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
 
     if (all(req_cols%in%data_cols) == FALSE){
@@ -207,20 +207,20 @@ standardise <- function(d)
 #' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
 #' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
-#' @param strand dna strand orientation  (Default "forward", other option "reverse")
 #' @return A harmonised gwasglue2 DataSet object
 #' @export 
 create_dataset <- function(summary_sets=list(),
                           harmonise = TRUE,
                           tolerance = 0.08,
-                          action = 1,
-                          strand = "forward") {
+                          action = 1) {
+  ds <- DataSet(summary_sets)
 
-  ds <- DataSet(summary_sets) %>% overlapVariants(., strand = strand)
-    
   if (harmonise == TRUE) {
-     ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+    ds <- ds %>% overlapVariants(., action = action)
   }
+  if (action != 1 && harmonise == TRUE){
+        ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+  } 
   return(ds)
 }
 
@@ -235,7 +235,6 @@ create_dataset <- function(summary_sets=list(),
 #' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
 #' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
-#' @param strand dna strand orientation  (Default "forward", other option "reverse")
 #' @param beta_col Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Name of column with standard errors. The default is `"se"`.
 #' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
@@ -257,7 +256,6 @@ create_dataset_from_tibble <- function(data = list(),
                           harmonise = TRUE,
                           tolerance = 0.08,
                           action = 1,
-                          strand = "forward",
                           beta_col = "beta",
                           se_col = "se",
                           samplesize_col = "n",
@@ -296,12 +294,12 @@ create_dataset_from_tibble <- function(data = list(),
     ds@summary_sets[[i]] <- s
   }
 
-  ds <- ds %>% overlapVariants(., strand = strand)
-    
   if (harmonise == TRUE) {
-     ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+    ds <- ds %>% overlapVariants(., action = action)
   }
-
+  if (action != 1 && harmonise == TRUE){
+        ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+  } 
   return(ds)
 }
 
@@ -316,15 +314,13 @@ create_dataset_from_tibble <- function(data = list(),
 #' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
 #' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
-#' @param strand dna strand orientation  (Default "forward", other option "reverse")
 #' @return A harmonised gwasglue2 DataSet object with input SummarySets added
 #' @export 
 add_summaryset <- function(summary_sets,
                           dataset,
                           harmonise = TRUE,
                           tolerance = 0.08,
-                          action = 1,
-                          strand = "forward") {
+                          action = 1) {
   
   l <- length(dataset@summary_sets)
   
@@ -338,11 +334,14 @@ add_summaryset <- function(summary_sets,
 
   message("\nSummarySet added to DataSet")
   
-  ds <- dataset %>% overlapVariants(., strand = strand)
-    
+  ds <- dataset
+
   if (harmonise == TRUE) {
-     ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+    ds <- ds %>% overlapVariants(., action = action)
   }
+  if (action != 1 && harmonise == TRUE){
+        ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+  } 
   return(ds)
 
 } 
