@@ -29,9 +29,10 @@ remotes::install_github('ritarasteiro/susieR')
 devtools::load_all("../") # this was added just for development
 library(susieR)     # fork that takes Summaryset
 library(hyprcoloc)  # fork that takes Dataset
+library(dplyr)
 ```
 
-We'll analyse the following traits (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around different genes. 
+We'll analyse the following traits (chd - coronary heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around different genes. 
 
 First we will set the path to where the reference population plink files are located to build the LD matrix
 
@@ -117,7 +118,7 @@ Here, we create an harmonised dataset named `hmgcr`, which includes all the trai
 
 Before starting with the fine mapping and colocalisation analyses, we are going to look at the p-values for each variant in each trait. 
 
-```{r fig.dim = c(8, 12)}
+```{r fig.dim = c(8, 12), fig.cap="Manhattan plot for each trait in the HMGCR region", fig.align = "center"}
 # plot gwasglue2 DataSet object (hmgcr)
 plot_gwasglue(hmgcr, type="manhattan", title = "HMGCR")
 
