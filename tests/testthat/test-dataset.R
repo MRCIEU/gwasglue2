@@ -1,7 +1,7 @@
 
 # GWAS summary data
-d1 <- as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
-d2 <- as_tibble(read.table(system.file("tests", "ieu-a-7_sumdata_ieu-0-7TopHits.txt", package="gwasglue2")))
+d1 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
+d2 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-7_sumdata_ieu-0-7TopHits.txt", package="gwasglue2")))
 data <- list(d1,d2)
 
 # get metadata and create metadata objects
