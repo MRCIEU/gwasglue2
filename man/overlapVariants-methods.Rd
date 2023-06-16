@@ -6,14 +6,18 @@
 \alias{overlapVariants,DataSet-method}
 \title{Look for overlapped variants between SummarySets in the DataSet and Resize}
 \usage{
-overlapVariants(object, strand)
+overlapVariants(dataset, action = 1)
 
-\S4method{overlapVariants}{DataSet}(object, strand = "forward")
+\S4method{overlapVariants}{DataSet}(dataset, action = 1)
 }
 \arguments{
-\item{object}{The gwasglue2 DataSet object}
+\item{dataset}{The gwasglue2 DataSet object}
 
-\item{strand}{The direction of the DNA sequence \code{forward} or \code{reverse} (Default \code{forward})}
+\item{action}{Level of strictness in dealing with SNPs during harmonisation.T#' * \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+\itemize{
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+\item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+}}
 }
 \value{
 The gwasglue2 DataSet object resized

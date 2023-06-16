@@ -10,7 +10,6 @@ create_dataset_from_tibble(
   harmonise = TRUE,
   tolerance = 0.08,
   action = 1,
-  strand = "forward",
   beta_col = "beta",
   se_col = "se",
   samplesize_col = "n",
@@ -41,8 +40,6 @@ create_dataset_from_tibble(
 \item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 \item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 }}
-
-\item{strand}{dna strand orientation  (Default "forward", other option "reverse")}
 
 \item{beta_col}{Name of column with effect sizes. The default is \code{"beta"}.}
 

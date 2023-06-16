@@ -8,8 +8,7 @@ create_dataset(
   summary_sets = list(),
   harmonise = TRUE,
   tolerance = 0.08,
-  action = 1,
-  strand = "forward"
+  action = 1
 )
 }
 \arguments{
@@ -25,8 +24,6 @@ create_dataset(
 \item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 \item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 }}
-
-\item{strand}{dna strand orientation  (Default "forward", other option "reverse")}
 }
 \value{
 A harmonised gwasglue2 DataSet object
