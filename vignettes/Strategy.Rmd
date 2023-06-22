@@ -117,9 +117,9 @@ Accession info should be generated upon creation:
 
 ## Design
 
-gwasglue2 has several constructors to build the `SummarySet` and `DataSet` objects, as well as getters and setters methods to add or retrieve information within. 
+gwasglue2 has several constructors to build the `SummarySet` and `DataSet` objects, as well as getter and setter methods to add or retrieve information within. 
 
-To build the `SummarySet` object we need just one constructor function, the ``create_summaryset()``. This one calls different `create_summaryset_from_`, depending of the source type of the GWAS summary data and also creates metadata using information from the summary data if none is given. It is also possible to build a metadata object using `create_metadata()`  and input it in `create_summaryset()`. Figure \@ref(fig:summaryset) shows the structure design of `SummarySet' with the getters and setters on the left and constructors on the right. 
+To build the `SummarySet` object, we need just one constructor function, the ``create_summaryset()``. It calls different `create_summaryset_from_`, depending of the source type of the GWAS summary data and also creates metadata using information from the summary data if none is given. It is also possible to build a metadata object using `create_metadata()`  and input it in `create_summaryset()`. Figure \@ref(fig:summaryset) shows the structure design of `SummarySet` with the getters and setters on the left and constructors on the right. 
 
 ![(#fig:summaryset) SummarySet](SummarySet.png)
 
