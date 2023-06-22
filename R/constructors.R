@@ -165,16 +165,16 @@ create_summaryset_from_tibble <- function (data = tibble(),
     metadata = create_metadata()
   }
   # checks on metadata using data info
-  if ("id" %in% colnames(metadata) && "id" %in% colnames(data) && is.na(metadata$id)){ 
+  if ("id" %in% names(metadata) && "id" %in% colnames(data) && is.na(metadata$id)){ 
     metadata$id <- unique(data$id)
     }
-  if ("sample_size" %in% colnames(metadata) && "n" %in% colnames(data) && is.na(metadata$sample_size) && !all(is.na(data$n))){
+  if ("sample_size" %in% names(metadata) && "n" %in% colnames(data) && is.na(metadata$sample_size) && !all(is.na(data$n))){
     metadata$sample_size <- max(data$n, na.rm = TRUE)
     }
-  if ("nsnp" %in% colnames(metadata) && is.na(metadata$nsnp)){ 
+  if ("nsnp" %in% names(metadata) && is.na(metadata$nsnp)){ 
     metadata$nsnp <- dim(data)[1]
     }
-  if ("trait" %in% colnames(metadata) && "trait" %in% colnames(data) && is.na(metadata$trait)){ 
+  if ("trait" %in% names(metadata) && "trait" %in% colnames(data) && is.na(metadata$trait)){ 
     metadata$trait <- unique(data$trait)
     }
 
@@ -182,6 +182,10 @@ create_summaryset_from_tibble <- function (data = tibble(),
     setMetadata(., metadata) %>%
     setVariantid(.) %>%
     setRSID(.,.@ss$rsid)
+
+  #set source
+  s@source <- list("type" = "tibble", "creation" = Sys.time())
+  
     return(s)
 }
 

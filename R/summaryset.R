@@ -8,14 +8,14 @@
 #' @slot mr_label Exposure/Outcome (default NA).
 setClass("SummarySet",
   slots = c(
-    source = "character",
+    source = "list",
     ss = "tbl_df",
     metadata = "list", 
     variants = "character",
     mr_label = "character"
   ),
   prototype = prototype(
-    source = NA_character_,
+    source = list(NA),
     ss = NA_character_,
     metadata = list(NA),
     variants = NA_character_,
@@ -55,6 +55,24 @@ setMethod("getSummaryData", "SummarySet",
 #' Set Method to add metadata to the SummarySet 
 #'
 #' @param summary_set A gwasglue2 SummarySet object.
+#' @param metadata A list with metadata information. 
+#' @docType methods
+#' @rdname setMetadata-methods
+setGeneric("setMetadata", function(summary_set, 
+                           metadata) standardGeneric("setMetadata"))
+#' @rdname setMetadata-methods
+setMethod("setMetadata", "SummarySet",
+          function(summary_set,
+            metadata) {
+            
+ summary_set@metadata <- metadata
+
+  return(summary_set)
+})
+
+#' Method to add metadata to the SummarySet 
+#'
+#' @param summary_set A gwasglue2 SummarySet object.
 #' @param id GWAS study ID.
 #' @param sample_size Sample size.
 #' @param nsnp Number of variants in the study.
@@ -69,7 +87,7 @@ setMethod("getSummaryData", "SummarySet",
 #' @export
 #' @docType methods
 #' @rdname setMetadata-methods
-setGeneric("setMetadata", function(summary_set,
+setGeneric("addToMetadata", function(summary_set, 
                            id = getMetadata(summary_set)$id,
                            sample_size = getMetadata(summary_set)$sample_size,
                            nsnp = getMetadata(summary_set)$nsnp,
@@ -79,9 +97,9 @@ setGeneric("setMetadata", function(summary_set,
                            ncontrol = getMetadata(summary_set)$ncontrol, 
                            build = getMetadata(summary_set)$build,
                            population = getMetadata(summary_set)$population,
-                           ncase = getMetadata(summary_set)$ncase) standardGeneric("setMetadata"))
+                           ncase = getMetadata(summary_set)$ncase) standardGeneric("addToMetadata"))
 #' @rdname setMetadata-methods
-setMethod("setMetadata", "SummarySet",
+setMethod("addToMetadata", "SummarySet",
           function(summary_set,
             id,
             sample_size,
@@ -107,7 +125,8 @@ setMethod("setMetadata", "SummarySet",
 
   return(summary_set)
 })
-          
+
+
 #' Get Method to retrieve the metadata stored in the SummarySet 
 #'
 #' @param summary_set A gwasglue2 SummarySet object.
