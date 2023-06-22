@@ -5,21 +5,21 @@
 #' @slot ss A tibble with the GWAS summary statistics (default NA).
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
-#' @slot mr_label Exposure/Outcome (default NA).
+#' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA).
 setClass("SummarySet",
   slots = c(
     source = "list",
     ss = "tbl_df",
     metadata = "list", 
     variants = "character",
-    mr_label = "character"
+    attributes = "list"
   ),
   prototype = prototype(
     source = list(NA),
     ss = NA_character_,
     metadata = list(NA),
     variants = NA_character_,
-    mr_label = NA_character_
+    attributes = list(NA)
   ),
   contains = class(dplyr::tibble())
 )
@@ -86,7 +86,7 @@ setMethod("setMetadata", "SummarySet",
 #' @return gwasglue2 SummarySet object with metadata stored
 #' @export
 #' @docType methods
-#' @rdname setMetadata-methods
+#' @rdname addToMetadata-methods
 setGeneric("addToMetadata", function(summary_set, 
                            id = getMetadata(summary_set)$id,
                            sample_size = getMetadata(summary_set)$sample_size,
@@ -98,7 +98,7 @@ setGeneric("addToMetadata", function(summary_set,
                            build = getMetadata(summary_set)$build,
                            population = getMetadata(summary_set)$population,
                            ncase = getMetadata(summary_set)$ncase) standardGeneric("addToMetadata"))
-#' @rdname setMetadata-methods
+#' @rdname addToMetadata-methods
 setMethod("addToMetadata", "SummarySet",
           function(summary_set,
             id,
@@ -142,9 +142,15 @@ setMethod("getMetadata", "SummarySet",
           })
 
 
-
-
+#' Get Method to retrieve the source information of the GWAS Summary Statistics stored in the SummarySet 
+#'
+#' @param summary_set A gwasglue2 SummarySet object.
+#' @return The source information of the GWAS Summary Statistics (type of file and accession/creation date). 
+#' @export
+#' @docType methods
+#' @rdname getSource-methods
 setGeneric("getSource", function(summary_set) standardGeneric("getSource"))
+#' @rdname getSource-methods
 setMethod("getSource", "SummarySet",
           function(summary_set) {
             return(summary_set@source)
@@ -251,35 +257,36 @@ setMethod("getVariants","SummarySet",
 )
 
 
-#' Set Method to store the Mendelian randomization (MR) label in the SummarySet
+#' Set Method to store the attributes of the SummarySet
 #'
 #' @param summary_set A gwasglue2 SummarySet object
-#' @param mr_label MR label for SummarySet. It can be either `"exposure"` or `"outcome"`
-#' @return The gwasglue2 SummarySet object with the MR labels stored
+#' @param mr_label It can be either `"exposure"` or `"outcome". Default NULL.
+#' @param ... Other attributes information
+#' @return The gwasglue2 SummarySet object with the attributes stored
 #' @export
 #' @docType methods
-#' @rdname setMRlabel-methods
-setGeneric("setMRlabel",function(summary_set,mr_label) standardGeneric("setMRlabel"))
-#' @rdname setMRlabel-methods
-setMethod( "setMRlabel", "SummarySet",
-           function(summary_set,mr_label) {
-             summary_set@mr_label <- mr_label
+#' @rdname setAttributes-methods
+setGeneric("setAttributes",function(summary_set, mr_label = NULL,...) standardGeneric("setAttributes"))
+#' @rdname setAttributes-methods
+setMethod( "setAttributes", "SummarySet",
+           function(summary_set,mr_label = NULL,...) {
+             summary_set@attributes <- list(mr_label =mr_label, ...)
              return(summary_set)
            }
 )
 
-#' Get Method to retrieve the Mendelian randomization (MR) label linked to the SummarySet
+#' Get Method to retrieve the attributes linked to the SummarySet
 #'
 #' @param summary_set A gwasglue2 SummarySet object
-#' @return The MR label associated with the SummarySet
+#' @return The attributes associated with the SummarySet
 #' @export
 #' @docType methods
-#' @rdname getMRlabel-methods
-setGeneric("getMRlabel",function(summary_set) standardGeneric("getMRlabel"))
-#' @rdname getMRlabel-methods
-setMethod("getMRlabel","SummarySet",
+#' @rdname getAttributes-methods
+setGeneric("getAttributes",function(summary_set) standardGeneric("getAttributes"))
+#' @rdname getAttributes-methods
+setMethod("getAttributes","SummarySet",
           function(summary_set) {
-            return(summary_set@mr_label)
+            return(summary_set@attributes)
           }
 )
 
