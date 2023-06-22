@@ -37,10 +37,21 @@ ld_matrix_local <- function(variants, bfile, plink_bin)
 	)
 	system(fun2)
 	res <- read.table(paste0(fn, ".ld"), header=FALSE) %>% as.matrix
+
+	# standardise LD matrix. When alleles are not in alphabetical order flip and multiply col/row by -1
+	alleles <- bim[,5:6]
+	alleles_sorted <- t(apply(alleles,1,sort))
+	flip <- alleles[,1] !=alleles_sorted[,1]
+	res[flip,flip] <- res[flip,flip] * -1
+	diag(res) <- 1
+
 	rownames(res) <- colnames(res) <- paste(create_variantid_plink(bim), bim$V5, bim$V6, sep="|")
 	
 	return(res)
 }
+
+
+
 
 
 create_variantid_plink <-function(bim_file) {
@@ -67,7 +78,7 @@ create_variantid_plink <-function(bim_file) {
 
 
 
-#' Harmonise LD matrix against summary data
+#' Harmonise LD matrix against summary data (now it just looks for overlapef variants. The harmonisation is done in ld_matrix_local)
 #' harmonise_ld_dat() is based TwoSampleMR::harmonise_ld_dat()
 #'
 #  LD matrix returns with variantid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be dat1 dataset or harmonised dartaset
@@ -105,13 +116,13 @@ harmonise_ld_dat <- function(x, ld){
 	}
 
 
-	snpnames$flip1 <- snpnames$X2 != snpnames$ea
-	x <- subset(x, variantid %in% snpnames$variantid)
-	temp1 <- x$ea[snpnames$flip1]
-	temp2 <- x$nea[snpnames$flip1]
-	x$beta[snpnames$flip1] <- x$beta[snpnames$flip1] * -1
-	x$ea[snpnames$flip1] <- temp2
-	x$nea[snpnames$flip1] <- temp1
+	# snpnames$flip1 <- snpnames$X2 != snpnames$ea
+	# x <- subset(x, variantid %in% snpnames$variantid)
+	# temp1 <- x$ea[snpnames$flip1]
+	# temp2 <- x$nea[snpnames$flip1]
+	# x$beta[snpnames$flip1] <- x$beta[snpnames$flip1] * -1
+	# x$ea[snpnames$flip1] <- temp2
+	# x$nea[snpnames$flip1] <- temp1
 
 	rownames(ld) <- snpnames$variantid
 	colnames(ld) <- snpnames$variantid
