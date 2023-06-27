@@ -60,3 +60,9 @@ Finally, we perform the meta-analysis in <meta> to create a new summary set
  ```
 
 
+hmgcr_chd_meta <- as.list(hmgcr_chd) %>%
+
+  # create dataset and harmonise
+  create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1) %>%
+  # meta-analysis to create a new summary set
+  meta_analysis(.)  
