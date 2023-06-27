@@ -16,10 +16,6 @@ variants<-cbind(dataset@summary_sets[[1]]@ss$chr, dataset@summary_sets[[1]]@ss$p
 
 
 
-
-
-
-
 # Get methods for LDMatrix
 setGeneric("getLDMatrix",function(dataset) standardGeneric("getLDMatrix"))
 setMethod("getLDMatrix", "DataSet",

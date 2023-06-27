@@ -1,21 +1,18 @@
 
 #' An S4 class to represent the Summary Set
 #'
-#' @slot source Eg.IEUopenGWAS (default NA).
 #' @slot ss A tibble with the GWAS summary statistics (default NA).
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
 #' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA).
 setClass("SummarySet",
   slots = c(
-    source = "list",
     ss = "tbl_df",
     metadata = "list", 
     variants = "character",
     attributes = "list"
   ),
   prototype = prototype(
-    source = list(NA),
     ss = NA_character_,
     metadata = list(NA),
     variants = NA_character_,
@@ -70,7 +67,7 @@ setMethod("setMetadata", "SummarySet",
   return(summary_set)
 })
 
-#' Method to add metadata to the SummarySet 
+#' Add to metadata in the SummarySet 
 #'
 #' @param summary_set A gwasglue2 SummarySet object.
 #' @param id GWAS study ID.
@@ -142,19 +139,19 @@ setMethod("getMetadata", "SummarySet",
           })
 
 
-#' Get Method to retrieve the source information of the GWAS Summary Statistics stored in the SummarySet 
-#'
-#' @param summary_set A gwasglue2 SummarySet object.
-#' @return The source information of the GWAS Summary Statistics (type of file and accession/creation date). 
-#' @export
-#' @docType methods
-#' @rdname getSource-methods
-setGeneric("getSource", function(summary_set) standardGeneric("getSource"))
-#' @rdname getSource-methods
-setMethod("getSource", "SummarySet",
-          function(summary_set) {
-            return(summary_set@source)
-          })
+# #' Get Method to retrieve the source information of the GWAS Summary Statistics stored in the SummarySet 
+# #'
+# #' @param summary_set A gwasglue2 SummarySet object.
+# #' @return The source information of the GWAS Summary Statistics (type of file and accession/creation date). 
+# #' @export
+# #' @docType methods
+# #' @rdname getSource-methods
+# setGeneric("getSource", function(summary_set) standardGeneric("getSource"))
+# #' @rdname getSource-methods
+# setMethod("getSource", "SummarySet",
+#           function(summary_set) {
+#             return(summary_set@source)
+#           })
 
 #' Set Method to create an internal Variant ID for the SummarySet 
 #'
@@ -266,11 +263,11 @@ setMethod("getVariants","SummarySet",
 #' @export
 #' @docType methods
 #' @rdname setAttributes-methods
-setGeneric("setAttributes",function(summary_set, mr_label = NULL,...) standardGeneric("setAttributes"))
+setGeneric("setAttributes",function(summary_set, mr_label = NULL, ...) standardGeneric("setAttributes"))
 #' @rdname setAttributes-methods
 setMethod( "setAttributes", "SummarySet",
-           function(summary_set,mr_label = NULL,...) {
-             summary_set@attributes <- list(mr_label =mr_label, ...)
+           function(summary_set, mr_label = NULL, ...) {
+             summary_set@attributes <- c(summary_set@attributes, mr_label = mr_label, ...)
              return(summary_set)
            }
 )

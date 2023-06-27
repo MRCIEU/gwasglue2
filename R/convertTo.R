@@ -12,9 +12,8 @@ setMethod("isConverted","DataSet",
 )
 
 
-# Convert for TwoSampleMR
-#' Look for overlapped variants between SummarySets in the DataSet and Resize
-#' 
+#' Convert tool to TwoSampleMR format
+#' @description Converts SummarySets within a Dataset to a format that can be read by TwoSampleMR
 #' @param dataset The gwasglue2 DataSet object
 #' @return The gwasglue2 SummarySet object converted to TwoSampleMR format
 #' @export

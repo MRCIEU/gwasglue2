@@ -30,7 +30,7 @@ if(method == "fixed"){
   meta[i,] <- meta.F(beta[i,],se[i,])})
 }
 
-return(as_tibble(t(meta)))
+return(dplyr::as_tibble(t(meta)))
 }
 
 #' Meta analysis
@@ -40,6 +40,7 @@ return(as_tibble(t(meta)))
 #' effect size underlies all the studies in the meta-analysis. 
 #' @param dataset gwasglue2 DataSet object
 #' @param method Uses fixed-effect model. Default ('"fixed"')
+#' @seealso [create_metadata()] and [addToMetadata()] on how to create or add to metadata.
 #' @importFrom stats pchisq
 #' @return gwasglue2 SummarySet object
 meta_analysis <- function(dataset, method = "fixed") {
@@ -49,7 +50,7 @@ meta_analysis <- function(dataset, method = "fixed") {
 
   lapply(1:length_dt, function(i) {
     if (is.null(getMetadata(getSummarySet(dataset,i))$sample_size) || is.na(getMetadata(getSummarySet(dataset,i))$sample_size)){
-      stop("No sample size information in metadata for at least one of the SummarySets. More details on how to add to metadata in 'help(gwasglue2::create_metadata)' and 'help(gwasglue2::SetMetadata)'." )
+      stop("No sample size information in metadata for at least one of the SummarySets. More details on how to add to metadata in 'help(gwasglue2::create_metadata)' and 'help(gwasglue2::addToMetadata)'." )
     }
     })
 
@@ -90,7 +91,7 @@ meta_analysis <- function(dataset, method = "fixed") {
                             meta_analysis = TRUE
                             )
   # create the summary statistics tibble
-  meta_dt <- meta_estimates(dataset, method = method) %>% mutate(n = n_meta, 
+  meta_dt <- meta_estimates(dataset, method = method) %>% dplyr::mutate(n = n_meta, 
                                     chr = getData(dataset,1)$chr, 
                                     position = getData(dataset,1)$position,
                                     rsid = getData(dataset,1)$rsid,

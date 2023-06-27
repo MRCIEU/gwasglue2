@@ -19,10 +19,19 @@
     <loc>/articles/Tutorial2.html</loc>
   </url>
   <url>
+    <loc>/articles/finemap_coloc1.html</loc>
+  </url>
+  <url>
+    <loc>/articles/finemap_coloc2.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
     <loc>/articles/meta.html</loc>
+  </url>
+  <url>
+    <loc>/articles/mr.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -46,6 +55,9 @@
     <loc>/reference/SummarySet.html</loc>
   </url>
   <url>
+    <loc>/reference/addToMetadata-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/add_summaryset.html</loc>
   </url>
   <url>
@@ -53,6 +65,9 @@
   </url>
   <url>
     <loc>/reference/constructSummarySet.html</loc>
+  </url>
+  <url>
+    <loc>/reference/convertForTwoSampleMR.html</loc>
   </url>
   <url>
     <loc>/reference/createDataSet.html</loc>
@@ -88,6 +103,9 @@
     <loc>/reference/dimData-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/getAttributes-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/getData-DataSet-method.html</loc>
   </url>
   <url>
@@ -104,6 +122,9 @@
   </url>
   <url>
     <loc>/reference/getRSID-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getSource-methods.html</loc>
   </url>
   <url>
     <loc>/reference/getSummaryData-methods.html</loc>
@@ -164,6 +185,9 @@
   </url>
   <url>
     <loc>/reference/plot_gwasglue.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setAttributes-methods.html</loc>
   </url>
   <url>
     <loc>/reference/setMRlabel-methods.html</loc>

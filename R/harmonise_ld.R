@@ -39,11 +39,11 @@ ld_matrix_local <- function(variants, bfile, plink_bin)
 	res <- read.table(paste0(fn, ".ld"), header=FALSE) %>% as.matrix
 
 	# standardise LD matrix. When alleles are not in alphabetical order flip and multiply col/row by -1
-	alleles <- bim[,5:6]
-	alleles_sorted <- t(apply(alleles,1,sort))
-	flip <- alleles[,1] !=alleles_sorted[,1]
-	res[flip,flip] <- res[flip,flip] * -1
-	diag(res) <- 1
+	# alleles <- bim[,5:6]
+	# alleles_sorted <- t(apply(alleles,1,sort))
+	# flip <- alleles[,1] !=alleles_sorted[,1]
+	# res[flip,flip] <- res[flip,flip] * -1
+	# diag(res) <- 1
 
 	rownames(res) <- colnames(res) <- paste(create_variantid_plink(bim), bim$V5, bim$V6, sep="|")
 	
@@ -116,13 +116,13 @@ harmonise_ld_dat <- function(x, ld){
 	}
 
 
-	# snpnames$flip1 <- snpnames$X2 != snpnames$ea
-	# x <- subset(x, variantid %in% snpnames$variantid)
-	# temp1 <- x$ea[snpnames$flip1]
-	# temp2 <- x$nea[snpnames$flip1]
-	# x$beta[snpnames$flip1] <- x$beta[snpnames$flip1] * -1
-	# x$ea[snpnames$flip1] <- temp2
-	# x$nea[snpnames$flip1] <- temp1
+	snpnames$flip1 <- snpnames$X2 != snpnames$ea
+	x <- subset(x, variantid %in% snpnames$variantid)
+	temp1 <- x$ea[snpnames$flip1]
+	temp2 <- x$nea[snpnames$flip1]
+	x$beta[snpnames$flip1] <- x$beta[snpnames$flip1] * -1
+	x$ea[snpnames$flip1] <- temp2
+	x$nea[snpnames$flip1] <- temp1
 
 	rownames(ld) <- snpnames$variantid
 	colnames(ld) <- snpnames$variantid

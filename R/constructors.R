@@ -181,10 +181,11 @@ create_summaryset_from_tibble <- function (data = tibble(),
   s <- SummarySet(sumstats = data) %>%
     setMetadata(., metadata) %>%
     setVariantid(.) %>%
-    setRSID(.,.@ss$rsid)
+    setRSID(.,.@ss$rsid) 
+    
 
-  #set source
-  s@source <- list("type" = "tibble", "creation" = Sys.time())
+  # #set attributes
+  s@attributes <- list("type" = "tibble", "creation" = Sys.time())
   
     return(s)
 }
