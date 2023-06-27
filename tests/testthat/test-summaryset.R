@@ -18,8 +18,8 @@ test_that("get metadata", {
 })
 
 test_that("set mr_label", {
-    sumset1 <- setMRlabel(sumset1, mr_label = "exposure")
-    expect_equal(getMRlabel(sumset1), "exposure" )
+    sumset1 <- setAttributes(sumset1, mr_label = "exposure")
+    expect_equal(getAttributes(sumset1)$mr_label, "exposure" )
 })
 
 # this test does not work because we arrage the data by chr pos

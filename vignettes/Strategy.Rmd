@@ -119,11 +119,11 @@ Accession info should be generated upon creation:
 
 gwasglue2 has several constructors to build the `SummarySet` and `DataSet` objects, as well as getter and setter methods to add or retrieve information within. 
 
-To build the `SummarySet` object, we need just one constructor function, the ``create_summaryset()``. It calls different `create_summaryset_from_`, depending of the source type of the GWAS summary data and also creates metadata using information from the summary data if none is given. It is also possible to build a metadata object using `create_metadata()`  and input it in `create_summaryset()`. Figure \@ref(fig:summaryset) shows the structure design of `SummarySet` with the getters and setters on the left and constructors on the right. 
+To build the `SummarySet` object, we need just one constructor function, the ``create_summaryset()``. It calls different `create_summaryset_from_()`, depending of the source type of the GWAS summary data and also creates metadata using information from the summary data if none is given. It is also possible to build a metadata object using `create_metadata()`  and input it in `create_summaryset()`. Figure \@ref(fig:summaryset) shows the structure design of `SummarySet` with the getters and setters on the left and constructors on the right. 
 
 ![(#fig:summaryset) SummarySet](SummarySet.png)
 
-For `DataSet` object we use the `create_dataset` constructor. If argument `harmonise = TRUE` it creates an harmonised `DataSet`. We use the function `harmonise_ld()` to harmonise the `DataSet` against a LD matrix from a reference population. With `add_summaryset()` it is possible to add an existent `SummarySet` to the `DataSet` and harmonise again. Two or more `DataSets` can also be merged together with `merge_datasets()`. The structure design for `DataSet` is in  Figure \@ref(fig:datasetset) with all the getters and setters on the left and constructors on the right. 
+For `DataSet` object we use the `create_dataset()` constructor. If argument `harmonise = TRUE` it creates an harmonised `DataSet`. We use the function `harmonise_ld()` to harmonise the `DataSet` against a LD matrix from a reference population. The `meta_analysis` function statistically combines two or more `SummarySets` within the `DataSet` and creates a new `SummarySet` object. With `add_summaryset()` it is possible to add an existent `SummarySet` to the `DataSet` and harmonise again. Two or more `DataSets` can also be merged together with `merge_datasets()`. The structure design for `DataSet` is in  Figure \@ref(fig:datasetset) with all the getters and setters on the left and constructors on the right. 
 
 ![(#fig:dataset)DataSet](DataSet.png)
 

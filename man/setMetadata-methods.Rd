@@ -6,59 +6,14 @@
 \alias{setMetadata,SummarySet-method}
 \title{Set Method to add metadata to the SummarySet}
 \usage{
-setMetadata(
-  summary_set,
-  id = getMetadata(summary_set)$id,
-  sample_size = getMetadata(summary_set)$sample_size,
-  nsnp = getMetadata(summary_set)$nsnp,
-  trait = getMetadata(summary_set)$trait,
-  sd = getMetadata(summary_set)$sd,
-  unit = getMetadata(summary_set)$unit,
-  ncontrol = getMetadata(summary_set)$ncontrol,
-  build = getMetadata(summary_set)$build,
-  population = getMetadata(summary_set)$population,
-  ncase = getMetadata(summary_set)$ncase
-)
+setMetadata(summary_set, metadata)
 
-\S4method{setMetadata}{SummarySet}(
-  summary_set,
-  id = getMetadata(summary_set)$id,
-  sample_size = getMetadata(summary_set)$sample_size,
-  nsnp = getMetadata(summary_set)$nsnp,
-  trait = getMetadata(summary_set)$trait,
-  sd = getMetadata(summary_set)$sd,
-  unit = getMetadata(summary_set)$unit,
-  ncontrol = getMetadata(summary_set)$ncontrol,
-  build = getMetadata(summary_set)$build,
-  population = getMetadata(summary_set)$population,
-  ncase = getMetadata(summary_set)$ncase
-)
+\S4method{setMetadata}{SummarySet}(summary_set, metadata)
 }
 \arguments{
 \item{summary_set}{A gwasglue2 SummarySet object.}
 
-\item{id}{GWAS study ID.}
-
-\item{sample_size}{Sample size.}
-
-\item{nsnp}{Number of variants in the study.}
-
-\item{trait}{Phenotype name corresponding the the variant.}
-
-\item{sd}{Trait standard deviation.}
-
-\item{unit}{TODO}
-
-\item{ncontrol}{TODO}
-
-\item{build}{genome build version.}
-
-\item{population}{Study sample population.}
-
-\item{ncase}{Number of cases in study.}
-}
-\value{
-gwasglue2 SummarySet object with metadata stored
+\item{metadata}{A list with metadata information.}
 }
 \description{
 Set Method to add metadata to the SummarySet

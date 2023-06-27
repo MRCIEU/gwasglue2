@@ -122,15 +122,15 @@
 <span><span class="va">sumset2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">d2</span>, metadata<span class="op">=</span><span class="va">meta2</span><span class="op">)</span></span></code></pre></div>
 <p>Set the MR labels for each of your summary sets</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sumset1</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/setMRlabel-methods.html">setMRlabel</a></span><span class="op">(</span><span class="va">sumset1</span>, mr_label <span class="op">=</span> <span class="st">"exposure"</span><span class="op">)</span></span>
-<span><span class="va">sumset2</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/setMRlabel-methods.html">setMRlabel</a></span><span class="op">(</span><span class="va">sumset2</span>, mr_label <span class="op">=</span> <span class="st">"outcome"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sumset1</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/setAttributes-methods.html">setAttributes</a></span><span class="op">(</span><span class="va">sumset1</span>, mr_label <span class="op">=</span> <span class="st">"exposure"</span><span class="op">)</span></span>
+<span><span class="va">sumset2</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/setAttributes-methods.html">setAttributes</a></span><span class="op">(</span><span class="va">sumset2</span>, mr_label <span class="op">=</span> <span class="st">"outcome"</span><span class="op">)</span></span></code></pre></div>
 <p>Check the Metadata and MR labels</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/getMRlabel-methods.html">getMRlabel</a></span><span class="op">(</span><span class="va">sumset1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/getAttributes-methods.html">getAttributes</a></span><span class="op">(</span><span class="va">sumset1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/getMRlabel-methods.html">getMRlabel</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/getAttributes-methods.html">getAttributes</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span></span></code></pre></div>
 <p>Create the DataSet object and Convert it to TwoSampleMR format</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -140,7 +140,7 @@
 <span>    <span class="co"># create dataset</span></span>
 <span>    <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_dataset.html">create_dataset</a></span><span class="op">(</span><span class="va">summary_sets</span>, harmonise <span class="op">=</span> <span class="cn">TRUE</span>, tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="co"># Convert dataset to TwoSampleMR format</span></span>
-<span>   <span class="fu">convertForTwoSampleMR</span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></code></pre></div>
+<span>   <span class="fu"><a href="../reference/convertForTwoSampleMR.html">convertForTwoSampleMR</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></code></pre></div>
 <p>Perform the MR analysis</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mr_result</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="fu"><a href="../reference/getData-methods.html">getData</a></span><span class="op">(</span><span class="va">dataset</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="../reference/getData-methods.html">getData</a></span><span class="op">(</span><span class="va">dataset</span>,<span class="fl">2</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SNP"</span>, <span class="st">"mr_keep"</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>

@@ -20,3 +20,6 @@ results from two or more separate studies.
 It uses the fixed-effect model assuming that one true
 effect size underlies all the studies in the meta-analysis.
 }
+\seealso{
+\code{\link[=create_metadata]{create_metadata()}} and \code{\link[=addToMetadata]{addToMetadata()}} on how to create or add to metadata.
+}

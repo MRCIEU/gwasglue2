@@ -2,7 +2,7 @@
 % Please edit documentation in R/harmonise_ld.R
 \name{harmonise_ld_dat}
 \alias{harmonise_ld_dat}
-\title{Harmonise LD matrix against summary data
+\title{Harmonise LD matrix against summary data (now it just looks for overlapef variants. The harmonisation is done in ld_matrix_local)
 harmonise_ld_dat() is based TwoSampleMR::harmonise_ld_dat()}
 \usage{
 harmonise_ld_dat(x, ld)
@@ -16,6 +16,6 @@ harmonise_ld_dat(x, ld)
 List of dataset and harmonised LD matrix
 }
 \description{
-Harmonise LD matrix against summary data
+Harmonise LD matrix against summary data (now it just looks for overlapef variants. The harmonisation is done in ld_matrix_local)
 harmonise_ld_dat() is based TwoSampleMR::harmonise_ld_dat()
 }

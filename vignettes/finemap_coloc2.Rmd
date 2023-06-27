@@ -1,9 +1,9 @@
 ---
-title: "Tutorial2"
+title: "Tutorial 4: finemapping and colocalisation"
 author: Rita Rasteiro
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tutorial2}
+  %\VignetteIndexEntry{Tutorial 4: finemapping and colocalisation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```
 # Alternative regional genotype-phenotype map, with meta-analyses included
 
-#### This tutorial can change as more updates are done to gwasglue2 package (wip).
+#### This tutorial can change as more updates are done to gwasglue2 package.
 
 ```{r  eval= FALSE}
 remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = TRUE) 
@@ -32,12 +32,14 @@ library(hyprcoloc)  # fork that takes Dataset
 library(dplyr)
 ```
 
-We'll analyse the following traits (chd - coronary heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around different genes. 
+The use case for this tutorial is to study the use of statins, a drug to reduce cholesterol, on coronary heart disease and type 2 diabetes. There are some evidence using statins can increase blood sugar, which can put people who use statins at higher risk of developing type 2 diabetes.
+
+
+We'll be generating a regional genotype-phenotype map for the following traits: chd - coronary heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes around different genes. 
 
 First we will set the path to where the reference population plink files are located to build the LD matrix
 
 ```{r}
-#bed_ref <- "/project/data/reference/ld/EUR"
 bed_ref <- "../data/ld/EUR"
 ```
 

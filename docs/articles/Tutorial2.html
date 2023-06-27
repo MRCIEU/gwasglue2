@@ -96,8 +96,9 @@
 <code class="sourceCode R"><span><span class="co">#library(gwasglue2)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="st">"../"</span><span class="op">)</span> <span class="co"># this was added just for development</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/susieR" class="external-link">susieR</a></span><span class="op">)</span>     <span class="co"># fork that takes Summaryset</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">hyprcoloc</span><span class="op">)</span>  <span class="co"># fork that takes Dataset</span></span></code></pre></div>
-<p>We’ll analyse the following traits (chd - cardiac heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around different genes.</p>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">hyprcoloc</span><span class="op">)</span>  <span class="co"># fork that takes Dataset</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<p>We’ll analyse the following traits (chd - coronary heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes) around different genes.</p>
 <p>First we will set the path to where the reference population plink files are located to build the LD matrix</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#bed_ref &lt;- "/project/data/reference/ld/EUR"</span></span>

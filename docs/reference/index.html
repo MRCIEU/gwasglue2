@@ -25,9 +25,10 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Strategy.html">Strategy</a>
-    <a class="dropdown-item" href="../articles/Tutorial.html">Tutorial</a>
-    <a class="dropdown-item" href="../articles/Tutorial2.html">Tutorial2</a>
-    <a class="dropdown-item" href="../articles/meta.html">Meta analysis</a>
+    <a class="dropdown-item" href="../articles/finemap_coloc1.html">Tutorial 2: finemapping and colocalisation </a>
+    <a class="dropdown-item" href="../articles/finemap_coloc2.html">Tutorial 4: finemapping and colocalisation</a>
+    <a class="dropdown-item" href="../articles/meta.html">Tutorial 3: Meta analysis</a>
+    <a class="dropdown-item" href="../articles/mr.html">Tutorial 1: MR analysis</a>
   </div>
 </li>
 <li class="nav-item">
@@ -85,9 +86,19 @@
         <dd>SummarySet function</dd>
       </dl><dl><dt>
           
+          <code><a href="addToMetadata-methods.html">addToMetadata()</a></code> 
+        </dt>
+        <dd>Add to metadata in the SummarySet</dd>
+      </dl><dl><dt>
+          
           <code><a href="add_summaryset.html">add_summaryset()</a></code> 
         </dt>
         <dd>Add a SummarySet to a DataSet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="convertForTwoSampleMR.html">convertForTwoSampleMR()</a></code> 
+        </dt>
+        <dd>Convert tool to TwoSampleMR format</dd>
       </dl><dl><dt>
           
           <code><a href="create_dataset.html">create_dataset()</a></code> 
@@ -130,6 +141,11 @@
         <dd>Dimensions of the GWAS Summary Statistics data</dd>
       </dl><dl><dt>
           
+          <code><a href="getAttributes-methods.html">getAttributes()</a></code> 
+        </dt>
+        <dd>Get Method to retrieve the attributes linked to the SummarySet</dd>
+      </dl><dl><dt>
+          
           <code><a href="getData-methods.html">getData()</a></code> 
         </dt>
         <dd>Get Method to retrieve the GWAS Summary Statistics</dd>
@@ -138,11 +154,6 @@
           <code><a href="getLength-methods.html">getLength()</a></code> 
         </dt>
         <dd>Size of the DataSet</dd>
-      </dl><dl><dt>
-          
-          <code><a href="getMRlabel-methods.html">getMRlabel()</a></code> 
-        </dt>
-        <dd>Get Method to retrieve the Mendelian randomization (MR) label linked to the SummarySet</dd>
       </dl><dl><dt>
           
           <code><a href="getMetadata-methods.html">getMetadata()</a></code> 
@@ -182,7 +193,7 @@
           
           <code><a href="harmonise_ld_dat.html">harmonise_ld_dat()</a></code> 
         </dt>
-        <dd>Harmonise LD matrix against summary data
+        <dd>Harmonise LD matrix against summary data (now it just looks for overlapef variants. The harmonisation is done in ld_matrix_local)
 harmonise_ld_dat() is based TwoSampleMR::harmonise_ld_dat()</dd>
       </dl><dl><dt>
           
@@ -217,14 +228,14 @@ Get LD matrix using local plink binary and reference dataset</dd>
         <dd>Plot</dd>
       </dl><dl><dt>
           
-          <code><a href="setMRlabel-methods.html">setMRlabel()</a></code> 
+          <code><a href="setAttributes-methods.html">setAttributes()</a></code> 
         </dt>
-        <dd>Set Method to store the Mendelian randomization (MR) label in the SummarySet</dd>
+        <dd>Set Method to store the attributes of the SummarySet</dd>
       </dl><dl><dt>
           
           <code><a href="setMetadata-methods.html">setMetadata()</a></code> 
         </dt>
-        <dd>Set Method to store metadata in the SummarySet</dd>
+        <dd>Set Method to add metadata to the SummarySet</dd>
       </dl><dl><dt>
           
           <code><a href="setRSID-methods.html">setRSID()</a></code> 

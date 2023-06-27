@@ -1,8 +1,8 @@
 ---
-title: "Meta analysis"
+title: "Tutorial 3: Meta analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{"Meta analysis"}
+  %\VignetteIndexEntry{Tutorial 3: Meta analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

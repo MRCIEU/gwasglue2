@@ -20,7 +20,7 @@ test_that("twosamplemr gives the same as gwasglue2", {
   dataset <- lapply(seq_along(data), function(i){
      # create summarysets
     dt <- create_summaryset(data[[i]], metadata=metadata[[i]]) %>% 
-      setMRlabel(., mr_label = mr_labels[i])
+      setAttributes(., mr_label = mr_labels[i])
   }) %>%
     # create dataset
     create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1)  %>%
