@@ -1,23 +1,26 @@
 # Unit testing for MR analyses
+library(dplyr)
+
+
+d1 <- as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
+d2 <- as_tibble(read.table(system.file("tests", "ieu-a-7_sumdata_ieu-0-7TopHits.txt", package="gwasglue2")))
+data <- list(d1,d2)
+
+# get metadata and create metadata objects
+m1 <- read.table(system.file("tests", "ieu-a-2_metadata.txt", package="gwasglue2"))
+m2 <- read.table(system.file("tests", "ieu-a-7_metadata.txt", package="gwasglue2"))
+metadata <- list(create_metadata(m1), create_metadata(m2))
+
+# mr labels
+mr_labels <- c("exposure","outcome")
 
 test_that("twosamplemr gives the same as gwasglue2", {
 
-  # look for the tophit variants
-  x <- ieugwasr::tophits("ieu-a-2")$rsid 
-  # set study ids and mr_labels
-  ids <- c("ieu-a-2",  "ieu-a-7")
-  mr_labels <- c( "exposure", "outcome")
-
-  # get metadata and create metadata objects
-  metadata <- lapply(seq_along(ids), function(i){
-    m <- create_metadata(ieugwasr::gwasinfo(ids[i])) 
-  })
-
   #  create dataset and convert it to mr format
-  dataset <- lapply(seq_along(ids), function(i){
-    # create summarysets
-    dt <- create_summaryset(ieugwasr::associations(variants = x, id =ids[i]), metadata=metadata[i])   %>% 
-      setMRlabel(., mr_label = mr_labels[i])
+  dataset <- lapply(seq_along(data), function(i){
+     # create summarysets
+    dt <- create_summaryset(data[[i]], metadata=metadata[[i]]) %>% 
+      setAttributes(., mr_label = mr_labels[i])
   }) %>%
     # create dataset
     create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1)  %>%

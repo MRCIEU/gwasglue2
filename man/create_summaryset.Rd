@@ -2,11 +2,12 @@
 % Please edit documentation in R/constructors.R
 \name{create_summaryset}
 \alias{create_summaryset}
-\title{A function to create a gwasglue2 SummarySet object}
+\title{A function to create a gwasglue2 SummarySet object from different sources and formats}
 \usage{
 create_summaryset(
-  data = tibble(),
+  data,
   metadata = NULL,
+  type = "tibble",
   beta_col = "beta",
   se_col = "se",
   samplesize_col = "n",
@@ -23,9 +24,11 @@ create_summaryset(
 )
 }
 \arguments{
-\item{data}{GWAS summary statistics. A tibble}
+\item{data}{GWAS summary statistics.}
 
 \item{metadata}{A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset}
+
+\item{type}{Input @param data type. Default is '"tibble"'.}
 
 \item{beta_col}{Name of column with effect sizes. The default is \code{"beta"}.}
 
@@ -57,7 +60,7 @@ create_summaryset(
 A gwasglue2 SummarySet object
 }
 \description{
-A function to create a gwasglue2 SummarySet object
+A function to create a gwasglue2 SummarySet object from different sources and formats
 }
 \seealso{
 \code{\link[=create_metadata]{create_metadata()}} to create a metadata object

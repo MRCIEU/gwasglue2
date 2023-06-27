@@ -6,12 +6,12 @@
 \alias{harmoniseData,DataSet-method}
 \title{Harmonise the alleles and effects between two summary sets}
 \usage{
-harmoniseData(object, tolerance, action)
+harmoniseData(dataset, tolerance, action)
 
-\S4method{harmoniseData}{DataSet}(object, tolerance = 0.08, action = 2)
+\S4method{harmoniseData}{DataSet}(dataset, tolerance = 0.08, action = 2)
 }
 \arguments{
-\item{object}{The gwasglue2 DataSet object}
+\item{dataset}{The gwasglue2 DataSet object}
 
 \item{tolerance}{Tolerance value.}
 

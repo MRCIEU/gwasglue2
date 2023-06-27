@@ -10,14 +10,12 @@ An S4 class to represent the Summary Set
 \section{Slots}{
 
 \describe{
-\item{\code{source}}{Eg.IEUopenGWAS (default NA).}
-
 \item{\code{ss}}{A tibble with the GWAS summary statistics (default NA).}
 
 \item{\code{metadata}}{A list with the metadata associated to ss (default NA).}
 
 \item{\code{variants}}{The RSID/variants associated with ss (default NA).}
 
-\item{\code{mr_label}}{Exposure/Outcome (default NA).}
+\item{\code{attributes}}{Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA).}
 }}
 

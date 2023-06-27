@@ -6,12 +6,12 @@
 \alias{getLength,DataSet-method}
 \title{Size of the DataSet}
 \usage{
-getLength(object)
+getLength(dataset)
 
-\S4method{getLength}{DataSet}(object)
+\S4method{getLength}{DataSet}(dataset)
 }
 \arguments{
-\item{object}{A gwasglue2 DataSet objec}
+\item{dataset}{A gwasglue2 DataSet objec}
 }
 \value{
 Number of gwasglue2 SummarySet objects within the DataSet

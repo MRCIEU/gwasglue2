@@ -1,0 +1,134 @@
+---
+title: "Tutorial 2: finemapping and colocalisation "
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial 2: finemapping and colocalisation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+
+```{r  eval= FALSE}
+remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = TRUE) 
+remotes::install_github('ritarasteiro/susieR')
+
+```
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+library(susieR)     # fork that takes Summaryset
+library(hyprcoloc)  # fork that takes Dataset
+devtools::load_all("../") # this was added just for development
+```
+
+The use case for this tutorial will be generating a regional genotype-phenotype map for traits with significant associations in a known LD block on chromosome 22.
+
+
+
+## Regional genotype-phenotype map
+
+First, we will set the path to where the reference population plink bed files are located to build the LD matrix
+
+```{r}
+bed_ref <- "../data/ld/EUR"
+```
+
+and define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)
+
+```{r}
+genomicrange <- "22:43714200-44995307"
+
+```
+
+We need to scan OpenGWAS for traits that have a significant associations in this region
+
+```{r}
+id_list <- ieugwasr::phewas(pval = 5e-6, variants=genomicrange, batch="ukb-a")$id %>%
+  unique()
+```
+
+
+and then obtain the metadata for each trait
+
+```{r}
+# get metadata and create metadata objects
+metadata <- lapply(seq_along(id_list), function(i){
+  m <- create_metadata(ieugwasr::gwasinfo(id_list[i])) 
+})
+```
+
+
+Finally, we create the summarysets for each trait and the ``dataset``, which comprise all the summarysets. Then we harmonise trait against trait followed by each trait against a LD matrix. Note that the `dataset` is being created through a chain of multiple operations using pipes. Unlike the example in Tutorial 1, the `sumarysets` are not saved separately.
+
+```{r}
+# create gwasglue2 DataSet object 
+  dataset <- lapply(seq_along(id_list), function(i){
+    # create summarysets
+    dt <- create_summaryset(ieugwasr::associations(variants = genomicrange, id = id_list[i]), metadata=metadata[[i]])
+  }) %>%
+    # create dataset and harmonise trait againts trait
+    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+    # harmonise dataset against LD matrix
+    harmonise_ld(., bfile = bed_ref , plink_bin = "plink")
+```
+
+Next, for each trait we need to perform finemapping. This will involve using SusieR to identify credible sets in the region for the trait, and then generate the conditional summary datasets for each credible set. 
+
+Explanation:
+
+Credible set: If a trait is inferred to have e.g. 3 causal variants in the genomic region then there will be 3 credible sets. Each credible set is essentially a cluster of SNPs close by, it will include 1 or more SNPs that are candidates to be the causal variant.
+
+Conditional summary datasets: Once credible sets are identified, we can try to estimate what the summary data results would have looked like for each credible set after accounting for all the other credible sets. So in this example there would be 3 conditional summary datasets, each with a single peak in a different location.
+
+We use  a modified version of susieR (use the `ritarasteiro/susieR` fork) that reads a `gwasglue2 dataset` to generate the credible sets for each `summaryset` within the `dataset` (e.g. some of them will have only 1, some will have more than 1. But all of them will have at least 1 because they have been selected to have an association in the region)
+
+TODO: Explain how we marginalise the summarysets using susieR Approximate Bayes Factors.
+
+After summary sets are harmonised, marginalise each summary set independently and create a new dataset with all marginalised summary sets merged
+
+```{r}
+# do finemapping with susie
+ntraits <- getLength(dataset)
+dataset_marginalised <- lapply(1:ntraits, function(trait)
+  {
+    # Takes in 1 SS
+    # Outputs 1 DS (with at least 1 SS)
+    ds <- susie_rss(R = getLDMatrix(dataset), summaryset = getSummarySet(dataset, trait))
+})
+```
+
+ Now we are going to merge the datasets. Note that the `merge_datasets()` function is just going to merge the marginalised datasets. 
+
+```{r}
+dataset_marginalised <- merge_datasets(dataset_marginalised)
+
+``` 
+
+ Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)
+
+```{r} 
+
+res_dataset <- hyprcoloc(dataset = dataset) 
+#hyprcoloc is using gwasglue2 DataSet class object as input
+print(res_dataset)
+
+```
+
+Try hyprcoloc with marginalised datasets
+
+```{r}
+
+res_dataset_marginalised <- hyprcoloc(dataset = dataset_marginalised)
+print(res_dataset_marginalised)
+```
+
+**NOTE:** In this example there was no colocalisation for the traits in IEU batch `"ukb-a"`.. 
