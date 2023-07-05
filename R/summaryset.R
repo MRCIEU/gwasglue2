@@ -63,8 +63,7 @@ setMethod("setMetadata", "SummarySet",
             metadata) {
             
  summary_set@metadata <- metadata
-
-  return(summary_set)
+ return(summary_set)
 })
 
 #' Add to metadata in the SummarySet 
