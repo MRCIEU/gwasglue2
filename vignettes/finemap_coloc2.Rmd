@@ -1,9 +1,8 @@
 ---
-title: "Tutorial 4: finemapping and colocalisation"
-author: Rita Rasteiro
+title: "Tutorial 4: Alternative regional genotype-phenotype map example, with meta-analyses included"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tutorial 4: finemapping and colocalisation}
+  %\VignetteIndexEntry{Tutorial 4: Alternative regional genotype-phenotype map example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,9 +14,7 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 ```
-# Alternative regional genotype-phenotype map, with meta-analyses included
 
-#### This tutorial can change as more updates are done to gwasglue2 package.
 
 ```{r  eval= FALSE}
 remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = TRUE) 
@@ -32,12 +29,13 @@ library(hyprcoloc)  # fork that takes Dataset
 library(dplyr)
 ```
 
-The use case for this tutorial is to study the use of statins, a drug to reduce cholesterol, on coronary heart disease and type 2 diabetes. There are some evidence using statins can increase blood sugar, which can put people who use statins at higher risk of developing type 2 diabetes.
+This tutorial aims to study the use of statins, a drug to reduce cholesterol, on coronary heart disease and type 2 diabetes. There  is some evidence that using statins can increase blood sugar, which can put people who use statins at higher risk of developing type 2 diabetes.
 
 
-We'll be generating a regional genotype-phenotype map for the following traits: chd - coronary heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes around different genes. 
+We will be generating a regional genotype-phenotype map for the following traits: chd - coronary heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes around different genes. In this example, meta-analysis will be performed for the chd trait using two independent  studies `ieu-a-7` and `ukb-d-I9_IHD`.
 
-First we will set the path to where the reference population plink files are located to build the LD matrix
+
+First,  we set the path to where the reference population plink files are located to build the LD matrix
 
 ```{r}
 bed_ref <- "../data/ld/EUR"
@@ -53,9 +51,9 @@ trig_id <- "ieu-b-111"
 t2d_id <- "ebi-a-GCST006867"
 ```
 
-## 1. Setting the metadata
+# 1. Setting the metadata
 
-First, we create a `chd_metadata` object for the meta-analysis we are going to perform for the chd trait.
+We create a `chd_metadata` object for the meta-analysis we are going to perform on the chd trait.
 
 ```{r}
 chd_metadata <- lapply(seq_along(chd_id), function(i){
@@ -74,7 +72,9 @@ metadata <- lapply(seq_along(ids), function(i){
 ```
 We are going to use these same `chd_metadata` and `metadata` objects for each analyse for each gene. 
 
-## 2. HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region
+Note, that in the code above both `chd_metadata` and `metadata` objects are lists that contain metadata information for each trait. Eg., `chd_metadata` will have metadata information for both `ieu-a-7` and `ukb-d-I9_IHD` studies, retrieved using `ieugwasr::gwasinfo()`. 
+
+# 2. HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region
 
 Set the gene region:
 ```{r}
@@ -83,9 +83,9 @@ Set the gene region:
 
 
 
-### 2.1. Meta-analysis for the chd trait
+## 2.1. Meta-analysis for the chd trait
 
-The code below performs meta-analysis including two studies (`ieu-a-7` and `ukb-d-I9_IHD`, see above) for the chd trait and the end result is one `hmgcr_chd` summaryset. First, it creates the summary sets for each of the studies followed by the dataset which includes them. Finally, we perform the meta-analysis to create a new summary set.
+The code below performs meta-analysis including two studies (`ieu-a-7` and `ukb-d-I9_IHD`, see above) for the chd trait and the end result is one `hmgcr_chd` summaryset. First, it creates the summary sets for each of the studies followed by the dataset which includes them. Finally, performs the meta-analysis to create a new summary set.
 
 ```{r}  
   hmgcr_chd <- lapply(seq_along(chd_id), function(i){
@@ -99,7 +99,7 @@ The code below performs meta-analysis including two studies (`ieu-a-7` and `ukb-
 ```
 
 
-### 2.2. Creating a dataset for all the traits
+## 2.2. Creating a dataset for all the traits
 
 Here, we create an harmonised dataset named `hmgcr`, which includes all the traits in `ids`  and the `hmgcr_chd` summaryset created above. We start by creating the summarysets for each trait and then the dataset, which comprise all the summarysets (note that we are not saving the SummarySet objects separately, but filling them directly to the DataSet). Then we add the `hmgcr_chd` summaryset and harmonise trait against trait followed by each trait against a LD matrix. 
 
@@ -125,7 +125,7 @@ Before starting with the fine mapping and colocalisation analyses, we are going 
 plot_gwasglue(hmgcr, type="manhattan", title = "HMGCR")
 
 ```
-### 2.3. Finemapping with SusieR
+## 2.3. Finemapping with SusieR
 After summary sets are harmonised, marginalise each summary set independently and create a new dataset with all marginalised summary sets merged
 
 ```{r}
@@ -145,7 +145,7 @@ hmgcr_marginalised <- lapply(1:ntraits, function(trait)
 hmgcr_marginalised <- merge_datasets(hmgcr_marginalised)
 
 ``` 
-### 2.4. Colocolisation with hypercoloc
+## 2.4. Colocolisation with hypercoloc
  Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)
 
 ```{r} 
@@ -164,7 +164,7 @@ print(res_hmgcr_marginalised)
 
 
 
-## 3. PCSK9 (proprotein convertase subtilisin/kexin type 9) gene region
+# 3. PCSK9 (proprotein convertase subtilisin/kexin type 9) gene region
 
 Set the gene region:
 
@@ -172,7 +172,7 @@ Set the gene region:
 pcsk9_chrpos <- "1:55005221-56005221"
 ```
 
-### 3.1. Meta-analysis for the chd trait
+## 3.1. Meta-analysis for the chd trait
 
 Like detailed above, in section 2.1, the code below performs meta-analysis for the chd trait and the end result is one `pcsk9_chd` summaryset. 
 
@@ -188,7 +188,7 @@ Like detailed above, in section 2.1, the code below performs meta-analysis for t
 ```
  
 
-### 3.2. Creating a dataset for all the traits
+## 3.2. Creating a dataset for all the traits
 
 Like detailed in section 2.2, here we create another harmonised dataset named `pcsk9`, this time for the PCSK9 gene region.
 
@@ -213,7 +213,7 @@ Manhattan plots for each trait in the DataSet.
 plot_gwasglue(pcsk9, type="manhattan", title = "PCSK9")
 ```
 
-### 3.3. Finemapping with SusieR
+## 3.3. Finemapping with SusieR
 Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged.
 
 ```{r}
@@ -233,7 +233,7 @@ Merge the marginalised datasets:
 pcsk9_marginalised <- merge_datasets(pcsk9_marginalised)
 ```
 
-### 3.4. Colocolisation with hypercoloc
+## 3.4. Colocolisation with hypercoloc
 Try hyprcoloc with raw datasets. 
 
 ```{r}
@@ -248,7 +248,7 @@ res_pcsk9_marginalised <- hyprcoloc(dataset =pcsk9_marginalised)
 print(res_pcsk9_marginalised)
 ```
 
-## 4. NPC1L1 (NPC1 like intracellular cholesterol transporter 1) gene region
+# 4. NPC1L1 (NPC1 like intracellular cholesterol transporter 1) gene region
 
 Set the region:
 
@@ -256,7 +256,7 @@ Set the region:
 npc1l1_chrpos <- "7:44052134-45052134"
 ```
 
-### 4.1. Meta-analysis for the chd trait
+## 4.1. Meta-analysis for the chd trait
 Like section 2.1, we'll do a meta-analysis for the chd trait and the end result is one `npc1l1_chd` summaryset. 
 
 ```{r}  
@@ -270,7 +270,7 @@ Like section 2.1, we'll do a meta-analysis for the chd trait and the end result 
     meta_analysis(.)
 ```
 
-### 4.2. Creating a dataset for all the traits
+## 4.2. Creating a dataset for all the traits
 Like detailed in section 2.2, here we create another harmonised dataset named `npc1l1`, this time for the NPC1L1 gene region.
 
 ```{r}
@@ -294,7 +294,7 @@ Manhattan plots for each trait in the DataSet.
 plot_gwasglue(npc1l1, type="manhattan", title ="NPC1L1")
 ```
 
-### 4.3. Finemapping with SusieR
+## 4.3. Finemapping with SusieR
 Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged 
 
 ```{r}
@@ -313,7 +313,7 @@ Merge the marginalised datasets:
 npc1l1_marginalised <- merge_datasets(npc1l1_marginalised)
 ```
 
-### 4.4. Colocolisation with hypercoloc
+## 4.4. Colocolisation with hypercoloc
 Try hyprcoloc with raw datasets. 
 
 ```{r}
@@ -328,14 +328,14 @@ res_npc1l1_marginalised <- hyprcoloc(dataset =npc1l1_marginalised)
 print(res_npc1l1_marginalised)
 ```
 
-## 5. LPA (Lipoprotein(A)) gene region
+# 5. LPA (Lipoprotein(A)) gene region
 Set the region:
 
 ```{r}
 lpa_chrpos <- "6:160952515-161087407"
 ```
 
-### 5.1. Meta-analysis for the chd trait
+## 5.1. Meta-analysis for the chd trait
 Like section 2.1, we'll do a meta-analysis for the chd trait and the end result is one `lpa_chd` summaryset. 
 
 ```{r}  
@@ -349,7 +349,7 @@ Like section 2.1, we'll do a meta-analysis for the chd trait and the end result 
     meta_analysis(.)
 ```
 
-### 5.2. Creating a dataset for all the traits
+## 5.2. Creating a dataset for all the traits
 Like detailed in section 2.2, here we create another harmonised dataset named `lpa`, this time for the NPC1L1 gene region.
 
 ```{r}
@@ -372,7 +372,7 @@ Manhattan plots for each trait in the DataSet.
 # plot gwasglue2 DataSet object (lpa)
  plot_gwasglue(lpa, type="manhattan", title = "LPA")
 ```
-### 5.3. Finemapping with SusieR
+## 5.3. Finemapping with SusieR
 Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged
 
 ```{r}
@@ -391,7 +391,7 @@ Merge the marginalised datasets:
 lpa_marginalised <- merge_datasets(lpa_marginalised)
 ```
 
-### 5.4. Colocolisation with hypercoloc
+## 5.4. Colocolisation with hypercoloc
 Try hyprcoloc with raw datasets. 
 
 ```{r}

@@ -24,12 +24,8 @@ devtools::load_all("../") # this was added just for development
 ```
 
 
-The usecase in this tutorial will be performing a basic TwoSampleMR analysis.
+The usecase in this tutorial will be performing a basic MR analysis, using the ``TwoSampleMR`` package.
 
-
-
-
-## TwoSampleMR analysis
 
 We will perform an MR analysis of body mass index (exposure - ieu-a-2) against coronary heart disease (outcome - ieu-a-7).
 
