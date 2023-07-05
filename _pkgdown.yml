@@ -2,3 +2,31 @@ url: ~
 template:
   bootstrap: 5
 
+navbar:
+ structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+ components:
+   intro: 
+    text: Strategy
+    href: articles/Strategy.html
+   articles:
+    text: Tutorials
+    menu:
+    - text: "How to create a SummarySet and a DataSet"
+      href: articles/SummarySet_DataSet.html
+    - text: "Tutorial 1 - MR analysis"
+      href: articles/mr.html
+    - text: "Tutorial 2 - Regional genotype-phenotype map"
+      href: articles/finemap_coloc1.html
+    - text: "Tutorial 3 - Meta-analysis"
+      href: articles/meta.html
+    - text: "Tutorial 4 - Alternative regional genotype-phenotype map example"
+      href: articles/finemap_coloc2.html
+   reference:
+    text: Functions
+    href: reference/index.html
+   news:
+    text: Changelog
+    href: news/index.html
+
