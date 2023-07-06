@@ -20,7 +20,7 @@ library(gwasglue2)
 devtools::load_all("../") # this was added just for development
 ```
 
-In this tutorial, we will appproach the several ways of creating the two types of gwasglue2 objects: the `SummarySet` and the `DataSet`. Check the [Strategy](articles/Strategy.html) page for more details on these objects.
+In this tutorial, we will approach the several ways of creating the two types of gwasglue2 objects: the `SummarySet` and the `DataSet`. Check the [Strategy](articles/Strategy.html) page for more details on these objects.
 
 
 # SummarySet
@@ -37,7 +37,7 @@ In this tutorial, we will appproach the several ways of creating the two types o
  getMetadata(sumset1)
 ```
 
-In the code above, we did not supply any metadata information. The function will fill the metadata using any information avaiolable in the GWAS summary data (in `data1`).
+In the code above, we did not supply any metadata information. The function will fill the metadata using any information available in the GWAS summary data (in `data1`).
 It is possible to add metadata using the `metadata`  argument.
 
 To create a `metadata` object, we use the [`create_metadata`](reference/create_metadata.html) function. We can give metadata information manually using one or more argument of the function. For example: 
