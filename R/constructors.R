@@ -410,3 +410,33 @@ merge_datasets <- function(datasets) {
     return(ds)
 }
 
+
+
+# create variantid using hashes when alleles nchar >10
+create_variantid <-function(chr,pos,a1,a2) {
+  
+  alleles_sorted <- t(apply(cbind(a1,a2),1,sort)) 
+  #  create variantid
+  variantid <- paste0(chr,":", pos,"_",alleles_sorted[,1],"_",alleles_sorted[,2])
+
+  # create hashes when alleles nchar > 10
+  # allele ea
+   if (all(nchar(alleles_sorted[,1]) <= 10) == FALSE){
+    index = which(nchar(alleles_sorted[,1]) > 10)
+    variantid[index] <- lapply(index, function(i){
+      v <- paste0(chr[i],":", pos[i],"_#",digest::digest(alleles_sorted[i,1],algo= "murmur32"),"_",alleles_sorted[i,2],) 
+    }) %>% unlist()
+  }
+
+  # allele nea
+  if (all(nchar(alleles_sorted[,2]) <= 10) == FALSE){
+    index = which(nchar(alleles_sorted[,2]) > 10)
+    variantid[index] <- lapply(index, function(i){
+      v <- paste0(chr[i],":", pos[i],"_",alleles_sorted[i,1],"_#",digest::digest(alleles_sorted[i,2],algo= "murmur32")) 
+    }) %>% unlist()
+  }
+  
+  return(variantid)
+  }
+
+
