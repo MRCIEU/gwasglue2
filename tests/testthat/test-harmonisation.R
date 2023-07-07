@@ -1,329 +1,50 @@
 # Need extensive testing of different harmonisation scenarios
 library(dplyr)
 
+
 scenarios <- as_tibble(read.csv(system.file("tests", "harmonisation_scenarios.csv", package="gwasglue2")))
 
-test_that("harmonisation scenario: easy", {
-test <- "easy"
+# Get all scenarios, remote flip2 for now
+scen <- unique(scenarios$scenario)
+scen <- scen[!scen %in% c("flip2")]
 
-ids <- 1:2
+# test each scenario 1 by 1
+# - Create dataset of input
+# - Extract harmonised data
+# - Compare against truth
 
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
+lapply(scen, function(s)
+{
+  print(s)
+  test_that(s, {
 
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
+  # input 
+  x <- subset(scenarios, scenario == s)
+    df <- lapply(unique(x$id), \(i) {
+      scenarios %>% filter(scenario == s, id == i, version == "input")
+    })
 
+  # for "palindrome_flip" action=2, other scen action=1
+  action <- ifelse(s %in% c("palindrome_flip"), 2, 1)
+  
+  # create dataset
+  dataset <- lapply(seq_along(data), function(i){
+    dt <- create_summaryset(df[[i]]) }) %>%
+    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = action) %>% 
+        suppressMessages()
 
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
+  result <- lapply(1:getLength(dataset), function(i) {
+    d <- getSummarySet(dataset, i) %>%
+         getSummaryData(.) %>%
+         select(chr, ea, nea, eaf, beta)})
 
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-
+  # Truth
+  truth <- lapply(unique(x$id), \(i) {
+    d <- scenarios %>% filter(scenario == s, id == i, version == "truth")  %>% 
+      select(chr, ea, nea, eaf, beta)
+      })
+  expect_equal(truth, result)
+  })
 })
 
-test_that("harmonisation scenario: alphabetical", {
-test <- "alphabetical"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-
-})
-
-
-
-test_that("harmonisation scenario: flip1", {
-test <- "flip1"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-
-})
-
-
-# TODO
-
-
-# test_that("harmonisation scenario: flip2", {
-# test <- "flip2"
-
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-# ids <- 1:2
-
-
-# df <- lapply(seq_along(ids), function(i) {
-#   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-# dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 2)
-
-
-# result <- lapply(seq_along(dataset@summary_sets), function(i) {
-#   d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# # Truth
-# truth<- lapply(seq_along(ids), function(i) {
-#   d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-#     select(chr, ea, nea, eaf, beta)})
-
-
-# lapply(seq_along(ids), function(i) {
-#   expect_equal(truth[i], result[i])})
-
-# })
-
-test_that("harmonisation scenario:  palindrome_flip", {
-test <-  "palindrome_flip"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 2)
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-test_that("harmonisation scenario:  palindrome_noflip", {
-test <-  "palindrome_noflip"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-test_that("harmonisation scenario:  easy_indels", {
-test <-  "easy_indels"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-test_that("harmonisation scenario:  indels_flip1", {
-test <-  "indels_flip1"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-test_that("harmonisation scenario:  indels_drop1", {
-test <-  "indels_drop1"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-test_that("harmonisation scenario:  multiallele1", {
-test <-  "multiallele1"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-test_that("harmonisation scenario:  multiallele2", {
-test <-  "multiallele2"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-
-test_that("harmonisation scenario:  multiallele3", {
-test <-  "multiallele3"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
-
-
-test_that("harmonisation scenario:  multiallele4", {
-test <-  "multiallele4"
-# scenarios <- as_tibble(read.csv("harmonisation_scenarios.csv"))
-ids <- 1:2
-
-
-df <- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "input")})
-
-dataset <- create_dataset_from_tibble(data=df, harmonise = TRUE, tolerance = 0.08, action = 1)
-
-
-result <- lapply(seq_along(dataset@summary_sets), function(i) {
-  d <- dataset@summary_sets[[i]]@ss %>% select(chr, ea, nea, eaf, beta)})
-
-# Truth
-truth<- lapply(seq_along(ids), function(i) {
-  d <- scenarios %>% filter(scenario == test, id == ids[i],version == "truth")  %>% 
-    select(chr, ea, nea, eaf, beta)})
-
-lapply(seq_along(ids), function(i) {
-  expect_equal(truth[[i]], result[[i]])})
-})
-
+# TODO flip2
