@@ -1,11 +1,12 @@
+# unit testing for SummarySet object
 
-library(dplyr)
-
-d1 <- as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
+# GWAS summary data
+d1 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
 m1 <- read.table(system.file("tests", "ieu-a-2_metadata.txt", package="gwasglue2"))
 meta1 <-create_metadata(m1)
 
-sumset1 <- create_summaryset(d1, metadata = meta1)
+sumset1 <- create_summaryset(d1, metadata = meta1)  %>%
+        suppressMessages()
 
 
 test_that("create summaryset", {
