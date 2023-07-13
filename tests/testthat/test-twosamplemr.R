@@ -1,9 +1,9 @@
 # Unit testing for MR analyses
-library(dplyr)
+skip(message = "Skipping: OPenGWAS traffic problems ")
 
 
-d1 <- as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
-d2 <- as_tibble(read.table(system.file("tests", "ieu-a-7_sumdata_ieu-0-7TopHits.txt", package="gwasglue2")))
+d1 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
+d2 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-7_sumdata_ieu-0-7TopHits.txt", package="gwasglue2")))
 data <- list(d1,d2)
 
 # get metadata and create metadata objects
@@ -31,11 +31,11 @@ test_that("twosamplemr gives the same as gwasglue2", {
   # Perform the MR analysis 
   mr_result1 <-  merge(getData(dataset,1),getData(dataset,2), by = c("SNP", "mr_keep"))  %>%
     TwoSampleMR::mr(., method_list="mr_ivw") %>% 
-    select(id.exposure, id.outcome, method, nsnp, b, se, pval)
+    dplyr::select(id.exposure, id.outcome, method, nsnp, b, se, pval)
 
  mr_result2 <- TwoSampleMR::make_dat("ieu-a-2","ieu-a-7") %>%
     TwoSampleMR::mr(., method_list="mr_ivw") %>% 
-    select(id.exposure, id.outcome, method, nsnp, b, se, pval)
+    dplyr::select(id.exposure, id.outcome, method, nsnp, b, se, pval)
 
   expect_equal(mr_result1, mr_result2)
 
