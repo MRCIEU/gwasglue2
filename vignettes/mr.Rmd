@@ -1,8 +1,8 @@
 ---
-title: "Tutorial 1: MR analysis"
+title: "Tutorial 2: MR analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tutorial 1: MR analysis}
+  %\VignetteIndexEntry{Tutorial 2: MR analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,12 +24,8 @@ devtools::load_all("../") # this was added just for development
 ```
 
 
-The usecase in this tutorial will be performing a basic TwoSampleMR analysis.
+The usecase in this tutorial will be performing a basic MR analysis, using the ``TwoSampleMR`` package.
 
-
-
-
-## TwoSampleMR analysis
 
 We will perform an MR analysis of body mass index (exposure - ieu-a-2) against coronary heart disease (outcome - ieu-a-7).
 

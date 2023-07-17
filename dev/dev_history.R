@@ -14,7 +14,10 @@ pkgdown::build_site()
 
 roxygen2::update_collate(".")
 
-usethis::use_vignette("my-vignette")
+
+
+# create a vignette
+usethis::use_vignette("SummarySet_DataSet")
 
 
 library(covr)
@@ -35,4 +38,4 @@ usethis::use_news_md()
 
 # debug vignettes
 build_vignettes()
-devtools::build_rmd("vignettes/meta.Rmd") 
+devtools::build_rmd("vignettes/Summ") 

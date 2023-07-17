@@ -8,6 +8,7 @@ create_summaryset(
   data,
   metadata = NULL,
   type = "tibble",
+  qc = FALSE,
   beta_col = "beta",
   se_col = "se",
   samplesize_col = "n",
@@ -29,6 +30,8 @@ create_summaryset(
 \item{metadata}{A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset}
 
 \item{type}{Input @param data type. Default is '"tibble"'.}
+
+\item{qc}{Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE}
 
 \item{beta_col}{Name of column with effect sizes. The default is \code{"beta"}.}
 

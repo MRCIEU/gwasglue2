@@ -96,7 +96,7 @@ create_summary_set_from_lbf <- function(summaryset, lbf, L){
 susie_to_dataset <- function(summaryset, s, R){
  ncredible_sets <- length(s$sets$cs)
     if(ncredible_sets == 0){
-      warning_message(paste0("There is no credible sets for this trait (",summaryset@metadata$id,"), with the parameter values used. The summary statistics beta and se will not be marginalised."))
+      warning(paste0("There is no credible sets for this trait (",summaryset@metadata$id,"), with the parameter values used. The summary statistics beta and se will not be marginalised."))
 
     } else{
        ds <- DataSet(list())

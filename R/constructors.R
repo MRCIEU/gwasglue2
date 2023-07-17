@@ -45,6 +45,7 @@ create_metadata <- function(metadata = NULL,
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
 #' @param type Input @param data type. Default is '"tibble"'. 
+#' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE
 #' @param beta_col Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Name of column with standard errors. The default is `"se"`.
 #' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
@@ -63,6 +64,7 @@ create_metadata <- function(metadata = NULL,
 create_summaryset <- function (data,
                               metadata = NULL,
                               type = "tibble",
+                              qc = FALSE,
                               beta_col = "beta",
                               se_col = "se",
                               samplesize_col = "n",
@@ -93,6 +95,26 @@ create_summaryset <- function (data,
                               trait_col = trait_col,
                               ...)
   }
+
+  # sanity checks
+  # check if there are repeated variantids
+  variant_id <- s@ss$variantid
+  variant_id_rep <- variant_id[(duplicated(variant_id) | duplicated(variant_id, fromLast = TRUE)) ]
+  
+  # warning message if there is problems run with option
+  if (length(variant_id_rep) > 0){
+    if (isFALSE(qc)){
+    warning( "There are repeated variants in the data, that could stop gwasglue2 from running in some analyses. If you want gwasglue to deal with it, run again 'create_summaryset' with option 'qc = TRUE'" )
+    print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+    }
+    # remove repeated variantids
+    if (isTRUE(qc)){
+      message("gwasglue2 is removing problematic variants")
+      print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+      s@ss <- s@ss[which(s@ss$variantid %ni% variant_id_rep), ]
+    }
+  }
+ 
   return(s)
 }           
 
@@ -184,7 +206,7 @@ create_summaryset_from_tibble <- function (data = tibble(),
     setRSID(.,.@ss$rsid) 
     
 
-  # #set attributes
+  # set attributes
   s@attributes <- list("type" = "tibble", "creation" = Sys.time())
   
     return(s)
@@ -199,8 +221,7 @@ standardise <- function(d)
     temp <- d$nea[toflip]
     d$nea[toflip] <- d$ea[toflip]
     d$ea[toflip] <- temp
-    # d$snpid <- paste0(d$chr, ":", d$pos, "_", d$ea, "_", d$nea)
-    d
+    return(d)
 }
 
 #' Creates a DataSet object using gwasglue2 SummarySet objects, and harmonise data against data
@@ -387,4 +408,34 @@ merge_datasets <- function(datasets) {
 
     return(ds)
 }
+
+
+
+# create variantid using hashes when alleles nchar >10
+create_variantid <-function(chr,pos,a1,a2) {
+  
+  alleles_sorted <- t(apply(cbind(a1,a2),1,sort)) 
+  #  create variantid
+  variantid <- paste0(chr,":", pos,"_",alleles_sorted[,1],"_",alleles_sorted[,2])
+
+  # create hashes when alleles nchar > 10
+  # allele ea
+   if (all(nchar(alleles_sorted[,1]) <= 10) == FALSE){
+    index = which(nchar(alleles_sorted[,1]) > 10)
+    variantid[index] <- lapply(index, function(i){
+      v <- paste0(chr[i],":", pos[i],"_#",digest::digest(alleles_sorted[i,1],algo= "murmur32"),"_",alleles_sorted[i,2],) 
+    }) %>% unlist()
+  }
+
+  # allele nea
+  if (all(nchar(alleles_sorted[,2]) <= 10) == FALSE){
+    index = which(nchar(alleles_sorted[,2]) > 10)
+    variantid[index] <- lapply(index, function(i){
+      v <- paste0(chr[i],":", pos[i],"_",alleles_sorted[i,1],"_#",digest::digest(alleles_sorted[i,2],algo= "murmur32")) 
+    }) %>% unlist()
+  }
+  
+  return(variantid)
+  }
+
 

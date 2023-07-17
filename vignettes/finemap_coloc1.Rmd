@@ -1,8 +1,8 @@
 ---
-title: "Tutorial 2: finemapping and colocalisation "
+title: "Tutorial 3: Regional genotype-phenotype map"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tutorial 2: finemapping and colocalisation}
+  %\VignetteIndexEntry{Tutorial 3: Regional genotype-phenotype map}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -32,9 +32,6 @@ devtools::load_all("../") # this was added just for development
 
 The use case for this tutorial will be generating a regional genotype-phenotype map for traits with significant associations in a known LD block on chromosome 22.
 
-
-
-## Regional genotype-phenotype map
 
 First, we will set the path to where the reference population plink bed files are located to build the LD matrix
 

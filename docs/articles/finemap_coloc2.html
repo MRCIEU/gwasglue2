@@ -6,12 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="gwasglue2">
-<title>Tutorial 4: finemapping and colocalisation • gwasglue2</title>
+<title>Tutorial 5: Alternative regional genotype-phenotype map example, with meta-analyses included • gwasglue2</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tutorial 4: finemapping and colocalisation">
+<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tutorial 5: Alternative regional genotype-phenotype map example, with meta-analyses included">
 <meta property="og:description" content="gwasglue2">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -36,16 +36,19 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
+  <a class="nav-link" href="../articles/Strategy.html">Strategy</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Functions</a>
 </li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Strategy.html">Strategy</a>
-    <a class="dropdown-item" href="../articles/finemap_coloc1.html">Tutorial 2: finemapping and colocalisation </a>
-    <a class="dropdown-item" href="../articles/finemap_coloc2.html">Tutorial 4: finemapping and colocalisation</a>
-    <a class="dropdown-item" href="../articles/meta.html">Tutorial 3: Meta analysis</a>
-    <a class="dropdown-item" href="../articles/mr.html">Tutorial 1: MR analysis</a>
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-tutorials">Tutorials</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-tutorials">
+    <a class="dropdown-item" href="../articles/SummarySet_DataSet.html">Tutorial 1 - How to create a SummarySet and a DataSet</a>
+    <a class="dropdown-item" href="../articles/mr.html">Tutorial 2- MR analysis</a>
+    <a class="dropdown-item" href="../articles/finemap_coloc1.html">Tutorial 3 - Regional genotype-phenotype map</a>
+    <a class="dropdown-item" href="../articles/meta.html">Tutorial 4 - Meta-analysis</a>
+    <a class="dropdown-item" href="../articles/finemap_coloc2.html">Tutorial 5 - Alternative regional genotype-phenotype map example</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,10 +75,10 @@
 
 
 
-<script src="finemap_coloc2_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Tutorial 4: finemapping and colocalisation</h1>
-                        <h4 data-toc-skip class="author">Rita Rasteiro</h4>
+      <img src="" class="logo" alt=""><h1>Tutorial 5: Alternative regional genotype-phenotype map example, with meta-analyses included</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/MRCIEU/gwasglue2/blob/HEAD/vignettes/finemap_coloc2.Rmd" class="external-link"><code>vignettes/finemap_coloc2.Rmd</code></a></small>
@@ -84,12 +87,6 @@
 
     
     
-<div class="section level2">
-<h2 id="alternative-regional-genotype-phenotype-map-with-meta-analyses-included">Alternative regional genotype-phenotype map, with meta-analyses included<a class="anchor" aria-label="anchor" href="#alternative-regional-genotype-phenotype-map-with-meta-analyses-included"></a>
-</h2>
-<div class="section level5">
-<h5 id="this-tutorial-can-change-as-more-updates-are-done-to-gwasglue2-package-">This tutorial can change as more updates are done to gwasglue2 package.<a class="anchor" aria-label="anchor" href="#this-tutorial-can-change-as-more-updates-are-done-to-gwasglue2-package-"></a>
-</h5>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'ritarasteiro/hyprcoloc'</span>, build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'--resave-data'</span>, <span class="st">'--no-manual'</span><span class="op">)</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'ritarasteiro/susieR'</span><span class="op">)</span></span></code></pre></div>
@@ -99,46 +96,69 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/susieR" class="external-link">susieR</a></span><span class="op">)</span>     <span class="co"># fork that takes Summaryset</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">hyprcoloc</span><span class="op">)</span>  <span class="co"># fork that takes Dataset</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-<p>The use case for this tutorial is to study the use of statins, a drug to reduce cholesterol, on coronary heart disease and type 2 diabetes. There are some evidence using statins can increase blood sugar, which can put people who use statins at higher risk of developing type 2 diabetes.</p>
-<p>We’ll be generating a regional genotype-phenotype map for the following traits: chd - coronary heart disease; ldl - low-density lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and t2d - type 2 diabetes around different genes.</p>
-<p>First we will set the path to where the reference population plink files are located to build the LD matrix</p>
+<p>This tutorial aims to study the use of statins, a drug to reduce
+cholesterol, on coronary heart disease and type 2 diabetes. There is
+some evidence that using statins can increase blood sugar, which can put
+people who use statins at higher risk of developing type 2 diabetes.</p>
+<p>We will be generating a regional genotype-phenotype map for the
+following traits: chd - coronary heart disease; ldl - low-density
+lipoprotein; hdl - high-density lipoprotein; trig - triglycerides and
+t2d - type 2 diabetes around different genes. In this example,
+meta-analysis will be performed for the chd trait using two independent
+studies <code>ieu-a-7</code> and <code>ukb-d-I9_IHD</code>.</p>
+<p>First, we set the path to where the reference population plink files
+are located to build the LD matrix</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bed_ref</span> <span class="op">&lt;-</span> <span class="st">"../data/ld/EUR"</span></span></code></pre></div>
-<p>and choose the data for each trait and set the IEU IDs. Note that we are performing a meta-analysis for the chd trait.</p>
+<p>and choose the data for each trait and set the IEU IDs. Note that we
+are performing a meta-analysis for the chd trait.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chd_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ieu-a-7"</span>,  <span class="st">"ukb-d-I9_IHD"</span><span class="op">)</span></span>
 <span><span class="va">ldl_id</span> <span class="op">&lt;-</span> <span class="st">"ieu-b-110"</span></span>
 <span><span class="va">hdl_id</span> <span class="op">&lt;-</span> <span class="st">"ieu-b-109"</span></span>
 <span><span class="va">trig_id</span> <span class="op">&lt;-</span> <span class="st">"ieu-b-111"</span></span>
 <span><span class="va">t2d_id</span> <span class="op">&lt;-</span> <span class="st">"ebi-a-GCST006867"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="setting-the-metadata">1. Setting the metadata<a class="anchor" aria-label="anchor" href="#setting-the-metadata"></a>
-</h3>
-<p>First, we create a <code>chd_metadata</code> object for the meta-analysis we are going to perform for the chd trait.</p>
+<div class="section level2">
+<h2 id="setting-the-metadata">1. Setting the metadata<a class="anchor" aria-label="anchor" href="#setting-the-metadata"></a>
+</h2>
+<p>We create a <code>chd_metadata</code> object for the meta-analysis we
+are going to perform on the chd trait.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chd_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">chd_id</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">gwasinfo</a></span><span class="op">(</span><span class="va">chd_id</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>and then the <code>metadata</code> objects for each of the other trait objects</p>
+<p>and then the <code>metadata</code> objects for each of the other
+trait objects</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">ldl_id</span>, <span class="va">hdl_id</span>, <span class="va">trig_id</span>, <span class="va">t2d_id</span><span class="op">)</span></span>
 <span><span class="co"># get metadata and create metadata objects</span></span>
 <span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">gwasinfo</a></span><span class="op">(</span><span class="va">ids</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>We are going to use these same <code>chd_metadata</code> and <code>metadata</code> objects for each analyse for each gene.</p>
+<p>We are going to use these same <code>chd_metadata</code> and
+<code>metadata</code> objects for each analyse for each gene.</p>
+<p>Note, that in the code above both <code>chd_metadata</code> and
+<code>metadata</code> objects are lists that contain metadata
+information for each trait. Eg., <code>chd_metadata</code> will have
+metadata information for both <code>ieu-a-7</code> and
+<code>ukb-d-I9_IHD</code> studies, retrieved using
+<code><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">ieugwasr::gwasinfo()</a></code>.</p>
 </div>
-<div class="section level3">
-<h3 id="hmgcr-3-hydroxy-3-methylglutaryl-coa-reductase-gene-region">2. HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region<a class="anchor" aria-label="anchor" href="#hmgcr-3-hydroxy-3-methylglutaryl-coa-reductase-gene-region"></a>
-</h3>
+<div class="section level2">
+<h2 id="hmgcr-3-hydroxy-3-methylglutaryl-coa-reductase-gene-region">2. HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region<a class="anchor" aria-label="anchor" href="#hmgcr-3-hydroxy-3-methylglutaryl-coa-reductase-gene-region"></a>
+</h2>
 <p>Set the gene region:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">hmgcr_chrpos</span> <span class="op">&lt;-</span> <span class="st">"5:74132993-75132993"</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="meta-analysis-for-the-chd-trait">2.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait"></a>
-</h4>
-<p>The code below performs meta-analysis including two studies (<code>ieu-a-7</code> and <code>ukb-d-I9_IHD</code>, see above) for the chd trait and the end result is one <code>hmgcr_chd</code> summaryset. First, it creates the summary sets for each of the studies followed by the dataset which includes them. Finally, we perform the meta-analysis to create a new summary set.</p>
+<div class="section level3">
+<h3 id="meta-analysis-for-the-chd-trait">2.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait"></a>
+</h3>
+<p>The code below performs meta-analysis including two studies
+(<code>ieu-a-7</code> and <code>ukb-d-I9_IHD</code>, see above) for the
+chd trait and the end result is one <code>hmgcr_chd</code> summaryset.
+First, it creates the summary sets for each of the studies followed by
+the dataset which includes them. Finally, performs the meta-analysis to
+create a new summary set.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">hmgcr_chd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">chd_id</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="co"># create summarysets</span></span>
@@ -149,10 +169,17 @@
 <span>    <span class="co"># meta-analysis to create a new summary set</span></span>
 <span>    <span class="fu"><a href="../reference/meta_analysis.html">meta_analysis</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span>   </span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="creating-a-dataset-for-all-the-traits">2.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits"></a>
-</h4>
-<p>Here, we create an harmonised dataset named <code>hmgcr</code>, which includes all the traits in <code>ids</code> and the <code>hmgcr_chd</code> summaryset created above. We start by creating the summarysets for each trait and then the dataset, which comprise all the summarysets (note that we are not saving the SummarySet objects separately, but filling them directly to the DataSet). Then we add the <code>hmgcr_chd</code> summaryset and harmonise trait against trait followed by each trait against a LD matrix.</p>
+<div class="section level3">
+<h3 id="creating-a-dataset-for-all-the-traits">2.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits"></a>
+</h3>
+<p>Here, we create an harmonised dataset named <code>hmgcr</code>, which
+includes all the traits in <code>ids</code> and the
+<code>hmgcr_chd</code> summaryset created above. We start by creating
+the summarysets for each trait and then the dataset, which comprise all
+the summarysets (note that we are not saving the SummarySet objects
+separately, but filling them directly to the DataSet). Then we add the
+<code>hmgcr_chd</code> summaryset and harmonise trait against trait
+followed by each trait against a LD matrix.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create an harmonised gwasglue2 DataSet object </span></span>
 <span>  <span class="va">hmgcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
@@ -165,15 +192,18 @@
 <span>    <span class="fu"><a href="../reference/add_summaryset.html">add_summaryset</a></span><span class="op">(</span><span class="va">hmgcr_chd</span>, <span class="va">.</span>, harmonise <span class="op">=</span> <span class="cn">TRUE</span>, tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="co"># harmonise dataset against LD matrix</span></span>
 <span>    <span class="fu"><a href="../reference/harmonise_ld.html">harmonise_ld</a></span><span class="op">(</span><span class="va">.</span>, bfile <span class="op">=</span> <span class="va">bed_ref</span> , plink_bin <span class="op">=</span> <span class="st">"plink"</span><span class="op">)</span></span></code></pre></div>
-<p>Before starting with the fine mapping and colocalisation analyses, we are going to look at the p-values for each variant in each trait.</p>
+<p>Before starting with the fine mapping and colocalisation analyses, we
+are going to look at the p-values for each variant in each trait.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot gwasglue2 DataSet object (hmgcr)</span></span>
 <span><span class="fu"><a href="../reference/plot_gwasglue.html">plot_gwasglue</a></span><span class="op">(</span><span class="va">hmgcr</span>, type<span class="op">=</span><span class="st">"manhattan"</span>, title <span class="op">=</span> <span class="st">"HMGCR"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="finemapping-with-susier">2.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier"></a>
-</h4>
-<p>After summary sets are harmonised, marginalise each summary set independently and create a new dataset with all marginalised summary sets merged</p>
+<div class="section level3">
+<h3 id="finemapping-with-susier">2.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier"></a>
+</h3>
+<p>After summary sets are harmonised, marginalise each summary set
+independently and create a new dataset with all marginalised summary
+sets merged</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># do finemapping with susie</span></span>
 <span><span class="va">ntraits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLength-methods.html">getLength</a></span><span class="op">(</span><span class="va">hmgcr</span><span class="op">)</span></span>
@@ -183,14 +213,17 @@
 <span>    <span class="co"># Outputs 1 DS (with at least 1 SS)</span></span>
 <span>    <span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/susieR/man/susie_rss.html" class="external-link">susie_rss</a></span><span class="op">(</span>R <span class="op">=</span> <span class="fu">getLDMatrix</span><span class="op">(</span><span class="va">hmgcr</span><span class="op">)</span>, summaryset <span class="op">=</span> <span class="fu"><a href="../reference/getSummarySet-methods.html">getSummarySet</a></span><span class="op">(</span><span class="va">hmgcr</span>, <span class="va">trait</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>Now we are going to merge the datasets. Note that the <code><a href="../reference/merge_datasets.html">merge_datasets()</a></code> function is just going to merge the marginalised datasets.</p>
+<p>Now we are going to merge the datasets. Note that the
+<code><a href="../reference/merge_datasets.html">merge_datasets()</a></code> function is just going to merge the
+marginalised datasets.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hmgcr_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="va">hmgcr_marginalised</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="colocolisation-with-hypercoloc">2.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc"></a>
-</h4>
-<p>Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)</p>
+<div class="section level3">
+<h3 id="colocolisation-with-hypercoloc">2.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc"></a>
+</h3>
+<p>Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows
+a dataset object to be provided)</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_hmgcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">hmgcr</span><span class="op">)</span> </span>
 <span><span class="co">#hyprcoloc is using gwasglue2 DataSet class object as input</span></span>
@@ -201,16 +234,19 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_hmgcr_marginalised</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="pcsk9-proprotein-convertase-subtilisinkexin-type-9-gene-region">3. PCSK9 (proprotein convertase subtilisin/kexin type 9) gene region<a class="anchor" aria-label="anchor" href="#pcsk9-proprotein-convertase-subtilisinkexin-type-9-gene-region"></a>
-</h3>
+<div class="section level2">
+<h2 id="pcsk9-proprotein-convertase-subtilisinkexin-type-9-gene-region">3. PCSK9 (proprotein convertase subtilisin/kexin type 9) gene
+region<a class="anchor" aria-label="anchor" href="#pcsk9-proprotein-convertase-subtilisinkexin-type-9-gene-region"></a>
+</h2>
 <p>Set the gene region:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pcsk9_chrpos</span> <span class="op">&lt;-</span> <span class="st">"1:55005221-56005221"</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="meta-analysis-for-the-chd-trait-1">3.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait-1"></a>
-</h4>
-<p>Like detailed above, in section 2.1, the code below performs meta-analysis for the chd trait and the end result is one <code>pcsk9_chd</code> summaryset.</p>
+<div class="section level3">
+<h3 id="meta-analysis-for-the-chd-trait-1">3.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait-1"></a>
+</h3>
+<p>Like detailed above, in section 2.1, the code below performs
+meta-analysis for the chd trait and the end result is one
+<code>pcsk9_chd</code> summaryset.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">pcsk9_chd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">chd_id</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="co"># create summarysets</span></span>
@@ -221,10 +257,12 @@
 <span>    <span class="co"># meta-analysis to create a new summary set</span></span>
 <span>    <span class="fu"><a href="../reference/meta_analysis.html">meta_analysis</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="creating-a-dataset-for-all-the-traits-1">3.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits-1"></a>
-</h4>
-<p>Like detailed in section 2.2, here we create another harmonised dataset named <code>pcsk9</code>, this time for the PCSK9 gene region.</p>
+<div class="section level3">
+<h3 id="creating-a-dataset-for-all-the-traits-1">3.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits-1"></a>
+</h3>
+<p>Like detailed in section 2.2, here we create another harmonised
+dataset named <code>pcsk9</code>, this time for the PCSK9 gene
+region.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create an harmonised gwasglue2 DataSet object </span></span>
 <span>  <span class="va">pcsk9</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
@@ -242,10 +280,11 @@
 <code class="sourceCode R"><span><span class="co"># plot gwasglue2 DataSet object (pcsk9)</span></span>
 <span><span class="fu"><a href="../reference/plot_gwasglue.html">plot_gwasglue</a></span><span class="op">(</span><span class="va">pcsk9</span>, type<span class="op">=</span><span class="st">"manhattan"</span>, title <span class="op">=</span> <span class="st">"PCSK9"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="finemapping-with-susier-1">3.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier-1"></a>
-</h4>
-<p>Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged.</p>
+<div class="section level3">
+<h3 id="finemapping-with-susier-1">3.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier-1"></a>
+</h3>
+<p>Marginalise each summary set independently and create a new dataset
+with all marginalised summary sets merged.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># do finemapping with susie </span></span>
 <span><span class="va">ntraits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLength-methods.html">getLength</a></span><span class="op">(</span><span class="va">pcsk9</span><span class="op">)</span></span>
@@ -259,9 +298,9 @@
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pcsk9_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="va">pcsk9_marginalised</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="colocolisation-with-hypercoloc-1">3.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc-1"></a>
-</h4>
+<div class="section level3">
+<h3 id="colocolisation-with-hypercoloc-1">3.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc-1"></a>
+</h3>
 <p>Try hyprcoloc with raw datasets.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_pcsk9</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">pcsk9</span><span class="op">)</span></span>
@@ -272,16 +311,18 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_pcsk9_marginalised</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="npc1l1-npc1-like-intracellular-cholesterol-transporter-1-gene-region">4. NPC1L1 (NPC1 like intracellular cholesterol transporter 1) gene region<a class="anchor" aria-label="anchor" href="#npc1l1-npc1-like-intracellular-cholesterol-transporter-1-gene-region"></a>
-</h3>
+<div class="section level2">
+<h2 id="npc1l1-npc1-like-intracellular-cholesterol-transporter-1-gene-region">4. NPC1L1 (NPC1 like intracellular cholesterol transporter 1) gene
+region<a class="anchor" aria-label="anchor" href="#npc1l1-npc1-like-intracellular-cholesterol-transporter-1-gene-region"></a>
+</h2>
 <p>Set the region:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">npc1l1_chrpos</span> <span class="op">&lt;-</span> <span class="st">"7:44052134-45052134"</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="meta-analysis-for-the-chd-trait-2">4.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait-2"></a>
-</h4>
-<p>Like section 2.1, we’ll do a meta-analysis for the chd trait and the end result is one <code>npc1l1_chd</code> summaryset.</p>
+<div class="section level3">
+<h3 id="meta-analysis-for-the-chd-trait-2">4.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait-2"></a>
+</h3>
+<p>Like section 2.1, we’ll do a meta-analysis for the chd trait and the
+end result is one <code>npc1l1_chd</code> summaryset.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">npc1l1_chd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">chd_id</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="co"># create summarysets</span></span>
@@ -292,10 +333,12 @@
 <span>    <span class="co"># meta-analysis to create a new summary set</span></span>
 <span>    <span class="fu"><a href="../reference/meta_analysis.html">meta_analysis</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="creating-a-dataset-for-all-the-traits-2">4.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits-2"></a>
-</h4>
-<p>Like detailed in section 2.2, here we create another harmonised dataset named <code>npc1l1</code>, this time for the NPC1L1 gene region.</p>
+<div class="section level3">
+<h3 id="creating-a-dataset-for-all-the-traits-2">4.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits-2"></a>
+</h3>
+<p>Like detailed in section 2.2, here we create another harmonised
+dataset named <code>npc1l1</code>, this time for the NPC1L1 gene
+region.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create an harmonised gwasglue2 DataSet object </span></span>
 <span>  <span class="va">npc1l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
@@ -313,10 +356,11 @@
 <code class="sourceCode R"><span><span class="co"># plot gwasglue2 DataSet object (npc1l1)</span></span>
 <span><span class="fu"><a href="../reference/plot_gwasglue.html">plot_gwasglue</a></span><span class="op">(</span><span class="va">npc1l1</span>, type<span class="op">=</span><span class="st">"manhattan"</span>, title <span class="op">=</span><span class="st">"NPC1L1"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="finemapping-with-susier-2">4.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier-2"></a>
-</h4>
-<p>Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged</p>
+<div class="section level3">
+<h3 id="finemapping-with-susier-2">4.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier-2"></a>
+</h3>
+<p>Marginalise each summary set independently and create a new dataset
+with all marginalised summary sets merged</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ntraits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLength-methods.html">getLength</a></span><span class="op">(</span> <span class="va">npc1l1</span><span class="op">)</span></span>
 <span><span class="va">npc1l1_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">ntraits</span>, <span class="kw">function</span><span class="op">(</span><span class="va">trait</span><span class="op">)</span></span>
@@ -329,9 +373,9 @@
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">npc1l1_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="va">npc1l1_marginalised</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="colocolisation-with-hypercoloc-2">4.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc-2"></a>
-</h4>
+<div class="section level3">
+<h3 id="colocolisation-with-hypercoloc-2">4.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc-2"></a>
+</h3>
 <p>Try hyprcoloc with raw datasets.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_npc1l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">npc1l1</span><span class="op">)</span></span>
@@ -342,16 +386,17 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_npc1l1_marginalised</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="lpa-lipoproteina-gene-region">5. LPA (Lipoprotein(A)) gene region<a class="anchor" aria-label="anchor" href="#lpa-lipoproteina-gene-region"></a>
-</h3>
+<div class="section level2">
+<h2 id="lpa-lipoproteina-gene-region">5. LPA (Lipoprotein(A)) gene region<a class="anchor" aria-label="anchor" href="#lpa-lipoproteina-gene-region"></a>
+</h2>
 <p>Set the region:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lpa_chrpos</span> <span class="op">&lt;-</span> <span class="st">"6:160952515-161087407"</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="meta-analysis-for-the-chd-trait-3">5.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait-3"></a>
-</h4>
-<p>Like section 2.1, we’ll do a meta-analysis for the chd trait and the end result is one <code>lpa_chd</code> summaryset.</p>
+<div class="section level3">
+<h3 id="meta-analysis-for-the-chd-trait-3">5.1. Meta-analysis for the chd trait<a class="anchor" aria-label="anchor" href="#meta-analysis-for-the-chd-trait-3"></a>
+</h3>
+<p>Like section 2.1, we’ll do a meta-analysis for the chd trait and the
+end result is one <code>lpa_chd</code> summaryset.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">lpa_chd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">chd_id</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="co"># create summarysets</span></span>
@@ -362,10 +407,12 @@
 <span>    <span class="co"># meta-analysis to create a new summary set</span></span>
 <span>    <span class="fu"><a href="../reference/meta_analysis.html">meta_analysis</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="creating-a-dataset-for-all-the-traits-3">5.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits-3"></a>
-</h4>
-<p>Like detailed in section 2.2, here we create another harmonised dataset named <code>lpa</code>, this time for the NPC1L1 gene region.</p>
+<div class="section level3">
+<h3 id="creating-a-dataset-for-all-the-traits-3">5.2. Creating a dataset for all the traits<a class="anchor" aria-label="anchor" href="#creating-a-dataset-for-all-the-traits-3"></a>
+</h3>
+<p>Like detailed in section 2.2, here we create another harmonised
+dataset named <code>lpa</code>, this time for the NPC1L1 gene
+region.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create an harmonised gwasglue2 DataSet object </span></span>
 <span>  <span class="va">lpa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
@@ -383,10 +430,11 @@
 <code class="sourceCode R"><span><span class="co"># plot gwasglue2 DataSet object (lpa)</span></span>
 <span> <span class="fu"><a href="../reference/plot_gwasglue.html">plot_gwasglue</a></span><span class="op">(</span><span class="va">lpa</span>, type<span class="op">=</span><span class="st">"manhattan"</span>, title <span class="op">=</span> <span class="st">"LPA"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="finemapping-with-susier-3">5.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier-3"></a>
-</h4>
-<p>Marginalise each summary set independently and create a new dataset with all marginalised summary sets merged</p>
+<div class="section level3">
+<h3 id="finemapping-with-susier-3">5.3. Finemapping with SusieR<a class="anchor" aria-label="anchor" href="#finemapping-with-susier-3"></a>
+</h3>
+<p>Marginalise each summary set independently and create a new dataset
+with all marginalised summary sets merged</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ntraits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLength-methods.html">getLength</a></span><span class="op">(</span><span class="va">lpa</span><span class="op">)</span></span>
 <span><span class="va">lpa_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">ntraits</span>, <span class="kw">function</span><span class="op">(</span><span class="va">trait</span><span class="op">)</span></span>
@@ -399,9 +447,9 @@
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lpa_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="va">lpa_marginalised</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="colocolisation-with-hypercoloc-3">5.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc-3"></a>
-</h4>
+<div class="section level3">
+<h3 id="colocolisation-with-hypercoloc-3">5.4. Colocolisation with hypercoloc<a class="anchor" aria-label="anchor" href="#colocolisation-with-hypercoloc-3"></a>
+</h3>
 <p>Try hyprcoloc with raw datasets.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_lpa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">lpa</span><span class="op">)</span></span>
@@ -410,7 +458,6 @@
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_lpa_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">lpa_marginalised</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_lpa_marginalised</span><span class="op">)</span></span></code></pre></div>
-</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -426,7 +473,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>

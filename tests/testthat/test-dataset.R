@@ -1,3 +1,4 @@
+# unit testing for DataSet object
 
 # GWAS summary data
 d1 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
@@ -17,7 +18,8 @@ test_that("compare against 2samplemr", {
     dt <- create_summaryset(data[[i]], metadata=metadata[[i]])
   }) %>%
     # create dataset
-    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1)
+    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+        suppressMessages()
       
   expect_equal(length(dataset@summary_sets), 2)
 })

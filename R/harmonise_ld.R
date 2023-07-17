@@ -46,35 +46,14 @@ ld_matrix_local <- function(variants, bfile, plink_bin)
 	res[,flip] <- res[,flip] * -1
 	diag(res) <- 1
 
-	rownames(res) <- colnames(res) <- paste(create_variantid_plink(bim), bim$V5, bim$V6, sep="|")
+	chr <- bim$V1
+	pos <- bim$V4
+	a1 <- bim$V5
+	a2 <- bim$V6
+
+	rownames(res) <- colnames(res) <- paste(create_variantid(chr,pos,a1,a2), bim$V5, bim$V6, sep="|")
 	
 	return(res)
-}
-
-
-
-
-
-create_variantid_plink <-function(bim_file) {
-  bim <- bim_file
-  nvariants <- dim(bim)[1] 
-  variantid <- lapply(1:nvariants, function(i){
-    x <- sort(c(bim[i,]$V5,bim[i,]$V6))
-    if (nchar(x[1]) > 10 || nchar(x[2]) <= 10){
-      id <- paste0(bim[i,]$V1,":", bim[i,]$V4,"_#",digest::digest(x[1],algo= "murmur32"),"_",x[2]) 
-    }
-    if (nchar(x[1]) <= 10 || nchar(x[2]) > 10){
-      id <- paste0(bim[i,]$V1,":", bim[i,]$V4,"_",x[1],"_#",digest::digest(x[2],algo= "murmur32")) 
-    }
-    if (nchar(x[1]) > 10 || nchar(x[2]) > 10){
-      id <- paste0(bim[i,]$V1,":", bim[i,]$V4,"_#",digest::digest(x[1],algo= "murmur32"),"_#",digest::digest(x[2],algo= "murmur32")) 
-    } else {
-      id <- paste0(bim[i,]$V1,":", bim[i,]$V4,"_",x[1],"_",x[2]) 
-    }
-  }) 
-
-  variantid <- unlist(variantid)
-  return(variantid)
 }
 
 

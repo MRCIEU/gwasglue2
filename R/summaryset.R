@@ -4,7 +4,8 @@
 #' @slot ss A tibble with the GWAS summary statistics (default NA).
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
-#' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA).
+#' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA). 
+#' @rdname DataSet
 setClass("SummarySet",
   slots = c(
     ss = "tbl_df",
@@ -25,8 +26,10 @@ setClass("SummarySet",
 #' SummarySet function
 #'
 #' @param sumstats GWAS summary statistics
+#' @keywords internal
 #' @importFrom methods new
 #' @return A gwasglue2 SummarySet object.
+#' @rdname DataSet
 SummarySet <- function(sumstats) {
   new("SummarySet",
     ss = sumstats
@@ -63,8 +66,7 @@ setMethod("setMetadata", "SummarySet",
             metadata) {
             
  summary_set@metadata <- metadata
-
-  return(summary_set)
+ return(summary_set)
 })
 
 #' Add to metadata in the SummarySet 
@@ -163,24 +165,15 @@ setMethod("getMetadata", "SummarySet",
 setGeneric("setVariantid", function(summary_set) standardGeneric("setVariantid"))
 #' @rdname setVariantid-methods
 setMethod("setVariantid", "SummarySet", function(summary_set) {
-  sumstats <- getSummaryData(summary_set)
-  nvariants <- dim(sumstats)[1] 
-  variantid <- lapply(1:nvariants, function(i){
-    x <- sort(c(sumstats[i,]$ea,sumstats[i,]$nea))
-    if (nchar(x[1]) > 10 || nchar(x[2]) <= 10){
-      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_",x[2]) 
-    }
-    if (nchar(x[1]) <= 10 || nchar(x[2]) > 10){
-      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_",x[1],"_#",digest::digest(x[2],algo= "murmur32")) 
-    }
-    if (nchar(x[1]) > 10 || nchar(x[2]) > 10){
-      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_#",digest::digest(x[1],algo= "murmur32"),"_#",digest::digest(x[2],algo= "murmur32")) 
-    } else {
-      id <- paste0(sumstats[i,]$chr,":", sumstats[i,]$position,"_",x[1],"_",x[2]) 
-    }
-  }) 
+  chr <- getSummaryData(summary_set)$chr
+  pos <- getSummaryData(summary_set)$position
+  a1 <- getSummaryData(summary_set)$ea
+  a2 <- getSummaryData(summary_set)$nea
+  
+  variantid <- create_variantid(chr,pos,a1,a2)
 
-  summary_set@ss[,"variantid"] <- unlist(variantid)
+  summary_set@ss[,"variantid"] <- variantid
+
   return(summary_set)
 })
  
