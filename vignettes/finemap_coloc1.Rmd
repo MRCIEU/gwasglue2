@@ -1,8 +1,8 @@
 ---
-title: "Tutorial 2: Regional genotype-phenotype map "
+title: "Tutorial 3: Regional genotype-phenotype map"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tutorial 2: Regional genotype-phenotype map}
+  %\VignetteIndexEntry{Tutorial 3: Regional genotype-phenotype map}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

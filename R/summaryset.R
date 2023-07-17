@@ -4,7 +4,8 @@
 #' @slot ss A tibble with the GWAS summary statistics (default NA).
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
-#' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA).
+#' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA). 
+#' @rdname DataSet
 setClass("SummarySet",
   slots = c(
     ss = "tbl_df",
@@ -25,8 +26,10 @@ setClass("SummarySet",
 #' SummarySet function
 #'
 #' @param sumstats GWAS summary statistics
+#' @keywords internal
 #' @importFrom methods new
 #' @return A gwasglue2 SummarySet object.
+#' @rdname DataSet
 SummarySet <- function(sumstats) {
   new("SummarySet",
     ss = sumstats

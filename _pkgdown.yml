@@ -13,15 +13,15 @@ navbar:
    articles:
     text: Tutorials
     menu:
-    - text: "How to create a SummarySet and a DataSet"
+    - text: "Tutorial 1 - How to create a SummarySet and a DataSet"
       href: articles/SummarySet_DataSet.html
-    - text: "Tutorial 1 - MR analysis"
+    - text: "Tutorial 2- MR analysis"
       href: articles/mr.html
-    - text: "Tutorial 2 - Regional genotype-phenotype map"
+    - text: "Tutorial 3 - Regional genotype-phenotype map"
       href: articles/finemap_coloc1.html
-    - text: "Tutorial 3 - Meta-analysis"
+    - text: "Tutorial 4 - Meta-analysis"
       href: articles/meta.html
-    - text: "Tutorial 4 - Alternative regional genotype-phenotype map example"
+    - text: "Tutorial 5 - Alternative regional genotype-phenotype map example"
       href: articles/finemap_coloc2.html
    reference:
     text: Functions

@@ -1,8 +1,8 @@
 ---
-title: "Tutorial 4: Alternative regional genotype-phenotype map example, with meta-analyses included"
+title: "Tutorial 5: Alternative regional genotype-phenotype map example, with meta-analyses included"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tutorial 4: Alternative regional genotype-phenotype map example}
+  %\VignetteIndexEntry{Tutorial 5: Alternative regional genotype-phenotype map example, with meta-analyses included}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

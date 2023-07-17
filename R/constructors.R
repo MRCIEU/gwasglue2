@@ -206,7 +206,7 @@ create_summaryset_from_tibble <- function (data = tibble(),
     setRSID(.,.@ss$rsid) 
     
 
-  # #set attributes
+  # set attributes
   s@attributes <- list("type" = "tibble", "creation" = Sys.time())
   
     return(s)
@@ -221,8 +221,7 @@ standardise <- function(d)
     temp <- d$nea[toflip]
     d$nea[toflip] <- d$ea[toflip]
     d$ea[toflip] <- temp
-    # d$snpid <- paste0(d$chr, ":", d$pos, "_", d$ea, "_", d$nea)
-    d
+    return(d)
 }
 
 #' Creates a DataSet object using gwasglue2 SummarySet objects, and harmonise data against data
