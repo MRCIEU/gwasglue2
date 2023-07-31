@@ -4,13 +4,14 @@ FROM eddelbuettel/r2u:jammy
 
 # Update this date to re-run apt-get.
 # We need to install git with jammy
-LABEL package.date=2023-02-06
+LABEL package.date = 2023-07-25
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
      sqlite3 libcurl4-openssl-dev \
      git \
      pandoc \
-     qpdf -y
+     qpdf -y \
+     vim
 
 
 WORKDIR /project
@@ -48,18 +49,26 @@ RUN wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20220402.zip 
 
 
 # R environment
-ENV RENV_VERSION 0.16.0
+ENV RENV_VERSION 1.0.0
 
 # Install R packages for development
-RUN R -e "install.packages(c('devtools','methods'))"
+RUN R -e "install.packages(c('devtools','methods','covr'))"
+
+# Install bioconductor packages (need to be installed before gwasvcf)
+RUN R -e "install.packages(c('BiocGenerics', 'Biostrings', 'GenomeInfoDb', 'GenomicRanges', \
+        'IRanges', ' Rsamtools', 'S4Vectors', 'VariantAnnotation', 'SummarizedExperiment','rtracklayer'))"
+
 
 # Install R packages
-RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc',  \
-        'rmarkdown', 'knitr', 'commonmark', 'markdown','Rfast','httpgd','crayon','hash')); \
+RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc', \
+        'rmarkdown', 'knitr', 'bookdown', 'commonmark', 'markdown','Rfast', \
+        'httpgd','crayon','hash', 'data.table', 'stringr', ' RCurl', 'rlang', \
+        ' utils', 'RSQLite', 'digest','graphics', 'stats','pander')); \       
         remotes::install_github('mrcieu/ieugwasr'); \
         remotes::install_github('mrcieu/TwoSampleMR');  \
         remotes::install_github('mrcieu/gwasvcf'); \
-        remotes::install_github('ritarasteiro/susieR') \
+        remotes::install_github('mrcieu/GwasDataImport'); \
+        remotes::install_github('ritarasteiro/susieR'); \
         remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = FALSE)"
 # hypercoloc needs pandoc to build vignettes
 
