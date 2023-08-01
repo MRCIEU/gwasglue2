@@ -12,8 +12,10 @@ pkgdown::build_site()
 
 
 
-roxygen2::update_collate(".")
+ roxygen2::update_collate(".")
 
+# unit testing
+devtools::test()
 
 
 # create a vignette
@@ -24,18 +26,26 @@ library(covr)
 report()
 usethis::use_github_action("test-coverage")
 
+# ignore R build
 usethis::use_build_ignore("dev/", escape = TRUE)
 usethis::use_build_ignore("docker/", escape = TRUE)
 usethis::use_build_ignore(".dockerignore/", escape = TRUE)
-usethis::use_build_ignore(".tests/", escape = TRUE)
 usethis::use_build_ignore(".devcontainer/", escape = TRUE)
 usethis::use_build_ignore("data/", escape = TRUE)
+usethis::use_build_ignore("ieugwasr_oauth/", escape = TRUE)
+usethis::use_build_ignore(".gitignore", escape = TRUE)
+usethis::use_build_ignore(".vscode/", escape = TRUE)
+usethis::use_build_ignore("tests/", escape = TRUE)
 
+# ignore git
 usethis::use_git_ignore("data/")
+usethis::use_git_ignore("ieugwasr_oauth/")
+usethis::use_git_ignore(".vscode/")
+usethis::use_git_ignore(".devcontainer/")
 
 
 usethis::use_news_md()
 
 # debug vignettes
 build_vignettes()
-devtools::build_rmd("vignettes/Summ") 
+devtools::build_rmd("vignettes/Strategy.Rmd") 

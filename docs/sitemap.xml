@@ -91,6 +91,9 @@
     <loc>/reference/create_summaryset.html</loc>
   </url>
   <url>
+    <loc>/reference/create_summaryset_from_gwasvcf.html</loc>
+  </url>
+  <url>
     <loc>/reference/create_summaryset_from_tibble.html</loc>
   </url>
   <url>

@@ -18,8 +18,7 @@ create_summaryset_from_tibble(
   other_allele_col = "nea",
   eaf_col = "eaf",
   id_col = "id",
-  trait_col = "trait",
-  ...
+  trait_col = "trait"
 )
 }
 \arguments{
@@ -50,8 +49,6 @@ create_summaryset_from_tibble(
 \item{id_col}{GWAS study ID column. The default is \code{"id"}.}
 
 \item{trait_col}{Column name for the column with phenotype name corresponding the the variant. The default is \code{"trait"}}
-
-\item{...}{Other columns}
 }
 \value{
 A gwasglue2 SummarySet object
