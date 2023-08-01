@@ -26,6 +26,7 @@ Suggests:
     rmarkdown,
     ieugwasr,
     TwoSampleMR,
+    gwasvcf,
     testthat (>= 3.0.0),
     covr,
     utils,
