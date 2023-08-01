@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(gwasglue2)
+library(VariantAnnotation)
 devtools::load_all("../") # this was added just for development
 ```
 
@@ -28,6 +29,7 @@ In this tutorial, we will approach the several ways of creating the two types of
 
  ```{r}
  data1 <- ieugwasr::associations(variants = "5:74132993-75132993", id = "ukb-d-I9_IHD")
+
  ```
  
  Then we use the `create_summaryset()` to create the `SummarySet`.
@@ -105,13 +107,37 @@ sumset2 = addToMetadata(sumset2, sample_size = (getMetadata(sumset2)$ncontrol + 
 getMetadata(sumset2)
 ```
 
+## Create a Summaryset from a GWAS vcf file
+
+In the examples above, the SummarySets were created using a tibble or more specifically the output of the `ieugwasr` package. Now we are going to use GWAS vcf files to create a SummarySet.
+
+First we use the Bioconductor package `VariantAnnotation` to read the vcf file.
+
+```{r}
+vcffile <- "../data/vcf/IEU-a-2.vcf.gz"
+vcf <- VariantAnnotation::readVcf(vcffile)
+```
+Then `gwasvcf` is used to query the vcf file and converting to simple dataframes
+
+```{r}
+data_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993"))%>% 
+  gwasvcf::vcf_to_granges() %>% 
+  dplyr:: as_tibble()
+```
+
+Then we create the SummarySet using the `create_sumaryset()` function with argument `type = "vcf"`
+```{r}
+sumset_vcf=create_summaryset(data_vcf, type="vcf")
+```
+
+
 # DataSet
 A `DataSet-class` is a list of two or more harmonised `SummarySets`.
 
 First we need to create a list with all `SummarySets` we want to analyse,
 
 ```{r}
-summarysets <- list(sumset1, sumset2)
+summarysets <- list(sumset1, sumset2, sumset_vcf)
 ```
 and then use the `create_dataset()` function to build the `DataSet` object.
 
