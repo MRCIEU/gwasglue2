@@ -19,6 +19,7 @@
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
 #' @export 
+#' @rdname DataSet
 setClass("DataSet",
   slots = c(
     summary_sets = "list",
@@ -64,6 +65,7 @@ setClass("DataSet",
 #' @importFrom methods new
 #' @return  A gwasglue2 DataSet object
 #' @export 
+#' @rdname DataSet
 DataSet <- function(...) {
   new("DataSet", summary_sets = as.list(...))
 }
