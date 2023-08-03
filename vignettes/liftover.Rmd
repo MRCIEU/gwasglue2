@@ -1,0 +1,53 @@
+---
+title: "Tutorial 6: Remap genomic coordinates to a different genome assembly"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial 6: Remap genomic coordinates to a different genome assembly}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+devtools::load_all("../") # this was added just for development
+```
+
+`gwasglue2` has a `liftover()` function to remap genomic coordinates from different genome assemblies to the same reference build. 
+
+`gwasglue2` uses the chain files and human genome nomenclature of [ENSEMBL](https://www.ensembl.org/Homo_sapiens/) ("NCBI34", "NCBI35", "NCBI36", "GRCh37" and "GRCh38").
+
+
+In this, tutorial we have GWAS summary data obtained from IEU OpenGWAS through the `ieugwasr` package. The data was built under the "GRCh37" genome assembly and we want to remap it to "GRCh378". 
+
+First, we create a SummarySet object that we name `sumset1` providing in the `build` argument the genome assembly used to build the GWAS summary data. We can check it in the metadata.
+
+
+ ```{r}
+ data1 <- ieugwasr::associations(variants = "5:74132993-75132993", id = "ukb-d-I9_IHD")
+ 
+ sumset1 <- create_summaryset(data1, build ="GRCh37")
+ getMetadata(sumset1)
+
+ ```
+ Then we perform the liftover. We can first download the chain file followed by the `liftover()`. In this case we need to give the genome assemblies to "lift from" and to "lift to" : 
+
+```{r}
+sumset1_lift <- download_chainfile(from = "GRCh37", to = "GRCh38") %>%
+                liftover(sumset1,.)
+```
+Or simply provide directly to `liftover()` the genome assembly to "lift to". In this case, the function will check the `build` to "lift from" in the metadata of `sumset1` and download the chain file.
+
+
+```{r}
+sumset1_lift <- liftover(sumset1,to = "GRCh38")
+```
+
