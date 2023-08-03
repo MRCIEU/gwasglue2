@@ -11,8 +11,8 @@
 #' @param nsnp Number of variants in the study.
 #' @param trait  Phenotype name corresponding the the variant.
 #' @param sd Trait standard deviation.
-#' @param unit TODO 
-#' @param ncontrol TODO
+#' @param unit Unit 
+#' @param ncontrol Nb of controls in study
 #' @param build   genome build version.
 #' @param population  Study sample population.
 #' @param ncase Number of cases in study.
@@ -45,6 +45,8 @@ create_metadata <- function(metadata = NULL,
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
 #' @param type Input @param data type. Default is `"tibble"`. Other options: `"vcf"`
+#' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
+#' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE
 #' @param beta_col Name of column with effect sizes. The default is `"beta"` for @param type `"tibble"` and `"ES"`for @param type `"vcf"`..
 #' @param se_col Name of column with standard errors. The default is `"se"` for @param type `"tibble"` and `"SE"`for @param type `"vcf"`.
@@ -77,7 +79,8 @@ create_summaryset <- function (data,
                               other_allele_col = NULL,
                               eaf_col = NULL,
                               id_col = NULL,
-                              trait_col = NULL) {
+                              trait_col = NULL, 
+                              build = NULL) {
   # create SummarySet from tibbles
   if (type == "tibble") {
     if(is.null(beta_col)){
@@ -119,6 +122,7 @@ create_summaryset <- function (data,
 
     s <- create_summaryset_from_tibble(data = data,
                               metadata = metadata,
+                              qc = qc,
                               beta_col =  beta_col,
                               se_col = se_col,
                               samplesize_col = samplesize_col,
@@ -130,7 +134,8 @@ create_summaryset <- function (data,
                               other_allele_col = other_allele_col,
                               eaf_col = eaf_col,
                               id_col = id_col,
-                              trait_col = trait_col)
+                              trait_col = trait_col,
+                              build = build)
   }
   # create SummarySet from vcf
   if (type == "vcf") {
@@ -173,6 +178,7 @@ create_summaryset <- function (data,
     
     s <- create_summaryset_from_gwasvcf(data = data,
                               metadata = metadata,
+                              qc = qc,
                               beta_col =  beta_col,
                               se_col = se_col,
                               samplesize_col = samplesize_col,
@@ -184,28 +190,10 @@ create_summaryset <- function (data,
                               effect_allele_col = effect_allele_col,
                               other_allele_col = other_allele_col,
                               eaf_col = eaf_col,
-                              id_col = id_col)
+                              id_col = id_col,
+                              build = build)
   }
 
-  # sanity checks
-  # check if there are repeated variantids
-  variant_id <- s@ss$variantid
-  variant_id_rep <- variant_id[(duplicated(variant_id) | duplicated(variant_id, fromLast = TRUE)) ]
-  
-  # warning message if there is problems run with option
-  if (length(variant_id_rep) > 0){
-    if (isFALSE(qc)){
-    warning( "There are repeated variants in the data, that could stop gwasglue2 from running in some analyses. If you want gwasglue to deal with it, run again 'create_summaryset' with option 'qc = TRUE'" )
-    print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
-    }
-    # remove repeated variantids
-    if (isTRUE(qc)){
-      message("gwasglue2 is removing problematic variants")
-      print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
-      s@ss <- s@ss[which(s@ss$variantid %ni% variant_id_rep), ]
-    }
-  }
- 
   return(s)
 }           
 
@@ -215,22 +203,26 @@ create_summaryset <- function (data,
 #' @param data GWAS summary statistics. A tibble
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
-#' @param beta_col Name of column with effect sizes. The default is `"beta"`.
-#' @param se_col Name of column with standard errors. The default is `"se"`.
-#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
-#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"`.
-#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea`.
+#' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
+#' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
+#' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE
+#' @param beta_col Name of column with effect sizes. The default is `"beta"` for @param type `"tibble"` and `"ES"`for @param type `"vcf"`..
+#' @param se_col Name of column with standard errors. The default is `"se"` for @param type `"tibble"` and `"SE"`for @param type `"vcf"`.
+#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"` for @param type `"tibble"` and `"AF"`for @param type `"vcf"`.
+#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"` for @param type `"tibble"` and `"ALT"`for @param type `"vcf"`.
+#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea` for @param type `"tibble"` and `"REF"`for @param type `"vcf"`.
 #' @param pvalue_col Name of column with p-value. The default is `"p"`.
-#' @param samplesize_col Column name for sample size. The default is `"n"`.
-#' @param chr_col Column name for chromosome . The default is `"chr"`.
-#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"`.
-#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"`.
+#' @param samplesize_col Column name for sample size. The default is `"n"` for @param type `"tibble"` and `"SS"`for @param type `"vcf"`.
+#' @param chr_col Column name for chromosome . The default is `"chr"` for @param type `"tibble"` and `"seqnames"`for @param type `"vcf"`.
+#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"` for @param type `"tibble"` and `"start"`for @param type `"vcf"`.
+#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"` for @param type `"tibble"` and `"ID"`for @param type `"vcf"`.
 #' @param id_col GWAS study ID column. The default is `"id"`.
 #' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"` 
 #' @return A gwasglue2 SummarySet object
 #' @export 
 create_summaryset_from_tibble <- function (data = tibble(),
                               metadata = NULL,
+                              qc = FALSE,
                               beta_col = "beta",
                               se_col = "se",
                               samplesize_col = "n",
@@ -242,7 +234,8 @@ create_summaryset_from_tibble <- function (data = tibble(),
                               other_allele_col = "nea",
                               eaf_col = "eaf",
                               id_col = "id",
-                              trait_col = "trait") {
+                              trait_col = "trait", 
+                              build = NULL) {
   
 
   # Check column names and change them to ieugwasr nomenclature
@@ -301,12 +294,34 @@ create_summaryset_from_tibble <- function (data = tibble(),
   if ("trait" %in% names(metadata) && "trait" %in% colnames(data) && is.na(metadata$trait)){ 
     metadata$trait <- unique(data$trait)
     }
+  if ("build" %in% names(metadata) && is.na(metadata$build)){ 
+    metadata$build <- build
+    }
 
   s <- SummarySet(sumstats = data) %>%
     setMetadata(., metadata) %>%
     setVariantid(.) %>%
     setRSID(.,.@ss$rsid) 
-    
+
+  # sanity checks
+  # check if there are repeated variantids
+  variant_id <- s@ss$variantid
+  variant_id_rep <- variant_id[(duplicated(variant_id) | duplicated(variant_id, fromLast = TRUE)) ]
+  
+  # warning message if there is problems run with option
+  if (length(variant_id_rep) > 0){
+    if (isFALSE(qc)){
+    warning( "There are repeated variants in the data, that could stop gwasglue2 from running in some analyses. If you want gwasglue to deal with it, run again 'create_summaryset' with option 'qc = TRUE'\n" )
+    print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+    }
+    # remove repeated variantids
+    if (isTRUE(qc)){
+      message("gwasglue2 is removing problematic variants\n")
+      print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+      s@ss <- s@ss[which(s@ss$variantid %ni% variant_id_rep), ]
+    }
+  }
+
 
   # set attributes
   s@attributes <- list("type" = "tibble", "creation" = Sys.time())
@@ -314,13 +329,14 @@ create_summaryset_from_tibble <- function (data = tibble(),
     return(s)
 }
 
-
-
 #' A function to create a gwasglue2 SummarySet object from a vcf file
 #' 
-#' @param data GWAS summary statistics. IN the GWAS vcf dataframe format
+#' @param data GWAS summary statistics. In the GWAS vcf dataframe format
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
+#' @param build Reference genome assembly to generate the vcf file. Default is NULL. 
+#' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
+#' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE
 #' @param beta_col Name of column with effect sizes. The default is `"ES"`.
 #' @param se_col Name of column with standard errors. The default is `"SE"`.
 #' @param eaf_col Name of column with effect allele frequency. The default is `"AF"`.
@@ -337,6 +353,7 @@ create_summaryset_from_tibble <- function (data = tibble(),
 #' @export 
 create_summaryset_from_gwasvcf <- function (data,
                               metadata = NULL,
+                              qc = FALSE,
                               beta_col = "ES",
                               se_col = "SE",
                               samplesize_col = "SS",
@@ -348,7 +365,8 @@ create_summaryset_from_gwasvcf <- function (data,
                               effect_allele_col = "ALT",
                               other_allele_col = "REF",
                               eaf_col = "AF",
-                              id_col = "id") {
+                              id_col = "id", 
+                              build = NULL) {
 
   data <- data %>% dplyr::as_tibble()
 
@@ -416,33 +434,44 @@ create_summaryset_from_gwasvcf <- function (data,
   if ("trait" %in% names(metadata) && "trait" %in% colnames(data) && is.na(metadata$trait)){ 
     metadata$trait <- unique(data$trait)
     }
+  if ("build" %in% names(metadata) && is.na(metadata$build)){ 
+    metadata$build <- build
+    }
 
   s <- SummarySet(sumstats = data) %>%
     setMetadata(., metadata) %>%
     setVariantid(.) %>%
     setRSID(.,.@ss$rsid) 
+
+  # sanity checks
+  # check if there are repeated variantids
+  variant_id <- s@ss$variantid
+  variant_id_rep <- variant_id[(duplicated(variant_id) | duplicated(variant_id, fromLast = TRUE)) ]
+  
+  # warning message if there is problems run with option
+  if (length(variant_id_rep) > 0){
+    if (isFALSE(qc)){
+    warning( "There are repeated variants in the data, that could stop gwasglue2 from running in some analyses. If you want gwasglue to deal with it, run again 'create_summaryset' with option 'qc = TRUE'\n")
+    print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+    }
+    # remove repeated variantids
+    if (isTRUE(qc)){
+      message("gwasglue2 is removing problematic variants\n")
+      print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+      s@ss <- s@ss[which(s@ss$variantid %ni% variant_id_rep), ]
+    }
+  }
     
 
   # set attributes
   s@attributes <- list("type" = "vcf", "creation" = Sys.time())
   
-    return(s)
+  return(s)
 }
 
 
 
 
-
-standardise <- function(d)
-{
-    toflip <- d$ea > d$nea
-    d$eaf[toflip] <- 1 - d$eaf[toflip]
-    d$beta[toflip] <- d$beta[toflip] * -1
-    temp <- d$nea[toflip]
-    d$nea[toflip] <- d$ea[toflip]
-    d$ea[toflip] <- temp
-    return(d)
-}
 
 #' Creates a DataSet object using gwasglue2 SummarySet objects, and harmonise data against data
 #'
@@ -628,6 +657,21 @@ merge_datasets <- function(datasets) {
     return(ds)
 }
 
+
+
+
+
+
+# standardise function: it standardises the data and flips the alleles to be in alphabetical order. Thus, the effect allele will always be the first alphabetically. 
+standardise <- function(d){
+    toflip <- d$ea > d$nea
+    d$eaf[toflip] <- 1 - d$eaf[toflip]
+    d$beta[toflip] <- d$beta[toflip] * -1
+    temp <- d$nea[toflip]
+    d$nea[toflip] <- d$ea[toflip]
+    d$ea[toflip] <- temp
+    return(d)
+}
 
 
 # create variantid using hashes when alleles nchar >10

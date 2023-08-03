@@ -24,6 +24,7 @@ remotes::install_github('ritarasteiro/susieR')
 ```{r setup }
 #library(gwasglue2)
 devtools::load_all("../") # this was added just for development
+library(ieugwasr)
 library(susieR)     # fork that takes Summaryset
 library(hyprcoloc)  # fork that takes Dataset
 library(dplyr)
