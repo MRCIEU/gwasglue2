@@ -12,7 +12,7 @@
 #' @slot palindromic_SNPs A list of pairwise harmonising ouptput.
 #' @slot ambiguous_SNPs A list of pairwise harmonising ouptput.
 #' @slot incompatible_alleles_SNPs A list of pairwise harmonising ouptput.
-#' @slot ld_matrix LD matrix buoild from reference population
+#' @slot ld_matrix LD matrix from reference population
 #' @slot is_harmonisedLD logical (default FALSE).
 #' @slot zscores vector of calculated z-scores
 #' @slot susie_marginalised logical (default FALSE).
