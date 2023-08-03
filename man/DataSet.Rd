@@ -40,7 +40,7 @@ DataSet function
 
 \item{\code{incompatible_alleles_SNPs}}{A list of pairwise harmonising ouptput.}
 
-\item{\code{ld_matrix}}{LD matrix buoild from reference population}
+\item{\code{ld_matrix}}{LD matrix from reference population}
 
 \item{\code{is_harmonisedLD}}{logical (default FALSE).}
 

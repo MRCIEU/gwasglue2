@@ -21,7 +21,8 @@ create_summaryset(
   other_allele_col = NULL,
   eaf_col = NULL,
   id_col = NULL,
-  trait_col = NULL
+  trait_col = NULL,
+  build = NULL
 )
 }
 \arguments{
@@ -58,6 +59,11 @@ create_summaryset(
 \item{id_col}{GWAS study ID column. The default is \code{"id"}.}
 
 \item{trait_col}{Column name for the column with phenotype name corresponding the the variant. The default is \code{"trait"}}
+
+\item{build}{Reference genome assembly to generate the genomic data. Default is NULL.
+\itemize{
+\item Options are \code{"NCBI34"}, \code{"NCBI35"}, \code{"NCBI36"}, \code{"GRCh37"} or "GRCh38".
+}}
 }
 \value{
 A gwasglue2 SummarySet object

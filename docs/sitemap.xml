@@ -25,6 +25,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/liftover.html</loc>
+  </url>
+  <url>
     <loc>/articles/meta.html</loc>
   </url>
   <url>
@@ -103,6 +106,9 @@
     <loc>/reference/dimData-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/download_chainfile.html</loc>
+  </url>
+  <url>
     <loc>/reference/getAttributes-methods.html</loc>
   </url>
   <url>
@@ -167,6 +173,9 @@
   </url>
   <url>
     <loc>/reference/ld_matrix_local.html</loc>
+  </url>
+  <url>
+    <loc>/reference/liftover.html</loc>
   </url>
   <url>
     <loc>/reference/merge_datasets.html</loc>

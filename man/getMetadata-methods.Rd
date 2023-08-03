@@ -14,7 +14,7 @@ getMetadata(summary_set)
 \item{summary_set}{A gwasglue2 SummarySet object.}
 }
 \value{
-The gwasglue2 SummarySet metadata
+The gwasglue2 SummarySet metadata.
 }
 \description{
 Get Method to retrieve the metadata stored in the SummarySet

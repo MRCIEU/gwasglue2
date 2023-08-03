@@ -47,9 +47,9 @@ addToMetadata(
 
 \item{sd}{Trait standard deviation.}
 
-\item{unit}{TODO}
+\item{unit}{Unit.}
 
-\item{ncontrol}{TODO}
+\item{ncontrol}{Number of controls in study.}
 
 \item{build}{genome build version.}
 
@@ -58,7 +58,7 @@ addToMetadata(
 \item{ncase}{Number of cases in study.}
 }
 \value{
-gwasglue2 SummarySet object with metadata stored
+gwasglue2 SummarySet object with metadata stored.
 }
 \description{
 Add to metadata in the SummarySet

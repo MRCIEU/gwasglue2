@@ -14,7 +14,7 @@ setVariantid(summary_set)
 \item{summary_set}{A gwasglue2 SummarySet object}
 }
 \value{
-A extra '"variantid"' column in the  GWAS summary statistics tibble. The @rdname getSummaryData-methods can be used to retrieve it.
+A extra '"variantid"' column in the  GWAS summary statistics tibble. The \code{\link[=getSummaryData]{getSummaryData()}} can be used to retrieve it.
 }
 \description{
 Set Method to create an internal Variant ID for the SummarySet

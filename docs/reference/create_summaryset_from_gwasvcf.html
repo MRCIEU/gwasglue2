@@ -32,6 +32,7 @@
     <a class="dropdown-item" href="../articles/finemap_coloc1.html">Tutorial 3 - Regional genotype-phenotype map</a>
     <a class="dropdown-item" href="../articles/meta.html">Tutorial 4 - Meta-analysis</a>
     <a class="dropdown-item" href="../articles/finemap_coloc2.html">Tutorial 5 - Alternative regional genotype-phenotype map example</a>
+    <a class="dropdown-item" href="../articles/liftover.html">Tutorial 6: Lift genomic coordinates to the same reference build</a>
   </div>
 </li>
 <li class="nav-item">
@@ -67,6 +68,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_summaryset_from_gwasvcf</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  qc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  beta_col <span class="op">=</span> <span class="st">"ES"</span>,</span>
 <span>  se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
 <span>  samplesize_col <span class="op">=</span> <span class="st">"SS"</span>,</span>
@@ -78,18 +80,23 @@
 <span>  effect_allele_col <span class="op">=</span> <span class="st">"ALT"</span>,</span>
 <span>  other_allele_col <span class="op">=</span> <span class="st">"REF"</span>,</span>
 <span>  eaf_col <span class="op">=</span> <span class="st">"AF"</span>,</span>
-<span>  id_col <span class="op">=</span> <span class="st">"id"</span></span>
+<span>  id_col <span class="op">=</span> <span class="st">"id"</span>,</span>
+<span>  build <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
-<dd><p>GWAS summary statistics. IN the GWAS vcf dataframe format</p></dd>
+<dd><p>GWAS summary statistics. In the GWAS vcf dataframe format</p></dd>
 
 
 <dt>metadata</dt>
 <dd><p>A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset</p></dd>
+
+
+<dt>qc</dt>
+<dd><p>Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE</p></dd>
 
 
 <dt>beta_col</dt>
@@ -138,6 +145,11 @@
 
 <dt>id_col</dt>
 <dd><p>GWAS study ID column. The default is <code>"id"</code>.</p></dd>
+
+
+<dt>build</dt>
+<dd><p>Reference genome assembly to generate the vcf file. Default is NULL.</p><ul><li><p>Options are <code>"NCBI34"</code>, <code>"NCBI35"</code>, <code>"NCBI36"</code>, <code>"GRCh37"</code> or "GRCh38".</p></li>
+</ul></dd>
 
 </dl></div>
     <div class="section level2">

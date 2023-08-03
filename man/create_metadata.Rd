@@ -32,9 +32,9 @@ create_metadata(
 
 \item{sd}{Trait standard deviation.}
 
-\item{unit}{TODO}
+\item{unit}{Unit}
 
-\item{ncontrol}{TODO}
+\item{ncontrol}{Nb of controls in study}
 
 \item{build}{genome build version.}
 
