@@ -24,9 +24,7 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    ieugwasr,
     TwoSampleMR,
-    gwasvcf,
     testthat (>= 3.0.0),
     covr,
     utils,
@@ -35,8 +33,6 @@ Suggests:
     stats 
 Remotes:
     mrcieu/TwoSampleMR,
-    mrcieu/gwasvcf,
-    mrcieu/ieugwasr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Collate: 
@@ -48,6 +44,7 @@ Collate:
     'harmoniseLD_method.R'
     'harmonise_ld.R'
     'harmonise_method.R'
+    'liftover.R'
     'meta.R'
     'plot.R'
     'summaryset.R'
