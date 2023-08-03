@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(gwasglue2)
 library(VariantAnnotation)
+library( gwasvcf)
+library(ieugwasr)
 devtools::load_all("../") # this was added just for development
 ```
 
@@ -144,6 +146,4 @@ and then use the `create_dataset()` function to build the `DataSet` object.
 ```{r}
 dataset <-  create_dataset(summarysets, harmonise = TRUE, tolerance = 0.08, action = 1)
 ```
-
-
 
