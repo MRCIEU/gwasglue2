@@ -30,7 +30,10 @@ Suggests:
     utils,
     digest,
     graphics,
-    stats 
+    stats,
+    rtracklayer,
+    GenomicRanges,
+    IRanges 
 Remotes:
     mrcieu/TwoSampleMR,
 VignetteBuilder: knitr
