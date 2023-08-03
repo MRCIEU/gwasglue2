@@ -23,6 +23,9 @@ navbar:
       href: articles/meta.html
     - text: "Tutorial 5 - Alternative regional genotype-phenotype map example"
       href: articles/finemap_coloc2.html
+    - text: "Tutorial 6: Lift genomic coordinates to the same reference build"
+      href: articles/liftover.html
+      
    reference:
     text: Functions
     href: reference/index.html

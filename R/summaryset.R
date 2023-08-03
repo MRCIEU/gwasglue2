@@ -5,7 +5,7 @@
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
 #' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA). 
-#' @rdname SummarySet
+#' @export 
 setClass("SummarySet",
   slots = c(
     ss = "tbl_df",
@@ -29,7 +29,7 @@ setClass("SummarySet",
 #' @keywords internal
 #' @importFrom methods new
 #' @return A gwasglue2 SummarySet object.
-#' @rdname SummarySet
+#' @export
 SummarySet <- function(sumstats) {
   new("SummarySet",
     ss = sumstats
@@ -77,12 +77,12 @@ setMethod("setMetadata", "SummarySet",
 #' @param nsnp Number of variants in the study.
 #' @param trait  Phenotype name corresponding the the variant.
 #' @param sd Trait standard deviation.
-#' @param unit TODO 
-#' @param ncontrol TODO
+#' @param unit Unit.
+#' @param ncontrol Number of controls in study.
 #' @param build   genome build version.
 #' @param population  Study sample population.
 #' @param ncase Number of cases in study.
-#' @return gwasglue2 SummarySet object with metadata stored
+#' @return gwasglue2 SummarySet object with metadata stored.
 #' @export
 #' @docType methods
 #' @rdname addToMetadata-methods
@@ -129,7 +129,7 @@ setMethod("addToMetadata", "SummarySet",
 #' Get Method to retrieve the metadata stored in the SummarySet 
 #'
 #' @param summary_set A gwasglue2 SummarySet object.
-#' @return The gwasglue2 SummarySet metadata
+#' @return The gwasglue2 SummarySet metadata.
 #' @export
 #' @docType methods
 #' @rdname getMetadata-methods
@@ -158,7 +158,7 @@ setMethod("getMetadata", "SummarySet",
 #' Set Method to create an internal Variant ID for the SummarySet 
 #'
 #' @param summary_set A gwasglue2 SummarySet object
-#' @return A extra '"variantid"' column in the  GWAS summary statistics tibble. The @rdname getSummaryData-methods can be used to retrieve it.
+#' @return A extra '"variantid"' column in the  GWAS summary statistics tibble. The [getSummaryData()] can be used to retrieve it.
 #' @export
 #' @docType methods
 #' @rdname setVariantid-methods

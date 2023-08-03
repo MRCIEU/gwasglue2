@@ -1,6 +1,6 @@
 # Unit testing for MR analyses
 skip(message = "Skipping: OPenGWAS traffic problems ")
-
+library(TwoSampleMR)
 
 d1 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-2_TopHits_sumdata.txt", package="gwasglue2")))
 d2 <- dplyr::as_tibble(read.table(system.file("tests", "ieu-a-7_sumdata_ieu-0-7TopHits.txt", package="gwasglue2")))

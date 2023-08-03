@@ -7,6 +7,7 @@
 create_summaryset_from_gwasvcf(
   data,
   metadata = NULL,
+  qc = FALSE,
   beta_col = "ES",
   se_col = "SE",
   samplesize_col = "SS",
@@ -18,13 +19,16 @@ create_summaryset_from_gwasvcf(
   effect_allele_col = "ALT",
   other_allele_col = "REF",
   eaf_col = "AF",
-  id_col = "id"
+  id_col = "id",
+  build = NULL
 )
 }
 \arguments{
-\item{data}{GWAS summary statistics. IN the GWAS vcf dataframe format}
+\item{data}{GWAS summary statistics. In the GWAS vcf dataframe format}
 
 \item{metadata}{A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset}
+
+\item{qc}{Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE}
 
 \item{beta_col}{Name of column with effect sizes. The default is \code{"ES"}.}
 
@@ -49,6 +53,11 @@ create_summaryset_from_gwasvcf(
 \item{eaf_col}{Name of column with effect allele frequency. The default is \code{"AF"}.}
 
 \item{id_col}{GWAS study ID column. The default is \code{"id"}.}
+
+\item{build}{Reference genome assembly to generate the vcf file. Default is NULL.
+\itemize{
+\item Options are \code{"NCBI34"}, \code{"NCBI35"}, \code{"NCBI36"}, \code{"GRCh37"} or "GRCh38".
+}}
 }
 \value{
 A gwasglue2 SummarySet object

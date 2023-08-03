@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 #library(gwasglue2)
+library(ieugwasr)
 devtools::load_all("../") # this was added just for development
 
 ```
