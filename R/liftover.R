@@ -132,7 +132,7 @@ liftover <- function(summaryset, chainfile = NULL, to = NULL) {
   summaryset@attributes$time_liftover <-  Sys.time()
 
   # add info to metadata
-  summaryset@metadata$ift_from <- from
+  summaryset@metadata$lift_from <- from
   summaryset@metadata$build <- to
  
   message("Done")
