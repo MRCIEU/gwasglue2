@@ -1,3 +1,6 @@
+#  The S4 methods in this file use the functions in `harmonise.R`
+
+
 # WIP
 
 
@@ -42,9 +45,10 @@
 #' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @return The gwasglue2 DataSet object resized
+#' @export 
 #' @docType methods
 #' @rdname overlapVariants-methods
-setGeneric("overlapVariants",function(dataset, action = 1) standardGeneric("overlapVariants"))
+setGeneric("overlapVariants",function(dataset, action) standardGeneric("overlapVariants"))
 #' @rdname overlapVariants-methods
 setMethod("overlapVariants", "DataSet", function(dataset, action) {
   # SummarySet is already  standardised in create_summaryset()
@@ -110,11 +114,12 @@ setMethod("overlapVariants", "DataSet", function(dataset, action) {
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @param tolerance Tolerance value.
 #' @return The gwasglue2 DataSet object harmonised
+#' @export 
 #' @docType methods
 #' @rdname harmoniseData-methods
 setGeneric("harmoniseData", function(dataset, tolerance, action) standardGeneric("harmoniseData"))
 #' @rdname harmoniseData-methods
-setMethod( "harmoniseData", "DataSet", function(dataset, tolerance = 0.08, action = 2){
+setMethod( "harmoniseData", "DataSet", function(dataset, tolerance, action){
   
   
 
@@ -189,7 +194,15 @@ setMethod( "harmoniseData", "DataSet", function(dataset, tolerance = 0.08, actio
 }
 )
 
+
+#' Check if the DataSet is harmonised
+#' 
+#' @param dataset A gwasglue2 DataSet object
+#' @return TRUE/FALSE
+#' @docType methods
+#' @rdname isHarmonised-methods
 setGeneric("isHarmonised",function(dataset) standardGeneric("isHarmonised"))
+#' @rdname isHarmonised-methods
 setMethod("isHarmonised","DataSet",function(dataset) {
   return(dataset@is_harmonised)
 }

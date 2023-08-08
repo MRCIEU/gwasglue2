@@ -58,10 +58,10 @@ ld_matrix_local <- function(variants, bfile, plink_bin)
 
 
 
-#' Harmonise LD matrix against summary data (now it just looks for overlapef variants. The harmonisation is done in ld_matrix_local)
+#' Harmonise LD matrix against summary data (now it just looks for overlaped variants. The harmonisation is done in ld_matrix_local)
 #' harmonise_ld_dat() is based TwoSampleMR::harmonise_ld_dat()
 #'
-#  LD matrix returns with variantid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be dat1 dataset or harmonised dartaset
+#  LD matrix returns with variantid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be dat1 dataset or harmonised dataset
 #
 #' @param x harmonised dataset
 #' @param ld Output from ld_matrix
