@@ -18,6 +18,7 @@
 #' @param ncase Number of cases in study.
 #' @param ... Other metadata information
 #' @return A metadata list.
+#' @export
 create_metadata <- function(metadata = NULL,
                            id = NA,
                            sample_size = NA,

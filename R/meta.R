@@ -8,7 +8,7 @@ meta.F <- function(beta, se){
   #returns inverse-variance weighted meta-analysis estimate, SE and P-value.
   beta.F = sum(beta / se^2) / sum(1 / se^2)
   se.F = 1 / sqrt(sum(1 / se^2))
-  p.F = pchisq( (beta.F / se.F)^2, df = 1, lower.tail = F)
+  p.F = stats::pchisq( (beta.F / se.F)^2, df = 1, lower.tail = F)
   return(c(beta = beta.F, se = se.F, p = p.F))
 }
 
@@ -43,6 +43,7 @@ return(dplyr::as_tibble(t(meta)))
 #' @seealso [create_metadata()] and [addToMetadata()] on how to create or add to metadata.
 #' @importFrom stats pchisq
 #' @return gwasglue2 SummarySet object
+#' @export
 meta_analysis <- function(dataset, method = "fixed") {
 
   length_dt <- getLength(dataset)
