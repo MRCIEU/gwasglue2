@@ -42,12 +42,12 @@ First, we create a SummarySet object that we name `sumset1` providing in the `bu
 
 ```{r}
 sumset1_lift <- download_chainfile(from = "GRCh37", to = "GRCh38") %>%
-                liftover(sumset1,.)
+                liftover(sumset1, chainfile = ., to = "GRCh38")
 ```
 Or simply provide directly to `liftover()` the genome assembly to "lift to". In this case, the function will check the `build` to "lift from" in the metadata of `sumset1` and download the chain file.
 
 
 ```{r}
-sumset1_lift <- liftover(sumset1,to = "GRCh38")
+sumset1_lift <- liftover(sumset1, to = "GRCh38")
 ```
 

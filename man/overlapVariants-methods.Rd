@@ -6,9 +6,9 @@
 \alias{overlapVariants,DataSet-method}
 \title{Look for overlapped variants between SummarySets in the DataSet and Resize}
 \usage{
-overlapVariants(dataset, action = 1)
+overlapVariants(dataset, action)
 
-\S4method{overlapVariants}{DataSet}(dataset, action = 1)
+\S4method{overlapVariants}{DataSet}(dataset, action)
 }
 \arguments{
 \item{dataset}{The gwasglue2 DataSet object}

@@ -120,8 +120,15 @@ setMethod("getLength", "DataSet",
             return(length(dataset@summary_sets))
           })
 
-# Set and get methods for zscores
+#' Calculating Z-scores
+#'
+#' @param dataset A gwasglue2 DataSet object
+#' @return An extra '"zscores"' column in the  GWAS summary statistics tibble. 
+#' @export
+#' @docType methods
+#' @rdname setZscores-methods
 setGeneric("setZscores", function(dataset) standardGeneric("setZscores"))
+#' @rdname setZscores-methods
 setMethod( "setZscores", "DataSet",function(dataset) {
   message("Calculating zscores")
   for (i in seq_along(dataset@summary_sets)){
@@ -131,9 +138,17 @@ setMethod( "setZscores", "DataSet",function(dataset) {
     }
 )
 
-setGeneric("getZscores",function(dataset,...) standardGeneric("getZscores"))
-setMethod("getZscores", "DataSet",
-          function(dataset,index) {
-            return(dataset@zscores[[index]])
-          })
+# #' Get Method to retrieve  Z-scores stored in the SummarySet
+# #'
+# #' @param summary_set A gwasglue2 SummarySet object
+# #' @return The z-scores
+# #' @export
+# #' @docType methods
+# #' @rdname  getZ-scores-methods
+# setGeneric("getZscores",function(dataset,index) standardGeneric("getZscores"))
+# #' @rdname  getZ-scores-methods
+# setMethod("getZscores", "DataSet",
+#           function(dataset,index) {
+#             return(dataset@zscores[[index]])
+#           })
 

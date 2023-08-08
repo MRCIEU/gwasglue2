@@ -1,9 +1,12 @@
+#  The S4 methods in this file use the functions in `harmonise_ld.R`
 
+
+#  Build LD matrix
 setGeneric("buildLDMatrix", function(dataset, ...) standardGeneric("buildLDMatrix"))
 setMethod("buildLDMatrix", "DataSet", function(dataset, bfile = NULL, plink_bin = NULL){
   
   message("Building LD matrix")
-variants<-cbind(dataset@summary_sets[[1]]@ss$chr, dataset@summary_sets[[1]]@ss$position, dataset@summary_sets[[1]]@ss$position, 1:nrow(dataset@summary_sets[[1]]@ss))
+  variants<-cbind(dataset@summary_sets[[1]]@ss$chr, dataset@summary_sets[[1]]@ss$position, dataset@summary_sets[[1]]@ss$position, 1:nrow(dataset@summary_sets[[1]]@ss))
     
   dataset@ld_matrix <- ld_matrix_local(variants, bfile=bfile, plink_bin=plink_bin)
 
@@ -16,23 +19,22 @@ variants<-cbind(dataset@summary_sets[[1]]@ss$chr, dataset@summary_sets[[1]]@ss$p
 
 
 
-# Get methods for LDMatrix
+
+#' Get Method to retrieve the Linkage Disequilibrium matrix
+#'
+#' @param dataset A gwasglue2 DataSet object
+#' @return The LD matrix
+#' @export
+#' @docType methods
+#' @rdname getLDMatrix-methods
 setGeneric("getLDMatrix",function(dataset) standardGeneric("getLDMatrix"))
+#' @rdname getLDMatrix-methods
 setMethod("getLDMatrix", "DataSet",
           function(dataset) {
             return(dataset@ld_matrix)
           })
 
-
-
-
-# Set and get methods for harmonise data against LD matrix
-setGeneric("isHarmonisedLD",function(dataset) standardGeneric("isHarmonisedLD"))
-setMethod("isHarmonisedLD","DataSet",function(dataset) {
-  return(dataset@is_harmonisedLD)
-}
-)
-
+# Harmonise against LD matrix
 setGeneric("harmoniseLDMatrix", function(dataset) standardGeneric("harmoniseLDMatrix"))
 setMethod( "harmoniseLDMatrix", "DataSet", function(dataset) {
   
@@ -42,7 +44,7 @@ setMethod( "harmoniseLDMatrix", "DataSet", function(dataset) {
   for (i in seq_along(dataset@summary_sets)){
     # message("Gwasglue is now harmonising ", dataset@summary_sets[[i]]@metadata$id, " the against LD matrix!")
  
-    # subseting
+    # subsetting
     sub_ss <- subset(dataset@summary_sets[[i]]@ss, dataset@summary_sets[[i]]@ss$variantid %in% variants_avail)
     
     index <- match(dataset@summary_sets[[i]]@ss$variantid, variants_avail)
@@ -63,6 +65,19 @@ setMethod( "harmoniseLDMatrix", "DataSet", function(dataset) {
   return(dataset)
 }
 )
+
+
+#' Check if the DataSet is harmonised against LD matrix
+#' 
+#' @param dataset A gwasglue2 DataSet object
+#' @return TRUE/FALSE
+#' @docType methods
+#' @rdname isHarmonisedLD-methods
+setGeneric("isHarmonisedLD",function(dataset) standardGeneric("isHarmonisedLD"))
+#' @rdname isHarmonisedLD-methods
+setMethod("isHarmonisedLD","DataSet",function(dataset) {
+  return(dataset@is_harmonisedLD)
+})
 
 
 #' Harmonise data against LD matrix

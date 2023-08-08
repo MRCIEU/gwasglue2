@@ -4,14 +4,14 @@
 \alias{liftover}
 \title{Remap genomic coordinates to a different genome assembly}
 \usage{
-liftover(summaryset, chainfile = NULL, to = NULL)
+liftover(summaryset, chainfile = NULL, to = "GRCh38")
 }
 \arguments{
 \item{summaryset}{A gwasglue2 SummarySet object}
 
 \item{chainfile}{The chainfile used to remap the genomic coordinates. If \code{NULL} a chainfile is downloaded using the \code{to}  and the \code{summaryset}metadata to check the genome assembly to which GWAS summary data is currently mapped.}
 
-\item{to}{genome  assembly to which should be mapped. Default NULL
+\item{to}{genome  assembly to which should be mapped. Default "GRCh38"
 \itemize{
 \item Other options: "NCBI34", "NCBI35", "NCBI36", GRCh37" and "GRCh38"
 }}
@@ -20,7 +20,7 @@ liftover(summaryset, chainfile = NULL, to = NULL)
 A gwasglue2 SummarySet object with GWAS summary data genomic coordinates remapped.
 }
 \description{
-Convert SummarySet GWAS summary data to a different genome assembly. Human genome chain files are download from ENSEMBL
+Converts SummarySet GWAS summary data to a different genome assembly. Human genome chain files are download from ENSEMBL
 }
 \seealso{
 \code{\link[=create_metadata]{create_metadata()}} and \code{\link[=addToMetadata]{addToMetadata()}} on how to create or add to metadata.

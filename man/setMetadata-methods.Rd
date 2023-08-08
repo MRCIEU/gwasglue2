@@ -15,6 +15,9 @@ setMetadata(summary_set, metadata)
 
 \item{metadata}{A list with metadata information.}
 }
+\value{
+gwasglue2 SummarySet object with metadata stored.
+}
 \description{
 Set Method to add metadata to the SummarySet
 }

@@ -56,6 +56,8 @@ setMethod("getSummaryData", "SummarySet",
 #'
 #' @param summary_set A gwasglue2 SummarySet object.
 #' @param metadata A list with metadata information. 
+#' @return gwasglue2 SummarySet object with metadata stored.
+#' @export
 #' @docType methods
 #' @rdname setMetadata-methods
 setGeneric("setMetadata", function(summary_set, 

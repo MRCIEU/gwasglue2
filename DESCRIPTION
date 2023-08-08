@@ -35,7 +35,7 @@ Suggests:
     GenomicRanges,
     IRanges 
 Remotes:
-    mrcieu/TwoSampleMR,
+    mrcieu/TwoSampleMR
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Collate: 

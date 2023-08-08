@@ -18,6 +18,7 @@
 #' @param ncase Number of cases in study.
 #' @param ... Other metadata information
 #' @return A metadata list.
+#' @export
 create_metadata <- function(metadata = NULL,
                            id = NA,
                            sample_size = NA,
@@ -676,7 +677,8 @@ standardise <- function(d){
 
 # create variantid using hashes when alleles nchar >10
 create_variantid <-function(chr,pos,a1,a2) {
-  
+  if (!requireNamespace("digest", quietly =TRUE)){
+    stop("The CRAN package `digest` needs to installed.")}
   alleles_sorted <- t(apply(cbind(a1,a2),1,sort)) 
   #  create variantid
   variantid <- paste0(chr,":", pos,"_",alleles_sorted[,1],"_",alleles_sorted[,2])
