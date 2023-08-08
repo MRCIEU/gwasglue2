@@ -8,7 +8,7 @@
 \usage{
 harmoniseData(dataset, tolerance, action)
 
-\S4method{harmoniseData}{DataSet}(dataset, tolerance = 0.08, action = 2)
+\S4method{harmoniseData}{DataSet}(dataset, tolerance, action)
 }
 \arguments{
 \item{dataset}{The gwasglue2 DataSet object}

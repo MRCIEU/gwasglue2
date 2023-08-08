@@ -92,8 +92,8 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/gwasglue2" class="external-link">gwasglue2</a></span><span class="op">)</span></span></code></pre></div>
 <p>The gwasglue2 package sits between the data and the analytical
 methods within the OpenGWAS ecosystem</p>
-<div class="figure">
-<img src="https://gwas.mrcieu.ac.uk/static/images/gwas_ecosystem.bb869525db1a.png" alt=""><p class="caption">Figure 1: gwas ecosystem</p>
+<div class="float">
+<img src="https://gwas.mrcieu.ac.uk/static/images/gwas_ecosystem.bb869525db1a.png" alt="Figure 1: gwas ecosystem"><div class="figcaption">Figure 1: gwas ecosystem</div>
 </div>
 <div class="section level2">
 <h2 id="objectives">Objectives<a class="anchor" aria-label="anchor" href="#objectives"></a>
@@ -116,8 +116,8 @@ be able to handle</p>
 <div class="section level2">
 <h2 id="data-structures">Data structures<a class="anchor" aria-label="anchor" href="#data-structures"></a>
 </h2>
-<div class="figure">
-<img src="data_structures.png" alt=""><p class="caption">Figure 2: Data structures</p>
+<div class="float">
+<img src="data_structures.png" alt="Figure 2: Data structures"><div class="figcaption">Figure 2: Data structures</div>
 </div>
 <p>Note that the whole OpenGWAS database is an example of a ‘complete’
 dataset - all traits and all variants. What we typically want to
@@ -132,8 +132,8 @@ of these structures in order to easily deploy methods upon them.</p>
 <h2 id="work-flow">Work flow<a class="anchor" aria-label="anchor" href="#work-flow"></a>
 </h2>
 <p>This is typically how a workflow might look:</p>
-<div class="figure">
-<img src="flow.png" alt=""><p class="caption">Figure 3: Work flow</p>
+<div class="float">
+<img src="flow.png" alt="Figure 3: Work flow"><div class="figcaption">Figure 3: Work flow</div>
 </div>
 <p>We should be able to ingest data from various locations, and then the
 class provides a number of different ways to manipulate and annotate the
@@ -158,8 +158,8 @@ available variants, and harmonise them to be on the same effect allele.
 list for extra data that is common across all the
 <code>SummarySet</code>s stored in the object.</p>
 <p>Initial visualisation below:</p>
-<div class="figure">
-<img src="s4_structure.png" style="width:80.0%;height:80.0%" alt=""><p class="caption">Figure 4: Class structures</p>
+<div class="float">
+<img src="s4_structure.png" style="width:80.0%;height:80.0%" alt="Figure 4: Class structures"><div class="figcaption">Figure 4: Class structures</div>
 </div>
 </div>
 <div class="section level2">
@@ -246,8 +246,8 @@ to build a metadata object using <code><a href="../reference/create_metadata.htm
 input it in <code><a href="../reference/create_summaryset.html">create_summaryset()</a></code>. Fig. 5 shows the structure
 design of <code>SummarySet</code> with the getters and setters on the
 left and constructors on the right.</p>
-<div class="figure">
-<img src="SummarySet.png" alt=""><p class="caption">Figure 5: SummarySet</p>
+<div class="float">
+<img src="SummarySet.png" alt="Figure 5: SummarySet"><div class="figcaption">Figure 5: SummarySet</div>
 </div>
 <p>For <code>DataSet-class</code> object we use the
 <code><a href="../reference/create_dataset.html">create_dataset()</a></code> constructor. If argument
@@ -263,8 +263,8 @@ Two or more <code>DataSets</code> can also be merged together with
 <code><a href="../reference/merge_datasets.html">merge_datasets()</a></code>. The structure design for
 <code>DataSet</code> is in Fig. 6, with all the getters and setters on
 the left and constructors on the right.</p>
-<div class="figure">
-<img src="DataSet.png" alt=""><p class="caption">Figure 6: DataSet</p>
+<div class="float">
+<img src="DataSet.png" alt="Figure 6: DataSet"><div class="figcaption">Figure 6: DataSet</div>
 </div>
 </div>
 <div class="section level2">

@@ -116,13 +116,13 @@ followed by the <code><a href="../reference/liftover.html">liftover()</a></code>
 the genome assemblies to “lift from” and to “lift to” :</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sumset1_lift</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_chainfile.html">download_chainfile</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"GRCh37"</span>, to <span class="op">=</span> <span class="st">"GRCh38"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>                <span class="fu"><a href="../reference/liftover.html">liftover</a></span><span class="op">(</span><span class="va">sumset1</span>,<span class="va">.</span><span class="op">)</span></span></code></pre></div>
+<span>                <span class="fu"><a href="../reference/liftover.html">liftover</a></span><span class="op">(</span><span class="va">sumset1</span>, chainfile <span class="op">=</span> <span class="va">.</span>, to <span class="op">=</span> <span class="st">"GRCh38"</span><span class="op">)</span></span></code></pre></div>
 <p>Or simply provide directly to <code><a href="../reference/liftover.html">liftover()</a></code> the genome
 assembly to “lift to”. In this case, the function will check the
 <code>build</code> to “lift from” in the metadata of
 <code>sumset1</code> and download the chain file.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sumset1_lift</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/liftover.html">liftover</a></span><span class="op">(</span><span class="va">sumset1</span>,to <span class="op">=</span> <span class="st">"GRCh38"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sumset1_lift</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/liftover.html">liftover</a></span><span class="op">(</span><span class="va">sumset1</span>, to <span class="op">=</span> <span class="st">"GRCh38"</span><span class="op">)</span></span></code></pre></div>
   </main>
 </div>
 

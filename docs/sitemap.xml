@@ -118,6 +118,9 @@
     <loc>/reference/getData-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/getLDMatrix-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/getLength-methods.html</loc>
   </url>
   <url>
@@ -169,6 +172,12 @@
     <loc>/reference/isConverted.html</loc>
   </url>
   <url>
+    <loc>/reference/isHarmonised-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/isHarmonisedLD-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/lbf_to_z_cont.html</loc>
   </url>
   <url>
@@ -215,6 +224,9 @@
   </url>
   <url>
     <loc>/reference/setVariants-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setZscores-methods.html</loc>
   </url>
   <url>
     <loc>/reference/susie_to_dataset.html</loc>
