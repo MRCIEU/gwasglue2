@@ -199,6 +199,7 @@ setMethod( "harmoniseData", "DataSet", function(dataset, tolerance, action){
 #' 
 #' @param dataset A gwasglue2 DataSet object
 #' @return TRUE/FALSE
+#' @export 
 #' @docType methods
 #' @rdname isHarmonised-methods
 setGeneric("isHarmonised",function(dataset) standardGeneric("isHarmonised"))

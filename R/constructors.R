@@ -626,6 +626,7 @@ add_summaryset <- function(summary_sets,
 #'
 #' @param datasets A list of gwasglue2 DataSet objects
 #' @return  A gwasglue2 DataSet object  with input DataSets merged
+#' @export
 merge_datasets <- function(datasets) {
     n_datasets <- length(datasets)
 	  ds <- DataSet(list())
