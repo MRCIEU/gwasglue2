@@ -71,6 +71,7 @@ setMethod( "harmoniseLDMatrix", "DataSet", function(dataset) {
 #' 
 #' @param dataset A gwasglue2 DataSet object
 #' @return TRUE/FALSE
+#' @export 
 #' @docType methods
 #' @rdname isHarmonisedLD-methods
 setGeneric("isHarmonisedLD",function(dataset) standardGeneric("isHarmonisedLD"))
