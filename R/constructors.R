@@ -327,7 +327,7 @@ create_summaryset_from_tibble <- function (data = tibble(),
   # set attributes
   s@attributes <- list("type" = "tibble", "creation" = Sys.time())
   
-    return(s)
+  return(s)
 }
 
 #' A function to create a gwasglue2 SummarySet object from a vcf file
