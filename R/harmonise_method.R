@@ -41,7 +41,8 @@
 #' Look for overlapped variants between SummarySets in the DataSet and Resize
 #' 
 #' @param dataset The gwasglue2 DataSet object
-#' @param action Level of strictness in dealing with SNPs during harmonisation.T#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' @param action Level of strictness in dealing with SNPs during harmonisation.
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
 #' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @return The gwasglue2 DataSet object resized
@@ -95,7 +96,7 @@ setMethod("overlapVariants", "DataSet", function(dataset, action) {
     }
    
 
-  dataset@overlap_variants <- overlap
+    dataset@overlap_variants <- overlap
     message("\nThere are ", length(dataset@overlap_variants), " variants in common among all SummarySets")
     dataset@describe$overlap_variants <- length(overlap)
 

@@ -19,8 +19,6 @@ setMethod("buildLDMatrix", "DataSet", function(dataset, bfile = NULL, plink_bin 
 )
 
 
-
-
 #' Get Method to retrieve the Linkage Disequilibrium matrix
 #'
 #' @param dataset A gwasglue2 DataSet object
@@ -57,7 +55,7 @@ setMethod( "harmoniseLDMatrix", "DataSet", function(dataset) {
     
 
     message("\nThere are ", dim(h[[1]])[1], " variants remaining after harmonising ", dataset@summary_sets[[i]]@metadata$id, " against the LD matrix.")
-    }
+  }
   
   dataset@ld_matrix <- h[[2]]
   dataset@is_harmonisedLD <- TRUE
