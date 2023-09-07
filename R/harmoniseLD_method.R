@@ -12,6 +12,7 @@ setMethod("buildLDMatrix", "DataSet", function(dataset, bfile = NULL, plink_bin 
 
   variants_avail <- rownames(dataset@ld_matrix)
   message("\nData available for ", length(variants_avail), " variants")
+  dataset@describe$refpop_variants_avail <- length(variants_avail)
 
   return(dataset)
 }
@@ -60,6 +61,8 @@ setMethod( "harmoniseLDMatrix", "DataSet", function(dataset) {
   
   dataset@ld_matrix <- h[[2]]
   dataset@is_harmonisedLD <- TRUE
+
+  dataset@describe$variants_after_LDharmonization <- nrow(getLDMatrix(dataset))
   
   message("Done!")
   return(dataset)

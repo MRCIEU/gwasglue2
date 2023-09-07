@@ -18,6 +18,7 @@
 #' @slot susie_marginalised logical (default FALSE).
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
+#' @slot Describe A description of the DataSet
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
@@ -36,7 +37,8 @@ setClass("DataSet",
     zscores = "list",
     susie_marginalised = "logical",
     susieR = "list",
-    is_converted = "logical"
+    is_converted = "logical",
+    describe = "list"
   ),
   prototype = prototype(
     sumset = list(NA_character_),
@@ -53,7 +55,8 @@ setClass("DataSet",
     zscores = list(NA_real_),
     susie_marginalised = FALSE,
     susieR = list(NA_character_),
-    is_converted = FALSE
+    is_converted = FALSE,
+    describe = list(NA_character_)
   ),
   contains = c(class(dplyr::tibble()))
 )
