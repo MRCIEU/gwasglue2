@@ -309,8 +309,15 @@ setMethod("dimData", "SummarySet", function(summary_set) {
 
 
 
-
+# show method 
 setMethod(f = "show", signature="SummarySet", definition = function(object) {
-  cat("A SummarySet with ", nrow(object@ss), " variants\n")
-  print(object@ss)
+  id <- getMetadata(object)$id
+  n <-  getMetadata(object)$sample_size
+  nvariants <- nrow(getSummaryData(object))
+  cat("\nA SummarySet with", nvariants, "variants.\n")
+  cat("Study ID:", id, "\n")
+  cat("Sample size:", n, "\n") 
+  cat("\nGWAS summary data: \n")
+  print(getSummaryData(object))
+  cat("\nTo access the GWAS summary data use the getSummaryData() function.\n")
 })
