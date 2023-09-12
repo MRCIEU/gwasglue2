@@ -194,6 +194,7 @@ setMethod(f = "show", signature="DataSet", definition = function(object) {
   } else{
     cat("\nThe DataSet is not harmonised against a reference population.\n")
   }
-  
+
+  cat("\nTo access the GWAS summary data in each of the SummarySets use getData(dataset, index).\n")
 
 })

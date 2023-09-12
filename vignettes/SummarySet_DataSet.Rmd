@@ -119,7 +119,7 @@ First we use the Bioconductor package `VariantAnnotation` to read the vcf file.
 vcffile <- "../data/vcf/IEU-a-2.vcf.gz"
 vcf <- VariantAnnotation::readVcf(vcffile)
 ```
-Then `gwasvcf` is used to query the vcf file and converting to simple dataframes
+Then `gwasvcf` is used to query the vcf file and converting to simple dataframes.
 
 ```{r}
 data_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993"))%>% 
@@ -129,9 +129,15 @@ data_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993"))%>%
 
 Then we create the SummarySet using the `create_sumaryset()` function with argument `type = "vcf"`
 ```{r}
-sumset_vcf=create_summaryset(data_vcf, type="vcf")
+sumset_vcf <- create_summaryset(data_vcf, type="vcf")
 ```
 
+Another and simpler way of creating a `SummarySet` from a vcf file is to use the `gwasvcf::gwasvcf_to_summaryset()` function:
+
+```{r}
+sumset_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993")) %>%
+  gwasvcf::gwasvcf_to_summaryset() 
+```
 
 # DataSet
 A `DataSet-class` is a list of two or more harmonised `SummarySets`.
