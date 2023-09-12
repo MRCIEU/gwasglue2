@@ -78,7 +78,8 @@
 
 
 <dt>action</dt>
-<dd><p>Level of strictness in dealing with SNPs during harmonisation.T#' * <code>action = 1</code>: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles</p><ul><li><p><code>action = 2</code>: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);</p></li>
+<dd><p>Level of strictness in dealing with SNPs during harmonisation.</p><ul><li><p><code>action = 1</code>: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles</p></li>
+<li><p><code>action = 2</code>: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);</p></li>
 <li><p><code>action = 3</code>: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).</p></li>
 </ul></dd>
 

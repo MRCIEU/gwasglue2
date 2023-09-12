@@ -76,8 +76,7 @@
 
 
 
-
-<div class="row">
+<script src="finemap_coloc1_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Tutorial 3: Regional genotype-phenotype map</h1>
             
@@ -97,37 +96,27 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/susieR" class="external-link">susieR</a></span><span class="op">)</span>     <span class="co"># fork that takes Summaryset</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">hyprcoloc</span><span class="op">)</span>  <span class="co"># fork that takes Dataset</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="st">"../"</span><span class="op">)</span> <span class="co"># this was added just for development</span></span></code></pre></div>
-<p>The use case for this tutorial will be generating a regional
-genotype-phenotype map for traits with significant associations in a
-known LD block on chromosome 22.</p>
-<p>First, we will set the path to where the reference population plink
-bed files are located to build the LD matrix</p>
+<p>The use case for this tutorial will be generating a regional genotype-phenotype map for traits with significant associations in a known LD block on chromosome 22.</p>
+<p>First, we will set the path to where the reference population plink bed files are located to build the LD matrix</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bed_ref</span> <span class="op">&lt;-</span> <span class="st">"../data/ld/EUR"</span></span></code></pre></div>
-<p>and define a genomic range for the analysis to be performed. This is
-a known LD block on chromosome 22 (build hg19)</p>
+<p>and define a genomic range for the analysis to be performed. This is a known LD block on chromosome 22 (build hg19)</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">genomicrange</span> <span class="op">&lt;-</span> <span class="st">"22:43714200-44995307"</span></span></code></pre></div>
-<p>We need to scan OpenGWAS for traits that have a significant
-associations in this region</p>
+<p>We need to scan OpenGWAS for traits that have a significant associations in this region</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">id_list</span> <span class="op">&lt;-</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/phewas.html" class="external-link">phewas</a></span><span class="op">(</span>pval <span class="op">=</span> <span class="fl">5e-6</span>, variants<span class="op">=</span><span class="va">genomicrange</span>, batch<span class="op">=</span><span class="st">"ukb-a"</span><span class="op">)</span><span class="op">$</span><span class="va">id</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>and then obtain the metadata for each trait</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get metadata and create metadata objects</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">gwasinfo</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>Finally, we create the summarysets for each trait and the
-<code>dataset</code>, which comprise all the summarysets. Then we
-harmonise trait against trait followed by each trait against a LD
-matrix. Note that the <code>dataset</code> is being created through a
-chain of multiple operations using pipes. Unlike the example in Tutorial
-1, the <code>sumarysets</code> are not saved separately.</p>
+<p>Finally, we create the summarysets for each trait and the <code>dataset</code>, which comprise all the summarysets. Then we harmonise trait against trait followed by each trait against a LD matrix. Note that the <code>dataset</code> is being created through a chain of multiple operations using pipes. Unlike the example in Tutorial 1, the <code>sumarysets</code> are not saved separately.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create gwasglue2 DataSet object </span></span>
-<span>  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="co"># create summarysets</span></span>
 <span>    <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/associations.html" class="external-link">associations</a></span><span class="op">(</span>variants <span class="op">=</span> <span class="va">genomicrange</span>, id <span class="op">=</span> <span class="va">id_list</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>, metadata<span class="op">=</span><span class="va">metadata</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -135,48 +124,26 @@ chain of multiple operations using pipes. Unlike the example in Tutorial
 <span>    <span class="fu"><a href="../reference/create_dataset.html">create_dataset</a></span><span class="op">(</span><span class="va">.</span>, harmonise <span class="op">=</span> <span class="cn">TRUE</span>, tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="co"># harmonise dataset against LD matrix</span></span>
 <span>    <span class="fu"><a href="../reference/harmonise_ld.html">harmonise_ld</a></span><span class="op">(</span><span class="va">.</span>, bfile <span class="op">=</span> <span class="va">bed_ref</span> , plink_bin <span class="op">=</span> <span class="st">"plink"</span><span class="op">)</span></span></code></pre></div>
-<p>Next, for each trait we need to perform finemapping. This will
-involve using SusieR to identify credible sets in the region for the
-trait, and then generate the conditional summary datasets for each
-credible set.</p>
+<p>Next, for each trait we need to perform finemapping. This will involve using SusieR to identify credible sets in the region for the trait, and then generate the conditional summary datasets for each credible set.</p>
 <p>Explanation:</p>
-<p>Credible set: If a trait is inferred to have e.g. 3 causal variants
-in the genomic region then there will be 3 credible sets. Each credible
-set is essentially a cluster of SNPs close by, it will include 1 or more
-SNPs that are candidates to be the causal variant.</p>
-<p>Conditional summary datasets: Once credible sets are identified, we
-can try to estimate what the summary data results would have looked like
-for each credible set after accounting for all the other credible sets.
-So in this example there would be 3 conditional summary datasets, each
-with a single peak in a different location.</p>
-<p>We use a modified version of susieR (use the
-<code>ritarasteiro/susieR</code> fork) that reads a
-<code>gwasglue2 dataset</code> to generate the credible sets for each
-<code>summaryset</code> within the <code>dataset</code> (e.g. some of
-them will have only 1, some will have more than 1. But all of them will
-have at least 1 because they have been selected to have an association
-in the region)</p>
-<p>TODO: Explain how we marginalise the summarysets using susieR
-Approximate Bayes Factors.</p>
-<p>After summary sets are harmonised, marginalise each summary set
-independently and create a new dataset with all marginalised summary
-sets merged</p>
+<p>Credible set: If a trait is inferred to have e.g. 3 causal variants in the genomic region then there will be 3 credible sets. Each credible set is essentially a cluster of SNPs close by, it will include 1 or more SNPs that are candidates to be the causal variant.</p>
+<p>Conditional summary datasets: Once credible sets are identified, we can try to estimate what the summary data results would have looked like for each credible set after accounting for all the other credible sets. So in this example there would be 3 conditional summary datasets, each with a single peak in a different location.</p>
+<p>We use a modified version of susieR (use the <code>ritarasteiro/susieR</code> fork) that reads a <code>gwasglue2 dataset</code> to generate the credible sets for each <code>summaryset</code> within the <code>dataset</code> (e.g. some of them will have only 1, some will have more than 1. But all of them will have at least 1 because they have been selected to have an association in the region)</p>
+<p>TODO: Explain how we marginalise the summarysets using susieR Approximate Bayes Factors.</p>
+<p>After summary sets are harmonised, marginalise each summary set independently and create a new dataset with all marginalised summary sets merged</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># do finemapping with susie</span></span>
 <span><span class="va">ntraits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLength-methods.html">getLength</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span></span>
-<span><span class="va">dataset_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">ntraits</span>, <span class="kw">function</span><span class="op">(</span><span class="va">trait</span><span class="op">)</span></span>
+<span><span class="va">dataset_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">ntraits</span>, <span class="kw">function</span><span class="op">(</span><span class="va">trait</span><span class="op">)</span></span>
 <span>  <span class="op">{</span></span>
 <span>    <span class="co"># Takes in 1 SS</span></span>
 <span>    <span class="co"># Outputs 1 DS (with at least 1 SS)</span></span>
 <span>    <span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/susieR/man/susie_rss.html" class="external-link">susie_rss</a></span><span class="op">(</span>R <span class="op">=</span> <span class="fu"><a href="../reference/getLDMatrix-methods.html">getLDMatrix</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span>, summaryset <span class="op">=</span> <span class="fu"><a href="../reference/getSummarySet-methods.html">getSummarySet</a></span><span class="op">(</span><span class="va">dataset</span>, <span class="va">trait</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>Now we are going to merge the datasets. Note that the
-<code><a href="../reference/merge_datasets.html">merge_datasets()</a></code> function is just going to merge the
-marginalised datasets.</p>
+<p>Now we are going to merge the datasets. Note that the <code><a href="../reference/merge_datasets.html">merge_datasets()</a></code> function is just going to merge the marginalised datasets.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dataset_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_datasets.html">merge_datasets</a></span><span class="op">(</span><span class="va">dataset_marginalised</span><span class="op">)</span></span></code></pre></div>
-<p>Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows
-a dataset object to be provided)</p>
+<p>Try hyprcoloc with raw datasets. (Use fork of hypercoloc that allows a dataset object to be provided)</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">res_dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span> </span>
@@ -187,8 +154,7 @@ a dataset object to be provided)</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">res_dataset_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hyprcoloc/man/hyprcoloc.html" class="external-link">hyprcoloc</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">dataset_marginalised</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res_dataset_marginalised</span><span class="op">)</span></span></code></pre></div>
-<p><strong>NOTE:</strong> In this example there was no colocalisation
-for the traits in IEU batch <code>"ukb-a"</code>..</p>
+<p><strong>NOTE:</strong> In this example there was no colocalisation for the traits in IEU batch <code>"ukb-a"</code>..</p>
   </main>
 </div>
 

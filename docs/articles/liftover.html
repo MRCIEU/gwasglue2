@@ -76,8 +76,7 @@
 
 
 
-
-<div class="row">
+<script src="liftover_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Tutorial 6: Remap genomic coordinates to a different genome assembly</h1>
             
@@ -92,35 +91,20 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/gwasglue2" class="external-link">gwasglue2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/ieugwasr" class="external-link">ieugwasr</a></span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="st">"../"</span><span class="op">)</span> <span class="co"># this was added just for development</span></span></code></pre></div>
-<p><code>gwasglue2</code> has a <code><a href="../reference/liftover.html">liftover()</a></code> function to
-remap genomic coordinates from different genome assemblies to the same
-reference build.</p>
-<p><code>gwasglue2</code> uses the chain files and human genome
-nomenclature of <a href="https://www.ensembl.org/Homo_sapiens/" class="external-link">ENSEMBL</a> (“NCBI34”,
-“NCBI35”, “NCBI36”, “GRCh37” and “GRCh38”).</p>
-<p>In this, tutorial we have GWAS summary data obtained from IEU
-OpenGWAS through the <code>ieugwasr</code> package. The data was built
-under the “GRCh37” genome assembly and we want to remap it to
-“GRCh378”.</p>
-<p>First, we create a SummarySet object that we name
-<code>sumset1</code> providing in the <code>build</code> argument the
-genome assembly used to build the GWAS summary data. We can check it in
-the metadata.</p>
+<p><code>gwasglue2</code> has a <code><a href="../reference/liftover.html">liftover()</a></code> function to remap genomic coordinates from different genome assemblies to the same reference build.</p>
+<p><code>gwasglue2</code> uses the chain files and human genome nomenclature of <a href="https://www.ensembl.org/Homo_sapiens/" class="external-link">ENSEMBL</a> (“NCBI34”, “NCBI35”, “NCBI36”, “GRCh37” and “GRCh38”).</p>
+<p>In this, tutorial we have GWAS summary data obtained from IEU OpenGWAS through the <code>ieugwasr</code> package. The data was built under the “GRCh37” genome assembly and we want to remap it to “GRCh378”.</p>
+<p>First, we create a SummarySet object that we name <code>sumset1</code> providing in the <code>build</code> argument the genome assembly used to build the GWAS summary data. We can check it in the metadata.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data1</span> <span class="op">&lt;-</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/associations.html" class="external-link">associations</a></span><span class="op">(</span>variants <span class="op">=</span> <span class="st">"5:74132993-75132993"</span>, id <span class="op">=</span> <span class="st">"ukb-d-I9_IHD"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sumset1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">data1</span>, build <span class="op">=</span><span class="st">"GRCh37"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset1</span><span class="op">)</span></span></code></pre></div>
-<p>Then we perform the liftover. We can first download the chain file
-followed by the <code><a href="../reference/liftover.html">liftover()</a></code>. In this case we need to give
-the genome assemblies to “lift from” and to “lift to” :</p>
+<p>Then we perform the liftover. We can first download the chain file followed by the <code><a href="../reference/liftover.html">liftover()</a></code>. In this case we need to give the genome assemblies to “lift from” and to “lift to” :</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sumset1_lift</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_chainfile.html">download_chainfile</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"GRCh37"</span>, to <span class="op">=</span> <span class="st">"GRCh38"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>                <span class="fu"><a href="../reference/liftover.html">liftover</a></span><span class="op">(</span><span class="va">sumset1</span>, chainfile <span class="op">=</span> <span class="va">.</span>, to <span class="op">=</span> <span class="st">"GRCh38"</span><span class="op">)</span></span></code></pre></div>
-<p>Or simply provide directly to <code><a href="../reference/liftover.html">liftover()</a></code> the genome
-assembly to “lift to”. In this case, the function will check the
-<code>build</code> to “lift from” in the metadata of
-<code>sumset1</code> and download the chain file.</p>
+<p>Or simply provide directly to <code><a href="../reference/liftover.html">liftover()</a></code> the genome assembly to “lift to”. In this case, the function will check the <code>build</code> to “lift from” in the metadata of <code>sumset1</code> and download the chain file.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sumset1_lift</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/liftover.html">liftover</a></span><span class="op">(</span><span class="va">sumset1</span>, to <span class="op">=</span> <span class="st">"GRCh38"</span><span class="op">)</span></span></code></pre></div>
   </main>
