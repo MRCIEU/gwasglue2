@@ -18,7 +18,7 @@
 #' @slot susie_marginalised logical (default FALSE).
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
-#' @slot Describe A description of the DataSet
+#' @slot describe A description of the DataSet
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
