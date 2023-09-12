@@ -3,9 +3,11 @@
 .Rdata
 .httr-oauth
 .DS_Store
-inst/poc
-inst/s4_tutorials
 .dockerignore
 data/
 .vscode/launch.json
-.devcontainer/devcontainer.json
+.devcontainer/
+ieugwasr_oauth/
+.vscode/
+ieugwasr_oauth
+inst/old/s4_tutorials/test.R

@@ -18,6 +18,7 @@
 #' @slot susie_marginalised logical (default FALSE).
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
+#' @slot describe A description of the DataSet
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
@@ -36,7 +37,8 @@ setClass("DataSet",
     zscores = "list",
     susie_marginalised = "logical",
     susieR = "list",
-    is_converted = "logical"
+    is_converted = "logical",
+    describe = "list"
   ),
   prototype = prototype(
     sumset = list(NA_character_),
@@ -53,7 +55,8 @@ setClass("DataSet",
     zscores = list(NA_real_),
     susie_marginalised = FALSE,
     susieR = list(NA_character_),
-    is_converted = FALSE
+    is_converted = FALSE,
+    describe = list(NA_character_)
   ),
   contains = c(class(dplyr::tibble()))
 )
@@ -152,3 +155,46 @@ setMethod( "setZscores", "DataSet",function(dataset) {
 #             return(dataset@zscores[[index]])
 #           })
 
+
+
+# show method 
+setMethod(f = "show", signature="DataSet", definition = function(object) {
+  
+  # set description of DataSet
+  length <- getLength(object)
+  overlap <- object@describe$overlap_variants
+  overlap_2_3 <- object@describe$variants_after_harmonization_action2_3
+  action <- object@describe$action
+  refpop_variants <- object@describe$refpop_variants_avail
+  variants_afterLD <- object@describe$variants_after_LDharmonization
+  is_harm <- isHarmonised(object)
+  is_LDharm <- isHarmonisedLD(object)
+  
+  # write
+  cat("A DataSet with", length, "SummarySets.\n")
+
+  if(isTRUE(is_harm)){
+    cat("\nHarmonisation:\n")
+    if(action == 1){
+    cat("All SummarySets are assumed to be on the forward strand.\n")
+    cat(overlap, "variants remaining.\n")
+    }
+    if(action == 2 || action == 3){
+    cat("The SummarySets are not assumed to be all on the forward strand and corrections were made to try to harmonise the data\n.")
+    cat(overlap_2_3, "variants remaining.\n")
+    }
+  } else{
+    cat("\nThe DataSet is not harmonised\n")
+  }
+
+  if(isTRUE(is_LDharm)){
+    cat("\nHarmonisation against a reference population:\n")
+    cat(refpop_variants, "available variants in the reference population data.\n")
+    cat(variants_afterLD, "variants remaining.\n")
+  } else{
+    cat("\nThe DataSet is not harmonised against a reference population.\n")
+  }
+
+  cat("\nTo access the GWAS summary data in each of the SummarySets use getData(dataset, index).\n")
+
+})

@@ -41,7 +41,8 @@
 #' Look for overlapped variants between SummarySets in the DataSet and Resize
 #' 
 #' @param dataset The gwasglue2 DataSet object
-#' @param action Level of strictness in dealing with SNPs during harmonisation.T#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' @param action Level of strictness in dealing with SNPs during harmonisation.
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
 #' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @return The gwasglue2 DataSet object resized
@@ -52,7 +53,11 @@ setGeneric("overlapVariants",function(dataset, action) standardGeneric("overlapV
 #' @rdname overlapVariants-methods
 setMethod("overlapVariants", "DataSet", function(dataset, action) {
   # SummarySet is already  standardised in create_summaryset()
-  
+   
+  # clean describe slot and set action
+  dataset@describe <- dataset@describe[-1]
+  dataset@describe$action <- action
+
   if(action == 1){
     # Find overlapped variants among all summarySets using variantid
     variants_list <- sapply(1:length(dataset@summary_sets), function(i) list(dataset@summary_sets[[i]]@ss$variantid))
@@ -70,6 +75,7 @@ setMethod("overlapVariants", "DataSet", function(dataset, action) {
      dataset@overlap_variants <- unique(dataset@summary_sets[[1]]@ss$rsid)
      dataset@is_harmonised <- TRUE
     message("\nThere are ", length(overlap), " variants in common among all SummarySets. Data is harmonised.")
+    dataset@describe$overlap_variants <- length(overlap)
    
   }
   
@@ -90,8 +96,9 @@ setMethod("overlapVariants", "DataSet", function(dataset, action) {
     }
    
 
-  dataset@overlap_variants <- overlap
+    dataset@overlap_variants <- overlap
     message("\nThere are ", length(dataset@overlap_variants), " variants in common among all SummarySets")
+    dataset@describe$overlap_variants <- length(overlap)
 
   }
 
@@ -186,6 +193,8 @@ setMethod( "harmoniseData", "DataSet", function(dataset, tolerance, action){
     for (i in seq_along(dataset@summary_sets)) {
         dataset@summary_sets[[i]]@ss <- dataset@summary_sets[[i]]@ss[which(dataset@summary_sets[[i]]@ss$variantid %ni% dropped_SNPs), ]
     }
+
+     dataset@describe$variants_after_harmonization_action2_3 <- nrow(dataset@summary_sets[[1]]@ss)
     message("Done!\n")
   }
 

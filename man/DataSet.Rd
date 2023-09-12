@@ -51,5 +51,7 @@ DataSet function
 \item{\code{susieR}}{susieR::susie_rss() output}
 
 \item{\code{is_converted}}{logical (default FALSE).}
+
+\item{\code{describe}}{A description of the DataSet}
 }}
 

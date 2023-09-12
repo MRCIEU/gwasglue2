@@ -76,8 +76,7 @@
 
 
 
-
-<div class="row">
+<script src="SummarySet_DataSet_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Tutorial 1: How to create a SummarySet and a DataSet</h1>
             
@@ -91,50 +90,34 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/gwasglue2" class="external-link">gwasglue2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">VariantAnnotation</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span> <span class="va">gwasvcf</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span> <span class="va"><a href="https://github.com/mrcieu/gwasvcf" class="external-link">gwasvcf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/ieugwasr" class="external-link">ieugwasr</a></span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="st">"../"</span><span class="op">)</span> <span class="co"># this was added just for development</span></span></code></pre></div>
-<p>In this tutorial, we will approach the several ways of creating the
-two types of gwasglue2 objects: the <code><a href="../reference/SummarySet.html">SummarySet()</a></code> and the
-<code>DataSet</code>. Check the <a href="Strategy.html">Strategy</a>
-page for more details on these objects.</p>
+<p>In this tutorial, we will approach the several ways of creating the two types of gwasglue2 objects: the <code><a href="../reference/SummarySet.html">SummarySet()</a></code> and the <code>DataSet</code>. Check the <a href="Strategy.html">Strategy</a> page for more details on these objects.</p>
 <div class="section level2">
 <h2 id="summaryset">SummarySet<a class="anchor" aria-label="anchor" href="#summaryset"></a>
 </h2>
-<p>To create a SummarySet object we first need GWAS summary data, like
-the ones that can be obtained from IEU OpenGWAS through the
-<code>ieugwasr</code> package.</p>
+<p>To create a SummarySet object we first need GWAS summary data, like the ones that can be obtained from IEU OpenGWAS through the <code>ieugwasr</code> package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data1</span> <span class="op">&lt;-</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/associations.html" class="external-link">associations</a></span><span class="op">(</span>variants <span class="op">=</span> <span class="st">"5:74132993-75132993"</span>, id <span class="op">=</span> <span class="st">"ukb-d-I9_IHD"</span><span class="op">)</span></span></code></pre></div>
-<p>Then we use the <code><a href="../reference/create_summaryset.html">create_summaryset()</a></code> to create the
-<code>SummarySet</code>.</p>
+<p>Then we use the <code><a href="../reference/create_summaryset.html">create_summaryset()</a></code> to create the <code>SummarySet</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">sumset1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">data1</span><span class="op">)</span></span>
 <span> <span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset1</span><span class="op">)</span></span></code></pre></div>
-<p>In the code above, we did not supply any metadata information. The
-function will fill the metadata using any information available in the
-GWAS summary data (in <code>data1</code>). It is possible to add
-metadata using the <code>metadata</code> argument.</p>
-<p>To create a <code>metadata</code> object, we use the
-<code><a href="../reference/create_metadata.html">create_metadata()</a></code> function. We can give metadata
-information manually using one or more argument of the function. For
-example:</p>
+<p>In the code above, we did not supply any metadata information. The function will fill the metadata using any information available in the GWAS summary data (in <code>data1</code>). It is possible to add metadata using the <code>metadata</code> argument.</p>
+<p>To create a <code>metadata</code> object, we use the <code><a href="../reference/create_metadata.html">create_metadata()</a></code> function. We can give metadata information manually using one or more argument of the function. For example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">meta1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span>sample_size <span class="op">=</span> <span class="fl">361194</span><span class="op">)</span></span>
 <span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">meta1</span><span class="op">)</span></span></code></pre></div>
-<p>It is also possible for the user to add extra metadata
-information.</p>
+<p>It is also possible for the user to add extra metadata information.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">meta1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span>sample_size <span class="op">=</span> <span class="fl">361194</span>, access <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/date.html" class="external-link">date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">meta1</span><span class="op">)</span></span></code></pre></div>
-<p>Or to provide a dataframe with metadata information, using the
-<code>metadata</code> argument.</p>
+<p>Or to provide a dataframe with metadata information, using the <code>metadata</code> argument.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">meta1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span>metadata <span class="op">=</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">gwasinfo</a></span><span class="op">(</span><span class="st">"ukb-d-I9_IHD"</span><span class="op">)</span>, access <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/date.html" class="external-link">date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span> <span class="va">meta1</span>  </span></code></pre></div>
-<p>Thus, we can now build a <code>SummarySet</code> object with metadata
-information provided. Note that <code>data1</code> is a tibble and by
-default <code><a href="../reference/create_summaryset.html">create_summaryset()</a></code> reads tibbles.</p>
+<p>Thus, we can now build a <code>SummarySet</code> object with metadata information provided. Note that <code>data1</code> is a tibble and by default <code><a href="../reference/create_summaryset.html">create_summaryset()</a></code> reads tibbles.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">sumset1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">data1</span>, metadata<span class="op">=</span><span class="va">meta1</span><span class="op">)</span></span>
 <span> <span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset1</span><span class="op">)</span></span></code></pre></div>
@@ -146,28 +129,13 @@ default <code><a href="../reference/create_summaryset.html">create_summaryset()<
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">meta2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span>metadata <span class="op">=</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">gwasinfo</a></span><span class="op">(</span><span class="st">"finn-b-I9_CHD"</span><span class="op">)</span><span class="op">)</span></span>
 <span> <span class="va">meta2</span>  </span></code></pre></div>
-<p>You will notice that there is no <code>sample_size</code> information
-in the metadata. This absence could cause gwasglue2 further down in the
-analyses. We could the <code>sample_size</code> parameter in
-<code><a href="../reference/create_metadata.html">create_metadata()</a></code> to add the argument or add it later. We
-are going to add this information after creating the
-<code>SummarySet</code>.</p>
+<p>You will notice that there is no <code>sample_size</code> information in the metadata. This absence could cause gwasglue2 further down in the analyses. We could the <code>sample_size</code> parameter in <code><a href="../reference/create_metadata.html">create_metadata()</a></code> to add the argument or add it later. We are going to add this information after creating the <code>SummarySet</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sumset2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">data2</span>, metadata<span class="op">=</span><span class="va">meta2</span><span class="op">)</span></span></code></pre></div>
-<p>The warning tell us that there is a problem with the GWAS summary
-data. Specifically, there are variants with the same chromosomal
-position and alleles that have different betas, p-values and allele
-frequencies. If we change the quality control parameter to
-<code>qc = TRUE</code>, we will let gwasglue2 to deal with this
-inconsistencies in the dataset.</p>
+<p>The warning tell us that there is a problem with the GWAS summary data. Specifically, there are variants with the same chromosomal position and alleles that have different betas, p-values and allele frequencies. If we change the quality control parameter to <code>qc = TRUE</code>, we will let gwasglue2 to deal with this inconsistencies in the dataset.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sumset2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">data2</span>, metadata<span class="op">=</span><span class="va">meta2</span>, qc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Now we will deal with the lack of sample size information in the
-metadata. If this information was present in <code>data2</code>, the
-<code><a href="../reference/create_summaryset.html">create_summaryset()</a></code> function would fill this information
-automatically. But this is not the case, and thus we are going to use
-the <code><a href="../reference/addToMetadata-methods.html">addToMetadata()</a></code> method and the <code>ncontrol</code>
-information already present in the metadata.</p>
+<p>Now we will deal with the lack of sample size information in the metadata. If this information was present in <code>data2</code>, the <code><a href="../reference/create_summaryset.html">create_summaryset()</a></code> function would fill this information automatically. But this is not the case, and thus we are going to use the <code><a href="../reference/addToMetadata-methods.html">addToMetadata()</a></code> method and the <code>ncontrol</code> information already present in the metadata.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span></span>
 <span><span class="va">sumset2</span> <span class="op">=</span> <span class="fu"><a href="../reference/addToMetadata-methods.html">addToMetadata</a></span><span class="op">(</span><span class="va">sumset2</span>, sample_size <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span><span class="op">$</span><span class="va">ncontrol</span> <span class="op">+</span> <span class="fu"><a href="../reference/getMetadata-methods.html">getMetadata</a></span><span class="op">(</span><span class="va">sumset2</span><span class="op">)</span><span class="op">$</span><span class="va">ncases</span><span class="op">)</span><span class="op">)</span></span>
@@ -175,39 +143,34 @@ information already present in the metadata.</p>
 <div class="section level3">
 <h3 id="create-a-summaryset-from-a-gwas-vcf-file">Create a Summaryset from a GWAS vcf file<a class="anchor" aria-label="anchor" href="#create-a-summaryset-from-a-gwas-vcf-file"></a>
 </h3>
-<p>In the examples above, the SummarySets were created using a tibble or
-more specifically the output of the <code>ieugwasr</code> package. Now
-we are going to use GWAS vcf files to create a SummarySet.</p>
-<p>First we use the Bioconductor package <code>VariantAnnotation</code>
-to read the vcf file.</p>
+<p>In the examples above, the SummarySets were created using a tibble or more specifically the output of the <code>ieugwasr</code> package. Now we are going to use GWAS vcf files to create a SummarySet.</p>
+<p>First we use the Bioconductor package <code>VariantAnnotation</code> to read the vcf file.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vcffile</span> <span class="op">&lt;-</span> <span class="st">"../data/vcf/IEU-a-2.vcf.gz"</span></span>
-<span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu">readVcf</span><span class="op">(</span><span class="va">vcffile</span><span class="op">)</span></span></code></pre></div>
-<p>Then <code>gwasvcf</code> is used to query the vcf file and
-converting to simple dataframes</p>
+<span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcffile</span><span class="op">)</span></span></code></pre></div>
+<p>Then <code>gwasvcf</code> is used to query the vcf file and converting to simple dataframes.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_vcf</span> <span class="op">&lt;-</span> <span class="fu">gwasvcf</span><span class="fu">::</span><span class="fu">query_gwas</span><span class="op">(</span><span class="va">vcf</span>, chrompos<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5:74132993-75132993"</span><span class="op">)</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu">gwasvcf</span><span class="fu">::</span><span class="fu">vcf_to_granges</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">data_vcf</span> <span class="op">&lt;-</span> <span class="fu">gwasvcf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gwasvcf/man/query_gwas.html" class="external-link">query_gwas</a></span><span class="op">(</span><span class="va">vcf</span>, chrompos<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5:74132993-75132993"</span><span class="op">)</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">gwasvcf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gwasvcf/man/vcf_to_granges.html" class="external-link">vcf_to_granges</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Then we create the SummarySet using the
-<code>create_sumaryset()</code> function with argument
-<code>type = "vcf"</code></p>
+<p>Then we create the SummarySet using the <code>create_sumaryset()</code> function with argument <code>type = "vcf"</code></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sumset_vcf</span><span class="op">=</span><span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">data_vcf</span>, type<span class="op">=</span><span class="st">"vcf"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sumset_vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="va">data_vcf</span>, type<span class="op">=</span><span class="st">"vcf"</span><span class="op">)</span></span></code></pre></div>
+<p>Another and simpler way of creating a <code>SummarySet</code> from a vcf file is to use the <code><a href="https://rdrr.io/pkg/gwasvcf/man/gwasvcf_to_summaryset.html" class="external-link">gwasvcf::gwasvcf_to_summaryset()</a></code> function:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sumset_vcf</span> <span class="op">&lt;-</span> <span class="fu">gwasvcf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gwasvcf/man/query_gwas.html" class="external-link">query_gwas</a></span><span class="op">(</span><span class="va">vcf</span>, chrompos<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5:74132993-75132993"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">gwasvcf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gwasvcf/man/gwasvcf_to_summaryset.html" class="external-link">gwasvcf_to_summaryset</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="dataset">DataSet<a class="anchor" aria-label="anchor" href="#dataset"></a>
 </h2>
-<p>A <code>DataSet-class</code> is a list of two or more harmonised
-<code>SummarySets</code>.</p>
-<p>First we need to create a list with all <code>SummarySets</code> we
-want to analyse,</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">summarysets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sumset1</span>, <span class="va">sumset2</span>, <span class="va">sumset_vcf</span><span class="op">)</span></span></code></pre></div>
-<p>and then use the <code><a href="../reference/create_dataset.html">create_dataset()</a></code> function to build the
-<code>DataSet</code> object.</p>
+<p>A <code>DataSet-class</code> is a list of two or more harmonised <code>SummarySets</code>.</p>
+<p>First we need to create a list with all <code>SummarySets</code> we want to analyse,</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summarysets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sumset1</span>, <span class="va">sumset2</span>, <span class="va">sumset_vcf</span><span class="op">)</span></span></code></pre></div>
+<p>and then use the <code><a href="../reference/create_dataset.html">create_dataset()</a></code> function to build the <code>DataSet</code> object.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dataset</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/create_dataset.html">create_dataset</a></span><span class="op">(</span><span class="va">summarysets</span>, harmonise <span class="op">=</span> <span class="cn">TRUE</span>, tolerance <span class="op">=</span> <span class="fl">0.08</span>, action <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
