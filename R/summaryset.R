@@ -367,12 +367,23 @@ setMethod("getShape", "DataSet", function(object) {
 
 # show method 
 setMethod(f = "show", signature="SummarySet", definition = function(object) {
+  
+  # set description of SummarySet
   id <- getMetadata(object)$id
   n <-  getMetadata(object)$sample_size
   nvariants <- nrow(getSummaryData(object))
+  shape <- getShape(object)
+
   cat("\nA SummarySet with", nvariants, "variants.\n")
-  cat("Study ID:", id, "\n")
-  cat("Sample size:", n, "\n") 
+  cat("\nStudy ID:", id, "\n")
+  cat("Sample size:", n, "\n")
+  
+  if (is.na(shape)){
+  cat("Shape: No shape defined. Use the setShape() function to add it to the SummarySet. \n ")
+  } else{
+      cat("Shape:", shape, "\n")
+  }
+  
   cat("\nGWAS summary data: \n")
   print(getSummaryData(object))
   cat("\nTo access the GWAS summary data use the getSummaryData() function.\n")

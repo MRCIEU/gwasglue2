@@ -205,10 +205,24 @@ setMethod(f = "show", signature="DataSet", definition = function(object) {
   variants_afterLD <- object@describe$variants_after_LDharmonization
   is_harm <- isHarmonised(object)
   is_LDharm <- isHarmonisedLD(object)
+  shape <- getShape(object)
+  trait_organisation <- getTraitOrg(object)
   
   # write
   cat("A DataSet with", length, "SummarySets.\n")
-
+  # shape
+  if (is.na(shape)){
+  cat("\nShape: No shape defined. Use the setShape() function to add it to the DataSet. \n ")
+  } else{
+      cat("\nShape:", shape, "\n")
+  }
+  # trait organisation
+  if (is.na(trait_organisation)){
+  cat("\nTrait organisation: No trait organisation defined. Use the setTraitOrg() function to add it to the DataSet. \n ")
+  } else{
+      cat("\nTrait organisation:", trait_organisation, "\n")
+  }
+  # harmonisation
   if(isTRUE(is_harm)){
     cat("\nHarmonisation:\n")
     if(action == 1){
@@ -222,7 +236,7 @@ setMethod(f = "show", signature="DataSet", definition = function(object) {
   } else{
     cat("\nThe DataSet is not harmonised\n")
   }
-
+  # LD harmonisation
   if(isTRUE(is_LDharm)){
     cat("\nHarmonisation against a reference population:\n")
     cat(refpop_variants, "available variants in the reference population data.\n")
