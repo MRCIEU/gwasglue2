@@ -25,6 +25,7 @@
 #' * "independent": independent/scattered variants
 #' * "pruned": genome wide - pruned
 #' * "full": genome wide - full 
+#' @slot trait_organization A list of the organization of traits within the DataSet (default NA).
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
@@ -46,6 +47,8 @@ setClass("DataSet",
     is_converted = "logical",
     describe = "list",
     shape = "character",
+    trait_organisation = "list"
+    ),
   prototype = prototype(
     sumset = list(NA_character_),
     overlap_variants = NA_character_,
@@ -64,6 +67,7 @@ setClass("DataSet",
     is_converted = FALSE,
     describe = list(NA_character_),
     shape = NA_character_,
+    trait_organisation = list(NA_character_)
   ),
   contains = c(class(dplyr::tibble()))
 )
@@ -163,6 +167,31 @@ setMethod( "setZscores", "DataSet",function(dataset) {
 #           })
 
 
+#'  Set the trait organisation of the gwasglue2 object 
+#' @param object A gwasglue2 DataSet object
+#' @return The gwasglue2 object with the trait organisation stored
+#' @export
+#' @docType methods
+#' @rdname setTraitOrg-methods
+setGeneric("setTraitOrg",function(object, ...) standardGeneric("setTraitOrg"))
+#' @rdname setTraitOrg-methods
+setMethod("setTraitOrg", "DataSet", function(object,...) {
+  # TODO: check if the trait organisation is valid
+  object@trait_organisation <- list(...)
+  return(object)
+})
+
+#'  Get the trait organisation of the gwasglue2 DataSet
+#' @param object A gwasglue2 DataSet object.
+#' @return The trait organisation of the gwasglue2 object
+#' @export
+#' @docType methods
+#' @rdname getTraitOrg-methods
+setGeneric("getTraitOrg",function(object) standardGeneric("getTraitOrg"))
+#' @rdname getTraitOrg-methods
+setMethod("getTraitOrg", "DataSet", function(object) {
+  return(object@trait_organisation)
+})
 
 # show method 
 setMethod(f = "show", signature="DataSet", definition = function(object) {
