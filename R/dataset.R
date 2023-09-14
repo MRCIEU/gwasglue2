@@ -19,6 +19,12 @@
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
 #' @slot describe A description of the DataSet
+#' @slot shape The shape of the SummarySet (default NA).
+#' * "single": single region
+#' * "multiple": multiple regions
+#' * "independent": independent/scattered variants
+#' * "pruned": genome wide - pruned
+#' * "full": genome wide - full 
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
@@ -38,8 +44,8 @@ setClass("DataSet",
     susie_marginalised = "logical",
     susieR = "list",
     is_converted = "logical",
-    describe = "list"
-  ),
+    describe = "list",
+    shape = "character",
   prototype = prototype(
     sumset = list(NA_character_),
     overlap_variants = NA_character_,
@@ -56,7 +62,8 @@ setClass("DataSet",
     susie_marginalised = FALSE,
     susieR = list(NA_character_),
     is_converted = FALSE,
-    describe = list(NA_character_)
+    describe = list(NA_character_),
+    shape = NA_character_,
   ),
   contains = c(class(dplyr::tibble()))
 )

@@ -5,19 +5,27 @@
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
 #' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA). 
+#' @slot shape The shape of the SummarySet (default NA).
+#' * "single": single region
+#' * "multiple": multiple regions
+#' * "independent": independent/scattered variants
+#' * "pruned": genome wide - pruned
+#' * "full": genome wide - full
 #' @export 
 setClass("SummarySet",
   slots = c(
     ss = "tbl_df",
     metadata = "list", 
     variants = "character",
-    attributes = "list"
+    attributes = "list",
+    shape = "character"
   ),
   prototype = prototype(
     ss = NA_character_,
     metadata = list(NA),
     variants = NA_character_,
-    attributes = list(NA)
+    attributes = list(NA),
+    shape = NA_character_
   ),
   contains = class(dplyr::tibble())
 )
@@ -306,6 +314,54 @@ setMethod("dimData", "SummarySet", function(summary_set) {
     return(dim(summary_set@ss))
 })
 
+
+#'  Set the Shape of the gwasglue2 objects 
+#' @param object A gwasglue2 SummarySet or DataSet object
+#' @return The gwasglue2 object with the shape stored
+#' @export
+#' @docType methods
+#' @rdname setShape-methods
+setGeneric("setShape",function(object, shape) standardGeneric("setShape"))
+#' @rdname setShape-methods
+setMethod("setShape", "SummarySet", function(object, shape) {
+  
+  # check if the shape is allowed
+  shapes <- c("single", "multiple", "independent", "pruned", "full")
+  if (shape %ni% shapes){
+    stop( " This shape is not allowed in gwasglue2. The options available for the 'shape' of the 'SummarySet' object are 'single', 'multiple', 'independent', 'pruned',and 'full'.")
+  } else {
+    object@shape <- shape
+  }
+  return(object)
+})
+#' @rdname setShape-methods
+setMethod("setShape", "DataSet", function(object, shape) {
+  
+  # check if the shape is allowed
+  shapes <- c("single", "multiple", "independent", "pruned", "full")
+  if (shape %ni% shapes){
+    stop( " This shape is not allowed in gwasglue2. The options available for the 'shape' of the 'SummarySet' object are 'single', 'multiple', 'independent', 'pruned',and 'full'.")
+  } else {
+    object@shape <- shape
+  }
+  return(object)
+})
+
+#'  Get the Shape of the gwasglue2 objects
+#' @param object A gwasglue2 SummarySet or DataSet object.
+#' @return The shape of the gwasglue2 object
+#' @export
+#' @docType methods
+#' @rdname getShape-methods
+setGeneric("getShape",function(object) standardGeneric("getShape"))
+#' @rdname getShape-methods
+setMethod("getShape", "SummarySet", function(object) {
+  return(object@shape)
+})
+#' @rdname getShape-methods
+setMethod("getShape", "DataSet", function(object) {
+  return(object@shape)
+})
 
 
 
