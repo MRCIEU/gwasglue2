@@ -37,6 +37,7 @@ usethis::use_build_ignore(".inst/tests/", escape = TRUE)
 usethis::use_build_ignore(".devcontainer/", escape = TRUE)
 usethis::use_build_ignore("data/", escape = TRUE)
 
+
 # add files to .gitignore
 usethis::use_git_ignore("inst/old/test.R")
 
