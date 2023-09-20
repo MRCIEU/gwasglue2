@@ -334,18 +334,6 @@ setMethod("setShape", "SummarySet", function(object, shape) {
   }
   return(object)
 })
-#' @rdname setShape-methods
-setMethod("setShape", "DataSet", function(object, shape) {
-  
-  # check if the shape is allowed
-  shapes <- c("single", "multiple", "independent", "pruned", "full")
-  if (shape %ni% shapes){
-    stop( " This shape is not allowed in gwasglue2. The options available for the 'shape' of the 'SummarySet' object are 'single', 'multiple', 'independent', 'pruned',and 'full'.")
-  } else {
-    object@shape <- shape
-  }
-  return(object)
-})
 
 #'  Get the Shape of the gwasglue2 objects
 #' @param object A gwasglue2 SummarySet or DataSet object.
@@ -358,11 +346,6 @@ setGeneric("getShape",function(object) standardGeneric("getShape"))
 setMethod("getShape", "SummarySet", function(object) {
   return(object@shape)
 })
-#' @rdname getShape-methods
-setMethod("getShape", "DataSet", function(object) {
-  return(object@shape)
-})
-
 
 
 # show method 

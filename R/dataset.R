@@ -18,14 +18,6 @@
 #' @slot susie_marginalised logical (default FALSE).
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
-#' @slot describe A description of the DataSet
-#' @slot shape The shape of the SummarySet (default NA).
-#' * "single": single region
-#' * "multiple": multiple regions
-#' * "independent": independent/scattered variants
-#' * "pruned": genome wide - pruned
-#' * "full": genome wide - full 
-#' @slot trait_organization A list of the organization of traits within the DataSet (default NA).
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
@@ -46,7 +38,6 @@ setClass("DataSet",
     susieR = "list",
     is_converted = "logical",
     describe = "list",
-    shape = "character",
     trait_organisation = "list"
     ),
   prototype = prototype(
@@ -205,17 +196,10 @@ setMethod(f = "show", signature="DataSet", definition = function(object) {
   variants_afterLD <- object@describe$variants_after_LDharmonization
   is_harm <- isHarmonised(object)
   is_LDharm <- isHarmonisedLD(object)
-  shape <- getShape(object)
   trait_organisation <- getTraitOrg(object)
   
   # write
   cat("A DataSet with", length, "SummarySets.\n")
-  # shape
-  if (is.na(shape)){
-  cat("\nShape: No shape defined. Use the setShape() function to add it to the DataSet. \n ")
-  } else{
-      cat("\nShape:", shape, "\n")
-  }
   # trait organisation
   if (is.na(trait_organisation)){
   cat("\nTrait organisation: No trait organisation defined. Use the setTraitOrg() function to add it to the DataSet. \n ")
