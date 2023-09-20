@@ -17,5 +17,16 @@ An S4 class to represent the Summary Set
 \item{\code{variants}}{The RSID/variants associated with ss (default NA).}
 
 \item{\code{attributes}}{Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA).}
+
+\item{\code{shape}}{The shape of the SummarySet (default NA).}
+
+\item{\code{shape}}{The shape of the SummarySet (default NA).
+\itemize{
+\item \code{"single"}: single region
+\item \code{"multiple"}: multiple regions
+\item \code{"independent"}: independent/scattered variants
+\item \code{"pruned"}: genome wide - pruned
+\item \code{"full"}: genome wide - full
+}}
 }}
 

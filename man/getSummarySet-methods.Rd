@@ -11,7 +11,7 @@ getSummarySet(dataset, index)
 \S4method{getSummarySet}{DataSet}(dataset, index)
 }
 \arguments{
-\item{dataset}{A gwasglue2 DataSet objec}
+\item{dataset}{A gwasglue2 DataSet object}
 
 \item{index}{Index of gwasglue2 SummarySet objects within DataSet}
 }
