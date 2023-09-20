@@ -289,9 +289,6 @@ create_summaryset_from_tibble <- function (data = tibble(),
   if ("sample_size" %in% names(metadata) && "n" %in% colnames(data) && is.na(metadata$sample_size) && !all(is.na(data$n))){
     metadata$sample_size <- max(data$n, na.rm = TRUE)
     }
-  if ("nsnp" %in% names(metadata) && is.na(metadata$nsnp)){ 
-    metadata$nsnp <- dim(data)[1]
-    }
   if ("trait" %in% names(metadata) && "trait" %in% colnames(data) && is.na(metadata$trait)){ 
     metadata$trait <- unique(data$trait)
     }
@@ -428,9 +425,6 @@ create_summaryset_from_gwasvcf <- function (data,
     }
   if ("sample_size" %in% names(metadata) && "n" %in% colnames(data) && is.na(metadata$sample_size) && !all(is.na(data$n))){
     metadata$sample_size <- max(data$n, na.rm = TRUE)
-    }
-  if ("nsnp" %in% names(metadata) && is.na(metadata$nsnp)){ 
-    metadata$nsnp <- dim(data)[1]
     }
   if ("trait" %in% names(metadata) && "trait" %in% colnames(data) && is.na(metadata$trait)){ 
     metadata$trait <- unique(data$trait)

@@ -8,17 +8,18 @@
 #' @slot is_resized logical (default FALSE).
 #' @slot is_harmonised logical (default FALSE).
 #' @slot overall_dropped_SNPs A vector of RSIDs that were removed from the summary_sets.
-#' @slot dropped_SNPs A list of pairwise harmonising ouptput (SNPs removed from the summary_sets )
-#' @slot palindromic_SNPs A list of pairwise harmonising ouptput.
-#' @slot ambiguous_SNPs A list of pairwise harmonising ouptput.
-#' @slot incompatible_alleles_SNPs A list of pairwise harmonising ouptput.
+#' @slot dropped_SNPs A list of pairwise harmonising output (SNPs removed from the summary_sets )
+#' @slot palindromic_SNPs A list of pairwise harmonising output.
+#' @slot ambiguous_SNPs A list of pairwise harmonising output.
+#' @slot incompatible_alleles_SNPs A list of pairwise harmonising output.
 #' @slot ld_matrix LD matrix from reference population
 #' @slot is_harmonisedLD logical (default FALSE).
 #' @slot zscores vector of calculated z-scores
 #' @slot susie_marginalised logical (default FALSE).
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
-#' @slot describe A description of the DataSet
+#' @slot describe A description of the DataSet (default NA).
+#' @slot trait_organisation A list with the trait organization within the DataSet (default NA).
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
@@ -38,8 +39,9 @@ setClass("DataSet",
     susie_marginalised = "logical",
     susieR = "list",
     is_converted = "logical",
-    describe = "list"
-  ),
+    describe = "list",
+    trait_organisation = "list"
+    ),
   prototype = prototype(
     sumset = list(NA_character_),
     overlap_variants = NA_character_,
@@ -56,7 +58,8 @@ setClass("DataSet",
     susie_marginalised = FALSE,
     susieR = list(NA_character_),
     is_converted = FALSE,
-    describe = list(NA_character_)
+    describe = list(NA_character_),
+    trait_organisation = list(NA_character_)
   ),
   contains = c(class(dplyr::tibble()))
 )
@@ -94,7 +97,7 @@ setMethod("getData", "DataSet",
 
 #' Get Method to retrieve the gwasglue2 SummarySet object
 #'
-#' @param dataset A gwasglue2 DataSet objec
+#' @param dataset A gwasglue2 DataSet object
 #' @param index Index of gwasglue2 SummarySet objects within DataSet
 #' @return summarySet gwasglue2 SummarySet object
 #' @export
@@ -156,10 +159,100 @@ setMethod( "setZscores", "DataSet",function(dataset) {
 #           })
 
 
+#'  Set the trait organisation of the gwasglue2 DataSet
+#' @param dataset A gwasglue2 DataSet object
+#' @param ... The organisation of the DataSet
+#' @return The gwasglue2 object with the trait organisation stored
+#' @export
+#' @docType methods
+#' @rdname setTraitOrg-methods
+setGeneric("setTraitOrg",function(dataset, ...) standardGeneric("setTraitOrg"))
+#' @rdname setTraitOrg-methods
+setMethod("setTraitOrg", "DataSet", function(dataset,...) {
+  # TODO: check if the trait organisation is valid
+  dataset@trait_organisation <- list(...)
+  return(dataset)
+})
+
+#' Get the trait organisation of the gwasglue2 DataSet
+#' @param dataset A gwasglue2 DataSet object.
+#' @return The trait organisation of the gwasglue2 object
+#' @export
+#' @docType methods
+#' @rdname getTraitOrg-methods
+setGeneric("getTraitOrg",function(dataset) standardGeneric("getTraitOrg"))
+#' @rdname getTraitOrg-methods
+setMethod("getTraitOrg", "DataSet", function(dataset) {
+  return(dataset@trait_organisation)
+})
+
+#' Assert if the shapes of SummarySets in the gwasglue2 DataSet are the same
+#' @param dataset A gwasglue2 DataSet object.
+#' @return logical TRUE/FALSE
+#' @export 
+#' @docType methods
+#' @rdname assertSameShape-methods
+setGeneric("assertSameShape",function(dataset) standardGeneric("assertSameShape"))
+#' @rdname assertSameShape-methods
+setMethod("assertSameShape","DataSet", function(dataset){
+
+  # getshapes
+  n_sumsets <- getLength(dataset)
+  shapes <- lapply(1:n_sumsets, function(i){
+    # read summaryset
+    shape <- getSummarySet(dataset, i) %>%
+            getShape()
+  }) %>% unlist()
+
+  # no shape defined within the DataSet
+  if(all(is.na(shapes))){
+   stop(" No SummarySets inside the DataSet have shapes defined.")
+  }
+
+  # no NAs
+  if(!any(is.na(shapes))){
+    # one shape and no NAS, return TRUE
+    if(length(unique(shapes)) == 1){
+      return(TRUE)
+    }
+    # more than one shape and no NAS, return FALSE
+    if(length(unique(shapes)) > 1){
+      return(FALSE)
+    }
+  }
+
+  # one shape and NAS, fill NAS with present shape
+  if(unique(shapes) %>% is.na() %>% length() == 2){
+    stop(" Only one SummarySet has the shape defined in the DataSet.")
+    
+    # TODO: to be implemented later, maybe elsewhere
+    # # the only shape defined
+    # shape <- unique(shapes)
+    # shape <- shape[!is.na(shape)]
+
+    # for(i in 1:n_sumsets){
+    #   # read summaryset
+    #   summaryset <- getSummarySet(dataset, i)
+    #   # set shape
+    #   summaryset <- setShape(summaryset, shape)
+    #   # write back
+    #   dataset@summary_sets[[i]] <- summaryset
+    # }    
+    # message(" Only one SummarySet has the shape defined in the DataSet. gwasglue2 automatically assigned all the SummarySets with the '",shape,"'' shape.")
+    # return(dataset)    
+  }
+
+  # more than one shape and NAS
+  if(unique(shapes) %>% is.na() %>% length() > 2){
+    return(FALSE)
+  }
+
+
+})
+
 
 # show method 
 setMethod(f = "show", signature="DataSet", definition = function(object) {
-  
   # set description of DataSet
   length <- getLength(object)
   overlap <- object@describe$overlap_variants
@@ -169,10 +262,19 @@ setMethod(f = "show", signature="DataSet", definition = function(object) {
   variants_afterLD <- object@describe$variants_after_LDharmonization
   is_harm <- isHarmonised(object)
   is_LDharm <- isHarmonisedLD(object)
+  trait_organisation <- getTraitOrg(object)
   
   # write
   cat("A DataSet with", length, "SummarySets.\n")
-
+  
+  # trait organisation
+  if (is.na(trait_organisation)){
+  cat("\nTrait organisation: No trait organisation defined. Use the setTraitOrg() function to add it to the DataSet.\n")
+ cat("NOTE: This feature is not fully implemented yet. Analyses can continue without defining it.\n")
+  } else{
+      cat("\nTrait organisation:", trait_organisation, "\n")
+  }
+  # harmonisation
   if(isTRUE(is_harm)){
     cat("\nHarmonisation:\n")
     if(action == 1){
@@ -186,7 +288,7 @@ setMethod(f = "show", signature="DataSet", definition = function(object) {
   } else{
     cat("\nThe DataSet is not harmonised\n")
   }
-
+  # LD harmonisation
   if(isTRUE(is_LDharm)){
     cat("\nHarmonisation against a reference population:\n")
     cat(refpop_variants, "available variants in the reference population data.\n")

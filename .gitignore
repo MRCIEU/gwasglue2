@@ -6,8 +6,8 @@
 .dockerignore
 data/
 .vscode/launch.json
-.devcontainer/
 ieugwasr_oauth/
 .vscode/
 ieugwasr_oauth
 inst/old/s4_tutorials/test.R
+.devcontainer/devcontainer.json

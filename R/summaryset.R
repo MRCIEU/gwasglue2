@@ -5,19 +5,28 @@
 #' @slot metadata  A list with the metadata associated to ss (default NA).
 #' @slot variants The RSID/variants associated with ss (default NA).
 #' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA). 
+#' @slot shape The shape of the SummarySet (default NA).
+#' @slot shape The shape of the SummarySet (default NA).
+#' * `"single"`: single region
+#' * `"multiple"`: multiple regions
+#' * `"independent"`: independent/scattered variants
+#' * `"pruned"`: genome wide - pruned
+#' * `"full"`: genome wide - full 
 #' @export 
 setClass("SummarySet",
   slots = c(
     ss = "tbl_df",
     metadata = "list", 
     variants = "character",
-    attributes = "list"
+    attributes = "list",
+    shape = "character"
   ),
   prototype = prototype(
     ss = NA_character_,
     metadata = list(NA),
     variants = NA_character_,
-    attributes = list(NA)
+    attributes = list(NA),
+    shape = NA_character_
   ),
   contains = class(dplyr::tibble())
 )
@@ -307,16 +316,60 @@ setMethod("dimData", "SummarySet", function(summary_set) {
 })
 
 
+#'  Set the Shape of the gwasglue2 objects 
+#' @param object A gwasglue2 SummarySet or DataSet object
+#' @param shape The shape of the GWAS data
+#' @return The gwasglue2 object with the shape stored
+#' @export
+#' @docType methods
+#' @rdname setShape-methods
+setGeneric("setShape",function(object, shape) standardGeneric("setShape"))
+#' @rdname setShape-methods
+setMethod("setShape", "SummarySet", function(object, shape) {
+  
+  # check if the shape is allowed
+  shapes <- c("single", "multiple", "independent", "pruned", "full")
+  if (shape %ni% shapes){
+    stop( " This shape is not allowed in gwasglue2. The options available for the 'shape' of the 'SummarySet' object are 'single', 'multiple', 'independent', 'pruned',and 'full'.")
+  } else {
+    object@shape <- shape
+  }
+  return(object)
+})
+
+#'  Get the Shape of the gwasglue2 objects
+#' @param object A gwasglue2 SummarySet or DataSet object.
+#' @return The shape of the gwasglue2 object
+#' @export
+#' @docType methods
+#' @rdname getShape-methods
+setGeneric("getShape",function(object) standardGeneric("getShape"))
+#' @rdname getShape-methods
+setMethod("getShape", "SummarySet", function(object) {
+  return(object@shape)
+})
 
 
 # show method 
 setMethod(f = "show", signature="SummarySet", definition = function(object) {
+  
+  # set description of SummarySet
   id <- getMetadata(object)$id
   n <-  getMetadata(object)$sample_size
   nvariants <- nrow(getSummaryData(object))
+  shape <- getShape(object)
+
   cat("\nA SummarySet with", nvariants, "variants.\n")
-  cat("Study ID:", id, "\n")
-  cat("Sample size:", n, "\n") 
+  cat("\nStudy ID:", id, "\n")
+  cat("Sample size:", n, "\n")
+  
+  if (is.na(shape)){
+  cat("Shape: No shape defined. Use the setShape() function to add it to the SummarySet\n")
+  cat("NOTE: The shape feature is not fully implemented yet. Analyses can continue without defining it.\n")
+  } else{
+      cat("Shape:", shape, "\n")
+  }
+  
   cat("\nGWAS summary data: \n")
   print(getSummaryData(object))
   cat("\nTo access the GWAS summary data use the getSummaryData() function.\n")

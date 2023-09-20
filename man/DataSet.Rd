@@ -32,13 +32,13 @@ DataSet function
 
 \item{\code{overall_dropped_SNPs}}{A vector of RSIDs that were removed from the summary_sets.}
 
-\item{\code{dropped_SNPs}}{A list of pairwise harmonising ouptput (SNPs removed from the summary_sets )}
+\item{\code{dropped_SNPs}}{A list of pairwise harmonising output (SNPs removed from the summary_sets )}
 
-\item{\code{palindromic_SNPs}}{A list of pairwise harmonising ouptput.}
+\item{\code{palindromic_SNPs}}{A list of pairwise harmonising output.}
 
-\item{\code{ambiguous_SNPs}}{A list of pairwise harmonising ouptput.}
+\item{\code{ambiguous_SNPs}}{A list of pairwise harmonising output.}
 
-\item{\code{incompatible_alleles_SNPs}}{A list of pairwise harmonising ouptput.}
+\item{\code{incompatible_alleles_SNPs}}{A list of pairwise harmonising output.}
 
 \item{\code{ld_matrix}}{LD matrix from reference population}
 
@@ -52,6 +52,8 @@ DataSet function
 
 \item{\code{is_converted}}{logical (default FALSE).}
 
-\item{\code{describe}}{A description of the DataSet}
+\item{\code{describe}}{A description of the DataSet (default NA).}
+
+\item{\code{trait_organisation}}{A list with the trait organization within the DataSet (default NA).}
 }}
 
