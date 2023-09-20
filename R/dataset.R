@@ -182,6 +182,68 @@ setGeneric("getTraitOrg",function(object) standardGeneric("getTraitOrg"))
 #' @rdname getTraitOrg-methods
 setMethod("getTraitOrg", "DataSet", function(object) {
   return(object@trait_organisation)
+#' Assert if the shapes of SummarySets in the gwasglue2 DataSet are the same
+#' @param dataset A gwasglue2 DataSet object.
+#' @return logical TRUE/FALSE
+#' @export 
+#' @docType methods
+#' @rdname assertSameShape-methods
+setGeneric("assertSameShape",function(dataset) standardGeneric("assertSameShape"))
+#' @rdname assertSameShape-methods
+setMethod("assertSameShape","DataSet", function(dataset){
+
+  # getshapes
+  n_sumsets <- getLength(dataset)
+  shapes <- lapply(1:n_sumsets, function(i){
+    # read summaryset
+    shape <- getSummarySet(dataset, i) %>%
+            getShape()
+  }) %>% unlist()
+
+  # no shape defined within the DataSet
+  if(all(is.na(shapes))){
+   stop(" No SummarySets inside the DataSet have shapes defined.")
+  }
+
+  # no NAs
+  if(!any(is.na(shapes))){
+    # one shape and no NAS, return TRUE
+    if(length(unique(shapes)) == 1){
+      return(TRUE)
+    }
+    # more than one shape and no NAS, return FALSE
+    if(length(unique(shapes)) > 1){
+      return(FALSE)
+    }
+  }
+
+  # one shape and NAS, fill NAS with present shape
+  if(unique(shapes) %>% is.na() %>% length() == 2){
+    stop(" Only one SummarySet has the shape defined in the DataSet.")
+    
+    # TODO: to be implemented later, maybe elsewhere
+    # # the only shape defined
+    # shape <- unique(shapes)
+    # shape <- shape[!is.na(shape)]
+
+    # for(i in 1:n_sumsets){
+    #   # read summaryset
+    #   summaryset <- getSummarySet(dataset, i)
+    #   # set shape
+    #   summaryset <- setShape(summaryset, shape)
+    #   # write back
+    #   dataset@summary_sets[[i]] <- summaryset
+    # }    
+    # message(" Only one SummarySet has the shape defined in the DataSet. gwasglue2 automatically assigned all the SummarySets with the '",shape,"'' shape.")
+    # return(dataset)    
+  }
+
+  # more than one shape and NAS
+  if(unique(shapes) %>% is.na() %>% length() > 2){
+    return(FALSE)
+  }
+
+
 })
 
 # show method 
