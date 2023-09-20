@@ -6,11 +6,12 @@
 #' @slot variants The RSID/variants associated with ss (default NA).
 #' @slot attributes  Attributes of the SummarySet. Eg. MR label Exposure/Outcome (default NA). 
 #' @slot shape The shape of the SummarySet (default NA).
-#' * "single": single region
-#' * "multiple": multiple regions
-#' * "independent": independent/scattered variants
-#' * "pruned": genome wide - pruned
-#' * "full": genome wide - full
+#' @slot shape The shape of the SummarySet (default NA).
+#' * `"single"`: single region
+#' * `"multiple"`: multiple regions
+#' * `"independent"`: independent/scattered variants
+#' * `"pruned"`: genome wide - pruned
+#' * `"full"`: genome wide - full 
 #' @export 
 setClass("SummarySet",
   slots = c(
@@ -317,6 +318,7 @@ setMethod("dimData", "SummarySet", function(summary_set) {
 
 #'  Set the Shape of the gwasglue2 objects 
 #' @param object A gwasglue2 SummarySet or DataSet object
+#' @param shape The shape of the GWAS data
 #' @return The gwasglue2 object with the shape stored
 #' @export
 #' @docType methods
@@ -362,7 +364,8 @@ setMethod(f = "show", signature="SummarySet", definition = function(object) {
   cat("Sample size:", n, "\n")
   
   if (is.na(shape)){
-  cat("Shape: No shape defined. Use the setShape() function to add it to the SummarySet. \n ")
+  cat("Shape: No shape defined. Use the setShape() function to add it to the SummarySet\n")
+  cat("NOTE: The shape feature is not fully implemented yet. Analyses can continue without defining it.\n")
   } else{
       cat("Shape:", shape, "\n")
   }
