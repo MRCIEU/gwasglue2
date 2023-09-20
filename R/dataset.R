@@ -8,16 +8,18 @@
 #' @slot is_resized logical (default FALSE).
 #' @slot is_harmonised logical (default FALSE).
 #' @slot overall_dropped_SNPs A vector of RSIDs that were removed from the summary_sets.
-#' @slot dropped_SNPs A list of pairwise harmonising ouptput (SNPs removed from the summary_sets )
-#' @slot palindromic_SNPs A list of pairwise harmonising ouptput.
-#' @slot ambiguous_SNPs A list of pairwise harmonising ouptput.
-#' @slot incompatible_alleles_SNPs A list of pairwise harmonising ouptput.
+#' @slot dropped_SNPs A list of pairwise harmonising output (SNPs removed from the summary_sets )
+#' @slot palindromic_SNPs A list of pairwise harmonising output.
+#' @slot ambiguous_SNPs A list of pairwise harmonising output.
+#' @slot incompatible_alleles_SNPs A list of pairwise harmonising output.
 #' @slot ld_matrix LD matrix from reference population
 #' @slot is_harmonisedLD logical (default FALSE).
 #' @slot zscores vector of calculated z-scores
 #' @slot susie_marginalised logical (default FALSE).
 #' @slot susieR susieR::susie_rss() output
 #' @slot is_converted logical (default FALSE).
+#' @slot describe A description of the DataSet (default NA).
+#' @slot trait_organisation A list with the trait organization within the DataSet (default NA).
 #' @export 
 #' @rdname DataSet
 setClass("DataSet",
@@ -57,7 +59,6 @@ setClass("DataSet",
     susieR = list(NA_character_),
     is_converted = FALSE,
     describe = list(NA_character_),
-    shape = NA_character_,
     trait_organisation = list(NA_character_)
   ),
   contains = c(class(dplyr::tibble()))
@@ -96,7 +97,7 @@ setMethod("getData", "DataSet",
 
 #' Get Method to retrieve the gwasglue2 SummarySet object
 #'
-#' @param dataset A gwasglue2 DataSet objec
+#' @param dataset A gwasglue2 DataSet object
 #' @param index Index of gwasglue2 SummarySet objects within DataSet
 #' @return summarySet gwasglue2 SummarySet object
 #' @export
@@ -158,30 +159,33 @@ setMethod( "setZscores", "DataSet",function(dataset) {
 #           })
 
 
-#'  Set the trait organisation of the gwasglue2 object 
-#' @param object A gwasglue2 DataSet object
+#'  Set the trait organisation of the gwasglue2 DataSet
+#' @param dataset A gwasglue2 DataSet object
+#' @param ... The organisation of the DataSet
 #' @return The gwasglue2 object with the trait organisation stored
 #' @export
 #' @docType methods
 #' @rdname setTraitOrg-methods
-setGeneric("setTraitOrg",function(object, ...) standardGeneric("setTraitOrg"))
+setGeneric("setTraitOrg",function(dataset, ...) standardGeneric("setTraitOrg"))
 #' @rdname setTraitOrg-methods
-setMethod("setTraitOrg", "DataSet", function(object,...) {
+setMethod("setTraitOrg", "DataSet", function(dataset,...) {
   # TODO: check if the trait organisation is valid
-  object@trait_organisation <- list(...)
-  return(object)
+  dataset@trait_organisation <- list(...)
+  return(dataset)
 })
 
-#'  Get the trait organisation of the gwasglue2 DataSet
-#' @param object A gwasglue2 DataSet object.
+#' Get the trait organisation of the gwasglue2 DataSet
+#' @param dataset A gwasglue2 DataSet object.
 #' @return The trait organisation of the gwasglue2 object
 #' @export
 #' @docType methods
 #' @rdname getTraitOrg-methods
-setGeneric("getTraitOrg",function(object) standardGeneric("getTraitOrg"))
+setGeneric("getTraitOrg",function(dataset) standardGeneric("getTraitOrg"))
 #' @rdname getTraitOrg-methods
-setMethod("getTraitOrg", "DataSet", function(object) {
-  return(object@trait_organisation)
+setMethod("getTraitOrg", "DataSet", function(dataset) {
+  return(dataset@trait_organisation)
+})
+
 #' Assert if the shapes of SummarySets in the gwasglue2 DataSet are the same
 #' @param dataset A gwasglue2 DataSet object.
 #' @return logical TRUE/FALSE
@@ -246,9 +250,9 @@ setMethod("assertSameShape","DataSet", function(dataset){
 
 })
 
+
 # show method 
 setMethod(f = "show", signature="DataSet", definition = function(object) {
-  
   # set description of DataSet
   length <- getLength(object)
   overlap <- object@describe$overlap_variants
@@ -262,9 +266,11 @@ setMethod(f = "show", signature="DataSet", definition = function(object) {
   
   # write
   cat("A DataSet with", length, "SummarySets.\n")
+  
   # trait organisation
   if (is.na(trait_organisation)){
-  cat("\nTrait organisation: No trait organisation defined. Use the setTraitOrg() function to add it to the DataSet. \n ")
+  cat("\nTrait organisation: No trait organisation defined. Use the setTraitOrg() function to add it to the DataSet.\n")
+ cat("NOTE: This feature is not fully implemented yet. Analyses can continue without defining it.\n")
   } else{
       cat("\nTrait organisation:", trait_organisation, "\n")
   }
