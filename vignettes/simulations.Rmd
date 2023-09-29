@@ -1,0 +1,195 @@
+---
+title: "Simulation examples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{simulations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(gwasglue2)
+library(simulateGP)
+library(dplyr)
+```
+
+
+```{r}
+nsnp <- 1000000
+
+arbitrary_map <- function(nsnp) {
+  dplyr::tibble(snp=1:nsnp, chr=99, pos=snp, ea="G", oa="A")
+}
+
+map <- arbitrary_map(nsnp) %>%
+  mutate(af=runif(nsnp, 0.01, 0.99))
+
+
+
+map <- tibble(snp=1:nsnp, af=runif(nsnp, 0.01, 0.99), chr=99, pos=snp, ea="G", oa="A")
+params <- generate_gwas_params(map=map, h2=0.4, S=-0.4, Pi=0.005)
+nid <- 10000000
+ss <- generate_gwas_ss(params, nid=nid)
+ss
+
+params2 <- generate_gwas_params(map=map, h2=0.4, S=-0.4, Pi=0.005)
+
+
+```
+
+
+```{r}
+# Generate LD object for a region using plink and a reference panel
+outdir <- tempdir()
+region <- data.frame(chr="chr1", start=7800000, stop=8400000)
+map <- generate_ldobj(outdir, bfile="/Users/gh13047/repo/opengwas-api-internal/opengwas-api/app/ld_files/EUR", regions=region)
+ldobj <- readRDS(file.path(outdir, "ldobj_1_7800000_8400000.rds"))
+
+set.seed(1234)
+# Set the location of causal variants in the region
+# params1 and params2 will have a different set of causal variants
+params1 <- ldobj$map %>%
+    generate_gwas_params(h2=0.05, S=0, Pi=1/nrow(.))
+params2 <- ldobj$map %>%
+    generate_gwas_params(h2=0.05, S=0, Pi=1/nrow(.))
+
+# Generate LD-aware summary statistics
+# ss_ld1 and ss_ld3 share the same genetic factors but have different sample sizes
+# ss_ld2 has a different set of genetic factors
+ss_ld1 <- params1 %>%
+    generate_gwas_ss(nid=10000, ldobj=ldobj)
+ss_ld2 <- params2 %>%
+    generate_gwas_ss(nid=20000, ldobj=ldobj)
+ss_ld3 <- params1 %>%
+    generate_gwas_ss(nid=1000, ldobj=ldobj)
+
+# plot
+bind_rows(
+	ss_ld1 %>% mutate(trait=1),
+	ss_ld2 %>% mutate(trait=2),
+	ss_ld3 %>% mutate(trait=3)
+) %>%
+	ggplot(., aes(x=pos, y=-log10(pval))) +
+	geom_point() +
+	facet_grid(trait ~ ., scale="free_y")
+```
+
+
+## Simulation design
+
+Question - How well does finemapping + multi-trait colocalisation perform under different scenarios?
+
+### Generating a scenario - our data generating model
+
+1. Choose a region from an LD reference panel. e.g 2mb region
+2. Select variants to have effects in 2 or more traits
+  - Some of the genetic effects will be shared across
+  - Some will be distinct
+  - Variants chosen to have effects will be randomly distributed 
+    - We might reconsider this based on functional annotations - because that might relate to LD
+3. Simulate genetic effects for causal variants
+  - Association strength - F =~ h2 * N
+  - Higher N for the LD reference might impact LD estimation in the reference panel
+  h2 of each - ignore for now
+
+Variables for data generating model
+- Number of traits (2,3,4,5,10,20)
+- LD region (random region from the genome x3 - e.g. low, mediam, high LD)
+- Number of causal variants (e.g. uniform(1, 5))
+- Degree of sharing of causal variants (e.g. no sharing, lots of sharing)
+- Signal strength - varying F range from 20-200
+
+Initially
+- Very strong F
+- 5 traits
+- 3 Patterns see below
+
+
+### Estimation
+
+- Objective is to determine which traits share causal variants at which positions
+
+e.g. This is what we simulate:
+
+Model 1 - mixed sharing and not sharing
+variant   1  2  3  4  5  6  7  8
+trait A   x     x           x
+      B   x                 x
+      C   x                 x
+      D   x           x
+      E   x     x     
+
+Model 2 - no sharing
+variant   1  2  3  4  5  6  7  8
+trait A   x     x           
+      B      x              x
+      C            x        
+      D               x
+      E                  x     x
+
+model 3 - simple
+variant   1  2  3  4  5  6  7  8
+trait A   x                
+      B   x     
+      C   x     
+      D                        x
+      E                        x
+
+
+Do we recapitulate this pattern from estimation?
+
+Methods to try
+
+- Oracle
+- Naive - clump and see if there is overlap
+- Susie+hyprcoloc
+- Carma+hyprcoloc (https://github.com/ZikunY/CARMA)
+
+
+### Evaluation
+
+- Count how many regions are shared by each trait pair - simulated vs estimated
+
+e.g.
+model 1
+trait1 trait2 true estimated-susiehyprcoloc
+A      A      3    ?
+B      A      2    ?
+C      A      2    ?
+B      B      2    ?
+C      B      2    ?
+-> beta / pval / rmse
+
+trait1 trait2 true estimated-carmahyprcoloc
+A      A      3    ?
+B      A      2    ?
+C      A      2    ?
+B      B      2    ?
+C      B      2    ?
+-> beta / pval / rmse
+
+trait1 trait2 true estimated-hyprcoloc
+A      A      3    ?
+B      A      2    ?
+C      A      2    ?
+B      B      2    ?
+C      B      2    ?
+-> beta / pval / rmse
+
+
+### Simulation framework
+
+https://stephenslab.github.io/dsc-wiki/overview.html
+
+
+### Previous simulation efforts
+
+https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009440
