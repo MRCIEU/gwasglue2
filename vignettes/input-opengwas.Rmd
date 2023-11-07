@@ -1,0 +1,58 @@
+---
+title: "Input: IEU Open GWAS Project data"
+output: rmarkdown::html_vignette
+# date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Input: IEU Open GWAS Project data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+To create a **gwasglue2** `SummarySet-class()` object we first need GWAS summary data, like the ones that can be obtained from [IEU Open GWAS Project](https://gwas.mrcieu.ac.uk/) through the **ieugwasr** package. 
+
+<br>
+<br>
+
+## Setup
+In addition to **gwasglue2**, we’ll load the following package:
+
+- [**ieugwasr**](https://mrcieu.github.io/ieugwasr/) - R package for accessing and query the IEU GWAS database
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+```
+
+<br>
+<br>
+
+## Functions
+* `create_summaryset()` - Creates a `SummarySet-class()` object from a tibble with OpenGWAS summary data.
+
+<br>
+<br>
+
+## Example
+We will use the `ieugwasr::associations()` function to query the IEU Open GWAS and obtain GWAS summary data for the region `chr5:74132993-75132993` and the trait id `ukb-d-I9_IHD` (coronary heart disease).
+
+ ```{r}
+ data <- ieugwasr::associations(variants = "5:74132993-75132993", id = "ukb-d-I9_IHD")
+ data
+ ```
+ 
+Then we use the **gwasglue2** constructor `create_summaryset()` to create the `SummarySet-class()`. By default, this function reads a tibble with the same columns names as the  output of the **ieugwasr** package.
+
+```{r}
+ sumset_opengwas <- create_summaryset(data)
+ sumset_opengwas
+```
+
+When we call `sumset_opengwas`, it shows a summary of the `SummarySet` object. How to acess the GWAS summary data is explained in the next section.

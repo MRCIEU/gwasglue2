@@ -1,0 +1,81 @@
+---
+title: "Input: GWAS-VCF files"
+output: rmarkdown::html_vignette
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Input: GWAS-VCF files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Setup
+In addition to **gwasglue2**, we will load the following packages:
+
+- [**VariantAnnotation**](https://bioconductor.org/packages/release/bioc/html/VariantAnnotation.html) - Bioconductor package for reading VCF files
+- [**gwasvcf**](https://mrcieu.github.io/gwasvcf/)  - R package for querying GWAS-VCF files
+
+```{r setup}
+library(gwasglue2)
+library(VariantAnnotation)
+library(gwasvcf)
+```
+<br>
+<br>
+
+## Functions
+* `create_summaryset()`, using the `type = "vcf"` argument
+* `gwasvcf::gwasvcf_to_summaryset()` function
+
+<br>
+<br>
+
+## Example
+
+[GWAS-VCF](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02248-0) files can be used as input for **gwasglue2**.
+
+First, we use the Bioconductor package **VariantAnnotation** to read the vcf file. We will use the vcf file from the IEU OPEN GWAS database as an example. The VCF file can be downloaded from [here](https://gwas.mrcieu.ac.uk/files/ieu-a-2/ieu-a-2.vcf.gz). In this example, we are downloading the file directly in R using the `download_file()` function.
+
+```{r}
+vcffile <- "IEU-a-2.vcf.gz"
+download.file("https://gwas.mrcieu.ac.uk/files/ieu-a-2/ieu-a-2.vcf.gz", vcffile)
+vcf <- VariantAnnotation::readVcf(vcffile)
+file.remove(vcffile)
+```
+<br>
+<br>
+
+### Option 1: Using the `gwasvcf::gwasvcf_to_summaryset()` function
+A simple way of creating a `SummarySet` from a vcf file is to use the `gwasvcf::gwasvcf_to_summaryset()` function from the **gwasvcf** package, after querying the VCF file using the `gwasvcf::query_gwas()` function.
+
+```{r}
+sumset_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993")) %>%
+  gwasvcf::gwasvcf_to_summaryset() 
+sumset_vcf 
+```
+<br>
+<br>
+
+### Option 2: Using the `gwasglue2::create_summaryset()` function
+First **gwasvcf** is used to query the VCF file and converting it to a simple dataframe.
+
+```{r}
+data_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993"))%>% 
+  gwasvcf::vcf_to_granges() 
+```
+
+Then the we use the **gwasglue2** constructor `create_sumaryset()` function with argument `type = "vcf"` is used to create a `SummarySet` object.
+
+```{r}
+sumset_vcf2 <- create_summaryset(data_vcf, type="vcf")
+sumset_vcf2 
+```
+
+

@@ -1,0 +1,31 @@
+---
+title: "Input"
+output: rmarkdown::html_vignette
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Input}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In here, we show several ways of generating one of the **gwasglue2** objects - the `SummarySet` - from different data sources. 
+
+* [Input from the IEU OpenGWAS Project, using the API](input-opengwas.html)
+* [Input from a GWAS-VCF file](input-vcf.html)
+
+
+
+Check the [Strategy](Strategy.html) page for more details on `SummarySet-class()` and `DataSet-class()` objects.
+<!-- 
+input_object 
+input_simGWAS
+input_simulateGP
+input_textfiles
+ -->

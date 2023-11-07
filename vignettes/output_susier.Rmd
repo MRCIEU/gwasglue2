@@ -1,0 +1,72 @@
+---
+title: "SusieR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SusieR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+The **susieR** package performs fine-mapping from GWAS summary data. We modified the package to accept a `SummarySet` object as input and outputs `DataSet`.
+
+<br>
+<br>
+
+
+## Setup
+In addition to **gwasglue2**, we will load the following package:
+
+- [**susieR**](https://stephenslab.github.io/susieR/) from a github fork
+
+```{r setup}
+remotes::install_github('ritarasteiro/susieR') 
+library(gwasglue2)
+library(susieR)     # fork that takes Summaryset
+```
+
+
+<br>
+<br>
+
+## Function
+* `getLength` - returns the number of traits in the dataset
+* `getSummarySet` - returns the summary set for a given trait
+* `getLDMatrix` - returns the LD matrix for the dataset
+* `merge_datasets` - merges a list of datasets into a single dataset
+
+<br>
+<br>
+
+## Example
+
+To perform finemapping for each trait in the `DataSet`, will involve using **susieR** to identify credible sets in the region for the trait, and then generate the conditional `SummarySet` for each credible set.  
+
+**susieR**  outputs marginalised `DataSet` objects, for each trait,
+
+```{r}
+# finemapping with susieR
+ntraits <- getLength(dataset)
+dataset_marginalised <- lapply(1:ntraits, function(trait)
+  {
+    # Takes in 1 SummarySet
+    # Outputs 1 DataSet (with at least 1 SummarySet)
+    ds <- susie_rss(R = getLDMatrix(dataset), summaryset = getSummarySet(dataset, trait))
+})
+```
+
+
+so we will need to merge them together to get a single `DataSet` object.
+
+```{r}
+dataset_marginalised <- merge_datasets(dataset_marginalised)
+``` 
+
+
+More details can be found [here](finemap_coloc1.html)

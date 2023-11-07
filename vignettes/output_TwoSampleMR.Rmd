@@ -1,0 +1,121 @@
+---
+title: "woSampleMR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{woSampleMR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+
+<br>
+<br>
+
+
+## Setup
+In addition to **gwasglue2**, we will load the following package:
+
+- [**TwoSampleMR**](https://mrcieu.github.io/TwoSampleMR/)
+
+```{r setup}
+library(gwasglue2)
+library(TwoSampleMR)
+```
+
+
+<br>
+<br>
+
+## Function
+* `create_summaryset`: creates a `SummarySet` object
+* `create_metadata()`: creates a `metadata` object
+* `getMetadata()`: gets the metadata of a `SummarySet` object
+* `setAttributes()`: sets the attributes of a `SummarySet` object
+* `getAttributes()`: gets the attributes of a `SummarySet` object
+* `create_dataset()`: creates a `DataSet` object
+* `convertForTwoSampleMR()`: converts a `DataSet` object to **TwoSampleMR** format
+
+<br>
+<br>
+
+## Example
+
+We will perform an MR analysis of body mass index (exposure - ieu-a-2) against coronary heart disease (outcome - ieu-a-7).
+
+Obtain the data
+
+```{r}
+x <- ieugwasr::tophits("ieu-a-2")$rsid
+d1 <- ieugwasr::associations(variants = x, id = "ieu-a-2")
+d2 <- ieugwasr::associations(variants = x, id = "ieu-a-7")
+```
+
+Obtain the metadata and create a metadata object
+
+```{r}
+m1 <- ieugwasr::gwasinfo( "ieu-a-2")
+m2 <- ieugwasr::gwasinfo( "ieu-a-7")
+meta1 <-create_metadata(m1)
+meta2 <-create_metadata(m2)
+
+```
+Construct the Summary Sets and set the tool and metadata (it uses ieugwasr::gwasinfo() with the source and id arguments)
+
+```{r}
+sumset1 <- create_summaryset(d1, metadata=meta1)
+sumset2 <- create_summaryset(d2, metadata=meta2)
+
+```
+
+Set the MR labels for each of your summary sets
+
+```{r}
+sumset1 <- setAttributes(sumset1, mr_label = "exposure")
+sumset2 <- setAttributes(sumset2, mr_label = "outcome")
+
+```
+
+
+Check the Metadata and MR labels
+
+```{r}
+getMetadata(sumset1)
+getAttributes(sumset1)
+
+getMetadata(sumset2)
+getAttributes(sumset2)
+```
+
+
+Create the `DataSet` object and convert it to **TwoSampleMR** format
+
+```{r}
+
+  #  create dataset and convert it to mr format
+summary_sets <- list(sumset1,sumset2)
+ 
+    # create dataset
+    dataset <- create_dataset(summary_sets)  %>%
+    # Convert dataset to TwoSampleMR format
+   convertForTwoSampleMR(.)
+
+```
+
+
+
+Perform the MR analysis
+```{r}
+mr_result <-  merge(getData(dataset,1),getData(dataset,2), by = c("SNP", "mr_keep"))  %>%
+  TwoSampleMR::mr(., method_list="mr_ivw")
+
+mr_result
+
+```
