@@ -1,5 +1,5 @@
 ---
-title: "woSampleMR"
+title: "TwoSampleMR"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{woSampleMR}
