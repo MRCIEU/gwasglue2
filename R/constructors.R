@@ -48,7 +48,7 @@ create_metadata <- function(metadata = NULL,
 #' @param type Input @param data type. Default is `"tibble"`. Other options: `"vcf"`
 #' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
-#' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE
+#' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from running. If TRUE gwasglue2 will try to solve the problems.  Default is FALSE
 #' @param beta_col Name of column with effect sizes. The default is `"beta"` for @param type `"tibble"` and `"ES"`for @param type `"vcf"`..
 #' @param se_col Name of column with standard errors. The default is `"se"` for @param type `"tibble"` and `"SE"`for @param type `"vcf"`.
 #' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"` for @param type `"tibble"` and `"AF"`for @param type `"vcf"`.
@@ -199,9 +199,9 @@ create_summaryset <- function (data,
 }           
 
 
-#' A function to create a gwasglue2 SummarySet object from a tibble
+#' A function to create a gwasglue2 SummarySet object from a tibble or dataframe
 #' 
-#' @param data GWAS summary statistics. A tibble
+#' @param data GWAS summary statistics. A tibble or a dataframe
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
 #' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
@@ -221,7 +221,7 @@ create_summaryset <- function (data,
 #' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"` 
 #' @return A gwasglue2 SummarySet object
 #' @export 
-create_summaryset_from_tibble <- function (data = tibble(),
+create_summaryset_from_tibble <- function (data,
                               metadata = NULL,
                               qc = FALSE,
                               beta_col = "beta",
@@ -238,7 +238,7 @@ create_summaryset_from_tibble <- function (data = tibble(),
                               trait_col = "trait", 
                               build = NULL) {
   
-
+  data <- data %>% dplyr::as_tibble()                              
   # Check column names and change them to ieugwasr nomenclature
   data_cols <- names(data)  
 
@@ -474,8 +474,8 @@ create_summaryset_from_gwasvcf <- function (data,
 #' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
 #' @param tolerance Inherited from harmoniseData() (default 0.08)
 #' @param action Inherited from harmoniseData() (Default 1)
-#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles (default);
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes ;
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @return A harmonised gwasglue2 DataSet object
 #' @export 
@@ -577,7 +577,7 @@ create_dataset_from_tibble <- function(data = list(),
 #'
 #' @param summary_sets one or more gwasglue2 Summarysets objects to add to an existent DataSet object. If more than one it should be a list
 #' @param dataset The gwasglue2 DataSet object to add to
-##' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
+#' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
 #' @param tolerance Inherited from harmoniseData() (default 0.08)
 #' @param action Inherited from harmoniseData() (Default 1)
 #' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
@@ -619,9 +619,18 @@ add_summaryset <- function(summary_sets,
 #' Merge Datasets 
 #'
 #' @param datasets A list of gwasglue2 DataSet objects
+#' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
+#' @param tolerance Inherited from harmoniseData() (default 0.08)
+#' @param action Inherited from harmoniseData() (Default 1)
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @return  A gwasglue2 DataSet object  with input DataSets merged
 #' @export
-merge_datasets <- function(datasets) {
+merge_datasets <- function(datasets,
+                          harmonise = TRUE,
+                          tolerance = 0.08,
+                          action = 1) {
     n_datasets <- length(datasets)
 	  ds <- DataSet(list())
     count <- 1
@@ -636,6 +645,14 @@ merge_datasets <- function(datasets) {
             count <- count + 1
             }     
     }
+    # harmonise
+    if (harmonise == TRUE) {
+    ds <- ds %>% overlapVariants(., action = action)
+    }
+    if (action != 1 && harmonise == TRUE){
+          ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
+    } 
+
 	# For now I am assuming that in all datasets the following slots are the same
     # ds@overlap_variants <- datasets[[1]]@overlap_variants
     # ds@is_resized <- datasets[[1]]@is_resized
