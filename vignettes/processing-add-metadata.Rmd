@@ -1,0 +1,140 @@
+---
+title: "Processing: add metadata"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Processing: add metadata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+In the [Input section](input.html), we showed how to create a  **gwasglue2** `SummarySet` object, but we did not supply any metadata information. The `create_summaryset()` function by default fills the `metadata slot` using any information available in the GWAS summary data. Here, we show how to create a `SummarySet` object with metadata information provided by the user. We also show how to add and retrieve metadata information from a `SummarySet` object.
+<br>
+<br>
+
+## Setup
+In addition to **gwasglue2**, we’ll load the following package:
+
+- [**ieugwasr**](https://mrcieu.github.io/ieugwasr/) - R package for accessing IEU GWAS database
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+devtools::load_all("../") # this was added just for development purposes
+```
+
+<br>
+<br>
+
+## Functions
+* `create_metadata()`: creates a metadata object (returns a list)
+* `create_summaryset()`, using the `metadata` argument (reads a list)
+* `setMetadata()`: sets metadata information in a `SummarySet` object
+* `addToMetadata()`: adds metadata information to the already existent metadata in the `SummarySet` object
+* `getMetadata()`: retrieves metadata information from a `SummarySet` object
+
+<br>
+<br>
+
+
+## Example 1: Creating a `SummarySet` object, using metadata information provided by the user
+
+We will use GWAS summary data obtained from IEU OpenGWAS through the **ieugwasr** package (see [here](input-opengwas.html) for details). We are using as example the `ukb-d-I9_IHD` study of cardiac heart disease (chd), in the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region (chr5:74132993-75132993). 
+
+ ```{r}
+ data_ukb <- ieugwasr::associations(variants = "5:74132993-75132993", id = "ukb-d-I9_IHD")
+ ```
+ 
+Then we use the `create_summaryset()` to create the `SummarySet`. 
+
+```{r}
+ sumset1 <- create_summaryset(data_ukb)
+ getMetadata(sumset1)
+```
+
+In the code above, we did not supply any metadata information. If we use `getMetadata()` to retrive the metadata information, we can see that the `create_summaryset()` function filled the `metadata slot` using any information available in the GWAS summary data (in `data_ukb`).
+
+
+It is possible to add metadata using the `create_summaryset()` `metadata` argument.
+
+To create a `metadata` object, we use the `create_metadata()` function. We can give metadata information manually using one or more argument of the function (`id`, `sample_size`, `nsnp`, `trait`, `sd`, `unit`, `ncontrol`, `ncase`, `build` and `population` ). For example, we can add the `sample_size` information to the metadata object: 
+
+```{r}
+ meta1 <- create_metadata(sample_size = 361194)
+ print(meta1)
+```
+
+It is also possible for the user to add extra metadata information.
+
+```{r}
+ meta1 <- create_metadata(sample_size = 361194, access = date())
+ print(meta1)
+```
+
+
+Or to provide a dataframe with metadata information, using the `metadata` argument.
+
+```{r}
+ meta2 <- create_metadata(metadata = ieugwasr::gwasinfo("ukb-d-I9_IHD"), access = date())
+ print(meta2) 
+```
+
+Thus, we can now build a `SummarySet` object with metadata information provided and check the metadata information.
+
+```{r}
+ sumset2 <- create_summaryset(data_ukb, metadata = meta2)
+ getMetadata(sumset2)
+```
+<br>
+<br>
+
+## Example 2: Setting metadata information in the `SummarySet`, using `SetMetadata()`
+
+The metadata can also be set after the `SummarySet` object is created, using the `SetMetadata()` function. In here, we are going to use the `sumset1` and the `meta2` objects created in the previous example. If we then compare the metadata information of `sumset1` and `sumset1`, we can see that it should be the same.
+
+
+```{r}
+  sumset1 <- setMetadata(sumset1, metadata = meta2)
+
+  getMetadata(sumset1)
+  getMetadata(sumset2)
+```
+
+<br>
+<br>
+
+## Example 3: Adding metadata information using `addToMetadata()`
+
+Let's try with another example, using another IEU id `finn-b-I9_CHD` for the same region.
+
+First, we retrieve the GWAS summary data, and then the metadata.
+
+```{r}
+ data_finn <- ieugwasr::associations(variants = "5:74132993-75132993", id = "finn-b-I9_CHD")
+
+ meta3 <- create_metadata(metadata = ieugwasr::gwasinfo("finn-b-I9_CHD"))
+ print(meta3)  
+```
+
+You will notice that there is no `sample_size` information in the metadata. This absence could cause **gwasglue2** further down in the analyses. We could use the  `sample_size` parameter in `create_metadata()` to add the argument or add it later. We are going to add this information after creating the `SummarySet`. In this example, the will use the argument `qc = TRUE`. See [here]((processing-qc.html)) for more details.
+
+
+```{r}
+sumset3 <- create_summaryset(data_finn, metadata = meta3, qc = TRUE)
+```
+
+Now we will deal with the lack of sample size information in the metadata. If this information was present in `data2`, the `create_summaryset()` function would fill this information automatically. But this is not the case, and thus we are going to use the `addToMetadata()` method and the `ncontrol` and `ncases` information already present in the metadata. Compare the metadata information before and after the `addToMetadata()` function.
+
+
+```{r}
+getMetadata(sumset3)
+sumset3 <- addToMetadata(sumset2, sample_size = (getMetadata(sumset3)$ncontrol + getMetadata(sumset3)$ncases))
+getMetadata(sumset3)
+```

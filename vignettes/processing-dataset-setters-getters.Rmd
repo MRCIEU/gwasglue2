@@ -1,0 +1,67 @@
+---
+title: "Processing: Setter and getters functions for the DataSet object"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Processing: Setter and getters functions for the DataSet object}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+We previously showed how to create a  **gwasglue2** [`DataSet`](processing-dataset.html) object. Here, we will show how to set and get information from it.
+<br>
+<br>
+
+## Setup
+
+```{r setup}
+library(gwasglue2)
+devtools::load_all("../") # this was added just for development purposes
+```
+
+<br>
+<br>
+
+## Functions
+* `getData()`: Reads the GWAS summary data from one `SummarySet` object within the `DataSet`.
+* `getSummarySet()`: Returns a `SummarySet` object within the `DataSet`.
+* `getLength()`: Number of `SummarySet` objects within the `DataSet`. 
+* `setTraitOrg()`: The `trait organisation` feature is not yet implemented in **gwasglue2**.
+* `getTraitOrg()`: The `trait organisation` feature is not yet implemented in **gwasglue2**.
+* `assertSameShape()`: The `trait organisation` feature is not yet implemented in **gwasglue2**.
+
+<br>
+<br>
+
+## Example
+ All the functions listed above work on a `DataSet` object. We will use one of the `DataSet` object (`dataset`) created in the [Create a dataset](processing-dataset.html) section.
+
+
+
+First, we will look at how many `SummarySet` objects are within the `DataSet`  with the dimData()` function.  We can see there are two.
+ ```{r}
+getLength(dataset)
+```
+Next, we can check each of the `SummarySet` objects within the `DataSet` with `getSummarySet()` and retrieve its GWAS summary data with  `getData()`.  These two functions have an `index` argument to choose the `SummarySet` object within the `DataSet` to retrieve.  If the `index` argument is set to `1` it will retrieve the first `SummarySet` object.
+
+```{r}
+getSummarySet(dataset,1)
+getData(dataset,1)
+
+```
+If the `index` argument is set to `2` it will retrieve the second `SummarySet` object.
+
+```{r}
+getSummarySet(dataset,2)
+getData(dataset,2)
+
+```
+
+

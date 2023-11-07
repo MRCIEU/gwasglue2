@@ -1,0 +1,57 @@
+---
+title: "Add one or more SummarySet objects to a DataSe`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Add one or more SummarySet objects to a DataSet}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+We previously showed how to create a  **gwasglue2** [`DataSet`](processing-dataset.html) object. Here, we will show how to add two or more `SummarySet` objects to a `DataSet`.
+
+<br>
+<br>
+
+## Setup
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+```
+
+<br>
+<br>
+
+## Functions
+*  `add_summaryset()` - Add one or more `SummarySet` objects to a `DataSet` object.
+
+
+<br>
+<br>
+
+## Example
+The function listed above work on a `DataSet` object and it takes two arguments: `summary_sets` and `dataset` that take a `SummarySet` or a list of two or more `SummarySet` objects, and the `DataSet`, respectively. This function also has harmonisation arguments and by default,  will harmonise again the data.
+
+We will use a `DataSet` object (`dataset`) like the one created in the [Create a dataset](processing-dataset.html) section and  the `SummarySet` objects from the examples in the [Input section](input.html). 
+
+
+We can add one `SummarySet`:
+
+
+```{r}
+dataset_1sumset_added <- add_summaryset(sumset_opengwas, dataset)
+```
+
+Or a list of two or more `SummarySet` objects:
+```{r}
+summarysets <- list(sumset_opengwas, sumset_vcf)
+dataset_2sumset_added <- add_summaryset(summarysets, dataset)
+```
