@@ -81,12 +81,16 @@ Example schema of analysis plan
 ```yaml
 plan1:
     variants:
-        shape: <descriptor>
+        shape: <descriptor e.g. single region, multiple region, scattered variants, gw pruned, gw full>
         variant_list: <vector of chr:pos_a1_a2 or ranges>
     summarydata:
         - trait1:
             source: textfile
             location: /path/to/file1.txt.gz
+            meta:
+              snp_col:
+              ea_col:
+              oa_col:
         - trait2:
             source: ieugwasr
             location: ieu-a-2
@@ -101,16 +105,16 @@ plan1:
         location: /path/to/plink
     analysis:
         - 1:
-            lhs:
+            rhs:
                 - trait1
                 - trait2
-            rhs:
+            lhs:
                 - trait3
         - 2:
-            lhs:
+            rhs:
                 - trait1
                 - trait2
-            rhs:
+            lhs:
                 - trait4
 plan2:
     variants:
@@ -197,7 +201,12 @@ plan_univariable_mr(
 
 # generate list based on a routine plan, pipes to gwasglue to construct the dataset
 plan_multivariable_mr(
-    exposure = c("ieugwasr:ieu-a-2", "textfile:/path/to/file.txt.gz", "gwasvcf:/path/to/file.vcf.gz"),
+    exposure = list(
+      "ieugwasr:ieu-a-2", 
+      list("file:filename.txt.gz",
+        snp_col="",
+        ea_col=""
+      ), "gwasvcf:/path/to/file.vcf.gz"),
     outcome =  c("ieugwasr:ieu-a-7", existing_summaryset)
 ) %>% gwasglue()
 # creates one dataset - uses combined instruments across all exposures
@@ -213,13 +222,86 @@ read_yaml("plan.yaml") %>% gwasglue()
 
 
 
+## Text files
+
+- Convoluted because we need to provide information about how to read them
+- Can be slow to read them - use fst package to read text files
+- Could collect some standard column name schemas
+  - gwas catalog
+  - plink
+  - metal
+- Could just copy this function across https://github.com/MRCIEU/TwoSampleMR/blob/master/R/read_data.R#L157
 
 
 
+## Prototyping plan manifests
+
+For MR - how do we sensibly extract instruments for the exposures without needing to have e.g. ieugwasr as a dependency?
+
+```{r}
+
+gwasglue2::get_tophits_from_datasource()
+
+plan_univariable_mr <- function(exposure, outcome) {
+  # number of datasets = length of exposure
+  ndatasets <- length(exposure)
+
+  lapply(ndatasets, \(x) {
+    # get instruments for each exposure
+    l <- list()
+    if(grepl("^ieugwasr:", exposure[x])) {
+      # rewrite this so that R doesn't think that it depends on ieugwasr
+      l$variants <- ieugwasr::tophits(gsub("^ieugwasr:", "", exposure[x]))$rsid
+
+    }
+
+  })
+
+}
+plan_univariable_mr(
+    exposure = c("ieugwasr:ieu-a-2", "textfile:/path/to/file.txt.gz", "gwasvcf:/path/to/file.vcf.gz"),
+    outcome =  c("ieugwasr:ieu-a-7", existing_summaryset)
+) %>% gwasglue()
+```
+
+Coloc example - simpler because it doesn't require the extraction of instruments
+
+```{r}
+plan_coloc <- function(traits, region, ld="plink:/path/to/bfile", plinkbin="/path/to/plink") {
+  ndatasets <- length(region)
+  o <- lapply(region, \(r){
+    l <- list()
+    l$variants <- r
+    l$summarydata <- strsplit(traits, ":") %>% lapply(., \(x) list(source=x[1], location=x[2]))
+    ld <- strsplit(ld, ":")[[1]]
+    l$lddata <- list(source=ld[1], location=ld[2])
+    l$analysis <- expand.grid(traits, traits, stringsAsFactors=FALSE) %>% subset(Var1 > Var2)
+    l$analysis <- lapply(1:nrow(l$analysis), \(x) lhs=c(l$analysis$Var1[x], l$analysisx$Var2[x]))
+    return(l)
+  })
+  names(o) <- paste0("plan", 1:length(region))
+  return(o)
+}
+
+library(dplyr)
+plan_coloc(traits = c("ieugwasr:ieu-a-2", "ieugwasr:ieu-a-7"), region="chr1:400000-4500000:b37")
+
+```
 
 
+susie->hyprcoloc pipeline e.g. specify coloc plan as above, but susie would generate a yaml constructor for its outputs
 
-
+```yaml
+plan1:
+  variants: chr:pos1-pos2
+  summarydata:
+    - trait1:
+      source: trait1_cs1
+      location: susieobj[]
+    - trait2:
+      source: trait1_cs2
+      location: susieobj[]
+```
 
 
 
