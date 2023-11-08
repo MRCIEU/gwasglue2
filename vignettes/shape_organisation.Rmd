@@ -1,0 +1,226 @@
+---
+title: "shape_organisation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{shape_organisation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+
+
+Do univariable MR of one exposure on one outcome
+
+```{r}
+a <- TwoSampleMR::extract_instruments("ieu-a-2")
+b <- TwoSampleMR::extract_outcome_data(a$SNP, "ieu-a-7")
+dat <- harmonise_data(a, b)
+```
+
+```{r}
+dat <- make_dat("ieu-a-2", "ieu-a-7")
+```
+
+
+Do univariable MR of one exposure on many outcomes
+
+```{r}
+a <- TwoSampleMR::extract_instruments("ieu-a-2")
+b <- TwoSampleMR::extract_outcome_data(a$SNP, c("ieu-a-7", "ieu-a-22"))
+dat <- harmonise_data(a, b)
+```
+
+Do univariable MR of many exposures on many outcomes
+
+```{r}
+a <- TwoSampleMR::extract_instruments(c("ieu-a-301", "ieu-a-2"))
+b <- TwoSampleMR::extract_outcome_data(a$SNP, c("ieu-a-7", "ieu-a-22"))
+dat <- harmonise_data(a, b)
+```
+
+Do multivariable MR of many exposures on one outcome
+
+```{r}
+a <- extract_instruments_mv(c("ieu-a-300", "ieu-a-301"))
+b <- extract_outcome_data(a$SNP, "ieu-a-7")
+dat <- harmonise_data_mv(a, b)
+```
+
+(Hypothetical) do multivariable MR of many exposures on many outcomes
+
+```{r}
+a <- extract_instruments_mv(c("ieu-a-300", "ieu-a-301"))
+b <- extract_outcome_data(a$SNP, c("ieu-a-7", "ieu-a-22"))
+dat <- harmonise_data_mv(a, b)
+```
+
+- In all the examples above the source data is opengwas, and they're each making a slightly a different shape.
+- But it would be possible to make every one of those shapes from the same data using vcf files.
+- Simularly, if the data were in arbitrary data.frames or text files.
+
+Some of this has been implemented to work on other data inputs, e.g. get the outcome from text file
+
+```{r}
+b <- TwoSampleMR::read_outcome_data(a$SNP, "filename.txt", SNP_col="SNP", ...)
+dat <- harmonise_data_mv(a, b)
+```
+
+Define shapes. For example, two multivariable 
+
+Example schema of analysis plan
+
+```yaml
+plan1:
+    variants:
+        shape: <descriptor>
+        variant_list: <vector of chr:pos_a1_a2 or ranges>
+    summarydata:
+        - trait1:
+            source: textfile
+            location: /path/to/file1.txt.gz
+        - trait2:
+            source: ieugwasr
+            location: ieu-a-2
+        - trait3:
+            source: vcffile
+            location: /path/to/vcf3.vcf.gz
+        - trait4:
+            source: vcffile
+            location: http://gwas.mrcieu.ac.uk/ieu-a-2.vcf.gz
+    lddata:
+        source: plinkbfile
+        location: /path/to/plink
+    analysis:
+        - 1:
+            lhs:
+                - trait1
+                - trait2
+            rhs:
+                - trait3
+        - 2:
+            lhs:
+                - trait1
+                - trait2
+            rhs:
+                - trait4
+plan2:
+    variants:
+        shape: <descriptor>
+        variant_list: <vector of chr:pos_a1_a2 or ranges>
+    data:
+        - trait1:
+            source: textfile
+            location: /path/to/file1.txt.gz
+        - trait2:
+            source: ieugwasr
+            location: ieu-a-2
+        - trait3:
+            source: vcffile
+            location: /path/to/vcf3.vcf.gz
+        - trait4:
+            source: vcffile
+            location: http://gwas.mrcieu.ac.uk/ieu-a-2.vcf.gz
+    analysis:
+        - 1:
+            lhs:
+                - trait1
+                - trait2
+            rhs:
+                - trait3
+        - 2:
+            lhs:
+                - trait1
+                - trait2
+            rhs:
+                - trait4
+```
+
+
+Meta analysis in two steps
+step 1: Dataset -> meta analysis -> summary set
+
+```yaml
+plan1:
+    variants:
+    summarydata:
+        - trait1:
+        - trait2:
+    analysis:
+        lhs:
+            - trait1a
+            - trait1b
+```
+
+step 2: use summary set as input to analysis plan
+
+```yaml
+plan1:
+    variants:
+    summarydata:
+        - trait1:
+            source: summaryset
+            location: robj
+        - trait2:
+    analysis:
+        lhs:
+            - trait1
+        rhs:
+            - trait2
+```
+
+Programming flow
+
+1. Wrapper function generates yaml
+2. gwasglue2 constructor uses yaml to generate datasets
+
+Tutorial code
+
+```{r}
+# generate list based on a routine plan, pipes to gwasglue to construct the dataset
+plan_univariable_mr(
+    exposure = c("ieugwasr:ieu-a-2", "textfile:/path/to/file.txt.gz", "gwasvcf:/path/to/file.vcf.gz"),
+    outcome =  c("ieugwasr:ieu-a-7", existing_summaryset)
+) %>% gwasglue()
+# creates three different datasets
+# dataset 1 uses the instruments for exposure 1
+# dataset 2 uses the instruments for exposure 2
+# dataset 3 uses the instruments for exposure 3
+
+# generate list based on a routine plan, pipes to gwasglue to construct the dataset
+plan_multivariable_mr(
+    exposure = c("ieugwasr:ieu-a-2", "textfile:/path/to/file.txt.gz", "gwasvcf:/path/to/file.vcf.gz"),
+    outcome =  c("ieugwasr:ieu-a-7", existing_summaryset)
+) %>% gwasglue()
+# creates one dataset - uses combined instruments across all exposures
+
+
+get_plan(gwasglue_obj) # returns list
+
+get_plan(gwasglue_obj) %>% write_yaml("plan.yaml")
+get_plan(gwasglue_obj) %>% write_json("plan.json")
+
+read_yaml("plan.yaml") %>% gwasglue()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -11,3 +11,4 @@ ieugwasr_oauth/
 ieugwasr_oauth
 inst/old/s4_tutorials/test.R
 .devcontainer/devcontainer.json
+inst/doc
