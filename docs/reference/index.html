@@ -6,7 +6,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">gwasglue2</a>
 
@@ -25,14 +25,19 @@
   <a class="nav-link" href="../reference/index.html">Functions</a>
 </li>
 <li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-howtos">HOWTOs</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-howtos">
+    <a class="dropdown-item" href="../articles/input.html">Input</a>
+    <a class="dropdown-item" href="../articles/processing.html">Processing</a>
+    <a class="dropdown-item" href="../articles/output.html">Output</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-tutorials">Tutorials</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-    <a class="dropdown-item" href="../articles/SummarySet_DataSet.html">Tutorial 1 - How to create a SummarySet and a DataSet</a>
-    <a class="dropdown-item" href="../articles/mr.html">Tutorial 2- MR analysis</a>
-    <a class="dropdown-item" href="../articles/finemap_coloc1.html">Tutorial 3 - Regional genotype-phenotype map</a>
-    <a class="dropdown-item" href="../articles/meta.html">Tutorial 4 - Meta-analysis</a>
-    <a class="dropdown-item" href="../articles/finemap_coloc2.html">Tutorial 5 - Alternative regional genotype-phenotype map example</a>
-    <a class="dropdown-item" href="../articles/liftover.html">Tutorial 6: Lift genomic coordinates to the same reference build</a>
+    <a class="dropdown-item" href="../articles/mr.html">MR analysis</a>
+    <a class="dropdown-item" href="../articles/finemap_coloc1.html">Regional genotype-phenotype map</a>
+    <a class="dropdown-item" href="../articles/finemap_coloc2.html">Alternative regional genotype-phenotype map example</a>
   </div>
 </li>
 <li class="nav-item">
@@ -90,6 +95,11 @@
         <dd>Add a SummarySet to a DataSet</dd>
       </dl><dl><dt>
           
+          <code><a href="assertSameShape-methods.html">assertSameShape()</a></code> 
+        </dt>
+        <dd>Assert if the shapes of SummarySets in the gwasglue2 DataSet are the same</dd>
+      </dl><dl><dt>
+          
           <code><a href="convertForTwoSampleMR.html">convertForTwoSampleMR()</a></code> 
         </dt>
         <dd>Convert tool to TwoSampleMR format</dd>
@@ -127,7 +137,7 @@
           
           <code><a href="create_summaryset_from_tibble.html">create_summaryset_from_tibble()</a></code> 
         </dt>
-        <dd>A function to create a gwasglue2 SummarySet object from a tibble</dd>
+        <dd>A function to create a gwasglue2 SummarySet object from a tibble or dataframe</dd>
       </dl><dl><dt>
           
           <code><a href="dataset_to_hyprcoloc.html">dataset_to_hyprcoloc()</a></code> 
@@ -175,6 +185,11 @@
         <dd>Get Method to retrieve RSID/variants stored in the SummarySet</dd>
       </dl><dl><dt>
           
+          <code><a href="getShape-methods.html">getShape()</a></code> 
+        </dt>
+        <dd>Get the Shape of the gwasglue2 objects</dd>
+      </dl><dl><dt>
+          
           <code><a href="getSummaryData-methods.html">getSummaryData()</a></code> 
         </dt>
         <dd>Get Method to retrieve the GWAS Summary Statistics  from the SummarySet</dd>
@@ -183,6 +198,11 @@
           <code><a href="getSummarySet-methods.html">getSummarySet()</a></code> 
         </dt>
         <dd>Get Method to retrieve the gwasglue2 SummarySet object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getTraitOrg-methods.html">getTraitOrg()</a></code> 
+        </dt>
+        <dd>Get the trait organisation of the gwasglue2 DataSet</dd>
       </dl><dl><dt>
           
           <code><a href="getVariants-methods.html">getVariants()</a></code> 
@@ -267,6 +287,16 @@ Get LD matrix using local plink binary and reference dataset</dd>
         <dd>Set Method to store RSID/variants in the SummarySet</dd>
       </dl><dl><dt>
           
+          <code><a href="setShape-methods.html">setShape()</a></code> 
+        </dt>
+        <dd>Set the Shape of the gwasglue2 objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setTraitOrg-methods.html">setTraitOrg()</a></code> 
+        </dt>
+        <dd>Set the trait organisation of the gwasglue2 DataSet</dd>
+      </dl><dl><dt>
+          
           <code><a href="setVariantid-methods.html">setVariantid()</a></code> 
         </dt>
         <dd>Set Method to create an internal Variant ID for the SummarySet</dd>
@@ -290,7 +320,7 @@ Get LD matrix using local plink binary and reference dataset</dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Gibran Hemani, Rita Rasteiro, Christopher Woods.</p>
+  <p></p><p>Developed by Rita Rasteiro, Gibran Hemani, Christopher Woods.</p>
 </div>
 
 <div class="pkgdown-footer-right">

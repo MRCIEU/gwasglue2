@@ -1,0 +1,52 @@
+---
+title: "Harmonising againts a reference panel"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Harmonising againts a reference panel}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+In the [Harmonising trait againt trait](processing-harmonise.html) section, we showed how **gwasglue2** harmonises a different GWAS studies contained in a `DataSet`. Here we are going to show how it harmonises a `DataSet` againt against a LD matrix from a reference population.
+
+First, **gwasglue2** uses **PLINK** `bed files` from reference populations to build the LD correlation matrix. The LD correlation matrix is built locally and it is stored in the `DataSet` object. Just like for the GWAS summary data, **gwasglue2** also standardises the alleles in the LD matrix to be in a alphabetical order. Thus, for the harmonisation of GWAS summary data for each `SummarySet` contained in the `DataSet` object, **gwasglue2** will just to look for overlapped variants and resize. 
+
+
+<br>
+<br>
+
+## Setup
+```{r setup}
+library(gwasglue2)
+```
+
+
+<br>
+<br>
+
+## Function
+* `harmonise_ld`: Harmonise a `DataSet` object against a LD matrix from a reference population.
+* `isHarmonisedLD`: Check if a `DataSet` object has been harmonised against a LD matrix from a reference population.
+* `getLDMatrix`: Get the LD matrix from a `DataSet` object.
+
+<br>
+<br>
+
+## Example
+
+We will the `DataSet` object (`dataset`) created in the [Create a dataset](processing-dataset.html) section. The `harmonise_ld` function will harmonise the each trait to a reference population and it needs the `bfile` argument with the path and prefix of the plink files used and also the path to the plink executable in `plink_bin`. Finally, we can check if  `dataset` object is harmonised using the `isHarmonisedLD()` function and retrieve the LD matrix with `getLDMatrix`.
+
+```{r}
+bed_ref <- "../data/ld/EUR"
+dataset <- harmonise_ld(dataset, bfile = "bed_ref", plink_bin = "plink")
+isHarmonisedLD(dataset)
+getLDMatrix(dataset)
+```
+Check [here](harmonise_ld.html) for more details. 

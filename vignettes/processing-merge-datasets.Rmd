@@ -1,0 +1,47 @@
+---
+title: "Merge two or more datasets"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Merge two or more datasets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+We previously showed how to create a  **gwasglue2** [`DataSet`](processing-dataset.html) object. Here, we will show how to merge two or more `DataSets`.
+
+<br>
+<br>
+
+## Setup
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+```
+
+<br>
+<br>
+
+## Functions
+*  `merge_datasets()`: Merge a list of two or more `DataSet` objects.
+
+
+<br>
+<br>
+
+## Example
+ The function listed above work on a `DataSet` object. WWe will use `DataSet` objects (`dataset1` and `dataset2`) like the ones created in the [Create a dataset](processing-dataset.html) section. By, default, the `merge_datasets()` function will harmonise again the data.
+
+```{r}
+datasets <- list(dataset1, dataset2)
+merge_dataset <- merge_datasets(datasets)
+```
+

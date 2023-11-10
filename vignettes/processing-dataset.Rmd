@@ -1,0 +1,61 @@
+---
+title: "Creating a DataSet"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating a DataSet}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+The **gwasglue2** `DataSet-class()` object contains two or more harmonised `SummarySet` objects, each one representing a GWAS study. The `DataSet` can be created from a list of `SummarySet` objects.
+
+
+<br>
+<br>
+
+
+## Setup
+In addition to **gwasglue2**, we will load the following package:
+
+- [**ieugwasr**](https://mrcieu.github.io/ieugwasr/) - R package for accessing IEU GWAS database
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+```
+
+
+<br>
+<br>
+
+## Function
+* `create_dataset()`: creates a `DataSet` object 
+
+
+<br>
+<br>
+
+## Example
+
+We will use `SummarySet` examples from the the [Input section](input.html). 
+
+```{r}
+summarysets <- list(sumset_opengwas, sumset_vcf)
+```
+and then use the **gwasglue2** constructor `create_dataset()` to build the `DataSet` object. By default, the constructor will harmonise the `DataSet`. More details on harmonisation can be found in the [Processing section](processing.html) or in the [Strategy](Strategy.html) page.
+
+```{r}
+dataset <-  create_dataset(summarysets)
+dataset
+```
+If we call `dataset`, we can see summary of the `DataSet` object. For example, it shows that it contains two `SummarySet` objects, one for each study. 
+
+
+

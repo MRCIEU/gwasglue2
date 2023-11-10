@@ -22,7 +22,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">gwasglue2</a>
 
@@ -41,15 +41,20 @@
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Functions</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-howtos">HOWTOs</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-howtos">
+    <a class="dropdown-item" href="../articles/input.html">Input</a>
+    <a class="dropdown-item" href="../articles/processing.html">Processing</a>
+    <a class="dropdown-item" href="../articles/output.html">Output</a>
+  </div>
+</li>
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-tutorials">Tutorials</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-    <a class="dropdown-item" href="../articles/SummarySet_DataSet.html">Tutorial 1 - How to create a SummarySet and a DataSet</a>
-    <a class="dropdown-item" href="../articles/mr.html">Tutorial 2- MR analysis</a>
-    <a class="dropdown-item" href="../articles/finemap_coloc1.html">Tutorial 3 - Regional genotype-phenotype map</a>
-    <a class="dropdown-item" href="../articles/meta.html">Tutorial 4 - Meta-analysis</a>
-    <a class="dropdown-item" href="../articles/finemap_coloc2.html">Tutorial 5 - Alternative regional genotype-phenotype map example</a>
-    <a class="dropdown-item" href="../articles/liftover.html">Tutorial 6: Lift genomic coordinates to the same reference build</a>
+    <a class="dropdown-item" href="../articles/mr.html">MR analysis</a>
+    <a class="dropdown-item" href="../articles/finemap_coloc1.html">Regional genotype-phenotype map</a>
+    <a class="dropdown-item" href="../articles/finemap_coloc2.html">Alternative regional genotype-phenotype map example</a>
   </div>
 </li>
 <li class="nav-item">
@@ -106,17 +111,17 @@
 <p>We need to scan OpenGWAS for traits that have a significant associations in this region</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">id_list</span> <span class="op">&lt;-</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/phewas.html" class="external-link">phewas</a></span><span class="op">(</span>pval <span class="op">=</span> <span class="fl">5e-6</span>, variants<span class="op">=</span><span class="va">genomicrange</span>, batch<span class="op">=</span><span class="st">"ukb-a"</span><span class="op">)</span><span class="op">$</span><span class="va">id</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>and then obtain the metadata for each trait</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get metadata and create metadata objects</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_metadata.html">create_metadata</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/gwasinfo.html" class="external-link">gwasinfo</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we create the summarysets for each trait and the <code>dataset</code>, which comprise all the summarysets. Then we harmonise trait against trait followed by each trait against a LD matrix. Note that the <code>dataset</code> is being created through a chain of multiple operations using pipes. Unlike the example in Tutorial 1, the <code>sumarysets</code> are not saved separately.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create gwasglue2 DataSet object </span></span>
-<span>  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">id_list</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="co"># create summarysets</span></span>
 <span>    <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_summaryset.html">create_summaryset</a></span><span class="op">(</span><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/associations.html" class="external-link">associations</a></span><span class="op">(</span>variants <span class="op">=</span> <span class="va">genomicrange</span>, id <span class="op">=</span> <span class="va">id_list</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>, metadata<span class="op">=</span><span class="va">metadata</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -134,7 +139,7 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># do finemapping with susie</span></span>
 <span><span class="va">ntraits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLength-methods.html">getLength</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span></span>
-<span><span class="va">dataset_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">ntraits</span>, <span class="kw">function</span><span class="op">(</span><span class="va">trait</span><span class="op">)</span></span>
+<span><span class="va">dataset_marginalised</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">ntraits</span>, <span class="kw">function</span><span class="op">(</span><span class="va">trait</span><span class="op">)</span></span>
 <span>  <span class="op">{</span></span>
 <span>    <span class="co"># Takes in 1 SS</span></span>
 <span>    <span class="co"># Outputs 1 DS (with at least 1 SS)</span></span>
@@ -162,7 +167,7 @@
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Gibran Hemani, Rita Rasteiro, Christopher Woods.</p>
+<p>Developed by Rita Rasteiro, Gibran Hemani, Christopher Woods.</p>
 </div>
 
 <div class="pkgdown-footer-right">

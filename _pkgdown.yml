@@ -1,34 +1,49 @@
 url: ~
 template:
   bootstrap: 5
+  bootswatch: sandstone
 
 navbar:
  structure:
-    left:  [intro, reference, articles, news]
+    left:  [intro, reference, articles, tutorials, news]
     right: [search, github]
  components:
    intro: 
     text: Strategy
     href: articles/Strategy.html
    articles:
+    text: HOWTOs
+    menu:
+    - text: "Input"
+      href: articles/input.html
+    - text: "Processing"
+      href: articles/processing.html
+    - text: "Output"
+      href: articles/output.html
+   tutorials: 
     text: Tutorials
     menu:
-    - text: "Tutorial 1 - How to create a SummarySet and a DataSet"
-      href: articles/SummarySet_DataSet.html
-    - text: "Tutorial 2- MR analysis"
+    - text: "MR analysis"
       href: articles/mr.html
-    - text: "Tutorial 3 - Regional genotype-phenotype map"
+    - text: "Regional genotype-phenotype map"
       href: articles/finemap_coloc1.html
-    - text: "Tutorial 4 - Meta-analysis"
-      href: articles/meta.html
-    - text: "Tutorial 5 - Alternative regional genotype-phenotype map example"
+    - text: "Alternative regional genotype-phenotype map example"
       href: articles/finemap_coloc2.html
-    - text: "Tutorial 6: Lift genomic coordinates to the same reference build"
-      href: articles/liftover.html
       
    reference:
     text: Functions
     href: reference/index.html
+      # - title: "Objects"
+      # desc: >
+      #   Package overview
+      # contents:
+      #   - SummarySet
+      # - title: "Input"
+      # desc: >
+      #   Functions for generating input for the package
+      # contents:
+      #   - create_summaryset
+      #   - create_dataset
    news:
     text: Changelog
     href: news/index.html

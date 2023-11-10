@@ -1,0 +1,27 @@
+---
+title: "Output"
+output: rmarkdown::html_vignette
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Output}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval=FALSE
+)
+```
+In here, we show several ways the **gwasglue2** object - the `DataSet` can be read by different methodological tools. 
+
+* [TwoSampleMR](output_TwoSampleMR.html)
+* [SusieR](output_susier.html)
+* [hypercoloc](output_hypercoloc.html)
+* [coloc](output_coloc.html) TODO
+* [CARMA](output_carma.html) TODO
+
+
+**PLOTS**

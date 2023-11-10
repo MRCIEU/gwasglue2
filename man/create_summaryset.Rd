@@ -32,7 +32,7 @@ create_summaryset(
 
 \item{type}{Input @param data type. Default is \code{"tibble"}. Other options: \code{"vcf"}}
 
-\item{qc}{Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE}
+\item{qc}{Quality control. It checks the @param data and look for problems that can stop gwasglue2 from running. If TRUE gwasglue2 will try to solve the problems.  Default is FALSE}
 
 \item{beta_col}{Name of column with effect sizes. The default is \code{"beta"} for @param type \code{"tibble"} and \code{"ES"}for @param type \code{"vcf"}..}
 

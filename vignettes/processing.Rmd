@@ -1,0 +1,38 @@
+---
+title: "Processing"
+output: rmarkdown::html_vignette
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Processing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+In here, we show how to process the **gwasglue2** objects - the `SummarySet-class()`  and `DataSet-class()`. Check the [Strategy](Strategy.html) page for more details.
+
+## SummarySet
+* [Setter and getters functions](processing-summaryset-setters-getters.html): how to provide and retrieve values from a `SummarySet-class()` object
+* [Gwas data quality control](processing-qc.html)
+* [Add metadata to a SummarySet object](processing-add-metadata.html)
+* [Remap genomic coordinates to a different genome assembly, using liftover()](processing-liftover.html)
+
+<br>
+<br>
+
+## DataSet
+
+The `DataSet` object is the main object of the **gwasglue2** package and the one that is used for the analysis. 
+
+* [Create a dataset](processing-dataset.html)
+* [Setter and getters functions](processing-dataset-setters-getters.html): how to provide and retrieve values from a `DataSet-class()` object
+* [Harmonising trait againt trait](processing-harmonise.html)
+* [Harmonising againts a reference panel](processing-harmonise-ldref.html)
+* [Add one or more `SummarySet` objects to a `DataSet`](processing-add-summaryset.html)
+* [Merge two or more datasets](processing-merge-datasets.html)
+* [Meta-analysis of GWAS summary statistics](processing-meta-analysis.html)
