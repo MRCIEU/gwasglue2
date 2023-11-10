@@ -13,7 +13,7 @@ It aims to replace the original [gwasglue](https://github.com/mrcieu/gwasglue) p
 
 ## Installation
 
-You can install the development version of gwasglue2 from [GitHub](https://github.com/) with:
+You can install the development version of **gwasglue2** from [GitHub](https://github.com/) with:
 
 ```r
 if(!require("remotes"))

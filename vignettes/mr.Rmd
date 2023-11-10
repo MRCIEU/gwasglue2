@@ -20,11 +20,10 @@ knitr::opts_chunk$set(
 library(gwasglue2)
 library(TwoSampleMR)
 library(ieugwasr)
-devtools::load_all("../") # this was added just for development
 ```
 
 
-The usecase in this tutorial will be performing a basic MR analysis, using the ``TwoSampleMR`` package.
+The usecase in this tutorial will be performing a basic MR analysis, using the [**TwoSampleMR**](https://mrcieu.github.io/TwoSampleMR/) package.
 
 
 We will perform an MR analysis of body mass index (exposure - ieu-a-2) against coronary heart disease (outcome - ieu-a-7).

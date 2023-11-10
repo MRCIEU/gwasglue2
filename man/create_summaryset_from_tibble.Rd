@@ -2,10 +2,10 @@
 % Please edit documentation in R/constructors.R
 \name{create_summaryset_from_tibble}
 \alias{create_summaryset_from_tibble}
-\title{A function to create a gwasglue2 SummarySet object from a tibble}
+\title{A function to create a gwasglue2 SummarySet object from a tibble or dataframe}
 \usage{
 create_summaryset_from_tibble(
-  data = tibble(),
+  data,
   metadata = NULL,
   qc = FALSE,
   beta_col = "beta",
@@ -24,7 +24,7 @@ create_summaryset_from_tibble(
 )
 }
 \arguments{
-\item{data}{GWAS summary statistics. A tibble}
+\item{data}{GWAS summary statistics. A tibble or a dataframe}
 
 \item{metadata}{A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset}
 
@@ -63,7 +63,7 @@ create_summaryset_from_tibble(
 A gwasglue2 SummarySet object
 }
 \description{
-A function to create a gwasglue2 SummarySet object from a tibble
+A function to create a gwasglue2 SummarySet object from a tibble or dataframe
 }
 \seealso{
 \code{\link[=create_metadata]{create_metadata()}} to create a metadata object
