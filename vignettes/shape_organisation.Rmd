@@ -267,25 +267,28 @@ plan_univariable_mr(
 Coloc example - simpler because it doesn't require the extraction of instruments
 
 ```{r}
-plan_coloc <- function(traits, region, ld="plink:/path/to/bfile", plinkbin="/path/to/plink") {
-  ndatasets <- length(region)
-  o <- lapply(region, \(r){
-    l <- list()
-    l$variants <- r
-    l$summarydata <- strsplit(traits, ":") %>% lapply(., \(x) list(source=x[1], location=x[2]))
-    ld <- strsplit(ld, ":")[[1]]
-    l$lddata <- list(source=ld[1], location=ld[2])
-    l$analysis <- expand.grid(traits, traits, stringsAsFactors=FALSE) %>% subset(Var1 > Var2)
-    l$analysis <- lapply(1:nrow(l$analysis), \(x) lhs=c(l$analysis$Var1[x], l$analysisx$Var2[x]))
-    return(l)
-  })
-  names(o) <- paste0("plan", 1:length(region))
-  return(o)
-}
+bed_ref <- "data/ld/EUR"
+# plan_coloc <- function(traits, region, ld="plink:/path/to/bfile", plinkbin="/path/to/plink") {
+#   ndatasets <- length(region)
+#   o <- lapply(region, \(r){
+#     l <- list()
+#     l$variants <- r
+#     l$summarydata <- strsplit(traits, ":") %>% lapply(., \(x) list(source=x[1], location=x[2]))
+#     ld <- strsplit(ld, ":")[[1]]
+#     l$lddata <- list(source=ld[1], location=ld[2])
+#     l$analysis <- expand.grid(traits, traits, stringsAsFactors=FALSE) %>% subset(Var1 > Var2)
+#     l$analysis <- lapply(1:nrow(l$analysis), \(x) lhs=c(l$analysis$Var1[x], l$analysisx$Var2[x]))
+#     return(l)
+#   })
+#   names(o) <- paste0("plan", 1:length(region))
+#   return(as.yaml(o))
+# }
 
-library(dplyr)
-plan_coloc(traits = c("ieugwasr:ieu-a-2", "ieugwasr:ieu-a-7"), region="chr1:400000-4500000:b37")
+# yaml <- plan_coloc(traits = c("ieugwasr:ieu-a-2", "ieugwasr:ieu-a-7"), region=c("chr1:400000-4500000:b37"), bfile= bed_ref, plink_bin="plink")
 
+yaml <- plan_coloc(traits = c("ieugwasr:ieu-a-2", "ieugwasr:ieu-a-7"), region=c("chr1:400000-4500000"), bfile= bed_ref, plink_bin="plink", build="GRCh37")
+cat(yaml)
+dataset <- gwasglue(yaml)
 ```
 
 

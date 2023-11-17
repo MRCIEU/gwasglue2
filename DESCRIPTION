@@ -20,7 +20,8 @@ Depends:
     methods,
     R (>= 4.0.0)
 Imports:
-    dplyr
+    dplyr,
+    yaml
 Suggests: 
     covr,
     digest,
@@ -47,6 +48,7 @@ Collate:
     'dataset.R'
     'convertTo.R'
     'globals.R'
+    'gwasglue.R'
     'harmonise.R'
     'harmoniseLD_method.R'
     'harmonise_ld.R'
