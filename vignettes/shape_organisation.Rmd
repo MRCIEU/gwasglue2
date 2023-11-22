@@ -23,7 +23,7 @@ Do univariable MR of one exposure on one outcome
 ```{r}
 a <- TwoSampleMR::extract_instruments("ieu-a-2")
 b <- TwoSampleMR::extract_outcome_data(a$SNP, "ieu-a-7")
-dat <- harmonise_data(a, b)
+dat1 <- harmonise_data(a, b)
 ```
 
 ```{r}
@@ -103,7 +103,7 @@ plan1:
     lddata:
         source: plinkbfile
         location: /path/to/plink
-    analysis:
+    organization:
         - 1:
             rhs:
                 - trait1
@@ -133,7 +133,7 @@ plan2:
         - trait4:
             source: vcffile
             location: http://gwas.mrcieu.ac.uk/ieu-a-2.vcf.gz
-    analysis:
+    organization:
         - 1:
             lhs:
                 - trait1
@@ -146,8 +146,16 @@ plan2:
                 - trait2
             rhs:
                 - trait4
-```
+analyses:
+    - 1
+        type: TwoSampeMR
+        input: plan1
+    -2
+        type: TwoSampeMR
+        input: plan2
 
+```
+Output will be a text file to be read by TwoSampleMR
 
 Meta analysis in two steps
 step 1: Dataset -> meta analysis -> summary set
@@ -167,18 +175,22 @@ plan1:
 step 2: use summary set as input to analysis plan
 
 ```yaml
-plan1:
+job1:
     variants:
     summarydata:
         - trait1:
             source: summaryset
             location: robj
         - trait2:
-    analysis:
+    organization:
         lhs:
             - trait1
         rhs:
             - trait2
+    
+analyses: 
+    type: TwoSampleMR
+    input: job1
 ```
 
 Programming flow
@@ -286,7 +298,7 @@ bed_ref <- "data/ld/EUR"
 
 # yaml <- plan_coloc(traits = c("ieugwasr:ieu-a-2", "ieugwasr:ieu-a-7"), region=c("chr1:400000-4500000:b37"), bfile= bed_ref, plink_bin="plink")
 
-yaml <- plan_coloc(traits = c("ieugwasr:ieu-a-2", "ieugwasr:ieu-a-7"), region=c("chr1:400000-4500000"), bfile= bed_ref, plink_bin="plink", build="GRCh37")
+yaml <- job_coloc(traits = c("ieugwasr:ieu-a-2", "ieugwasr:ieu-a-7"), region=c("chr1:400000-4500000"), bfile= bed_ref, plink_bin="plink", build="GRCh37")
 cat(yaml)
 dataset <- gwasglue(yaml)
 ```
@@ -309,3 +321,121 @@ plan1:
 
 
 
+For now, we are going to create the yaml files manually, but we will  create a function to do this in the future.
+
+```{r}
+
+# colocalisation example
+yaml_coloc <- "
+job1:
+  variants:
+    shape: single_region
+    variant_list: chr1:400000-4500000
+    tophits: FALSE
+  summarydata:
+  - label: ieu-a-2
+    source: ieugwasr
+    location: ieu-a-2
+    build: GRCh37
+  - label: ieu-a-7
+    source: ieugwasr
+    location: ieu-a-7
+    build: GRCh37
+  lddata:
+    location: data/ld/EUR
+    plink_bin: plink
+analyses: 
+    type: susier
+    input: job1"
+# yaml::write_yaml(yaml_coloc, "config_coloc.yaml")
+cat(yaml_coloc)
+
+yaml <- yaml::yaml.load(yaml_coloc)
+
+dataset_coloc <- gwasglue(yaml_coloc)
+```
+
+
+
+```{r}
+# mr example
+
+# for mr analysis we don't need to specify the variants. We look for the tophits in the summary data for the exposure. Create tophits function.
+yaml_mr <- "
+job1:
+  variants:
+    shape: scattered
+    tophits: TRUE
+  summarydata:
+  - label: trait1
+    source: ieugwasr
+    location: ieu-a-2
+    build: GRCh37
+  - label: trait2
+    source: ieugwasr
+    location: ieu-a-7
+    build: GRCh37
+  organization:
+   label: org1
+   lhs: trait1
+   rhs: trait2   
+analyses: 
+  type: TwoSampleMR
+  input: job1
+"
+# yaml::write_yaml(yaml_coloc, "config_mr.yaml")
+cat(yaml_mr)
+yaml=yaml::yaml.load(yaml_mr)
+
+
+mr <- gwasglue(yaml_mr)
+```
+
+```{r}
+# colocalisation example
+yaml_mr2 <- "
+job1:
+  variants: 
+    shape: scattered
+  summarydata:
+   - label: trait1
+     source: robj
+     location: summaryset1
+     build: GRCh37
+   - label: trait2
+     source: ieugwasr
+     location: ieu-a-2
+     build: GRCh37
+   - label: trait3
+     source: j
+     location: summaryset2
+     build: GRCh37
+     meta:
+       snp_col: SNP
+       ea_col: EA
+       oa_col: OA
+   - label: trait4
+     source: vcffile
+     location: http://gwas.mrcieu.ac.uk/ieu-a-2.vcf.gz
+  organization:
+   - label: org1
+     lhs: trait1
+     rhs: 
+     - trait2 
+     - trait3  
+   - label: org2
+     lhs: trait1
+     rhs: 
+     - trait2 
+     - trait4  
+analyses: 
+  type: TwoSampleMR
+  input: job1
+"
+# yaml::write_yaml(yaml_coloc, "config_mr.yaml")
+cat(yaml_mr2)
+yaml_mr2<-yaml::yaml.load(yaml_mr2)
+
+
+# dataset <- gwasglue(yaml_mr2)
+```
