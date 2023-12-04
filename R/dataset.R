@@ -43,7 +43,7 @@ setClass("DataSet",
     trait_organisation = "list"
     ),
   prototype = prototype(
-    sumset = list(NA_character_),
+    summary_sets = list(NA_character_),
     overlap_variants = NA_character_,
     is_resized = FALSE,
     is_harmonised = FALSE,
@@ -99,7 +99,7 @@ setMethod("getData", "DataSet",
 #'
 #' @param dataset A gwasglue2 DataSet object
 #' @param index Index of gwasglue2 SummarySet objects within DataSet
-#' @return summarySet gwasglue2 SummarySet object
+#' @return A gwasglue2 SummarySet object
 #' @export
 #' @docType methods
 #' @rdname getSummarySet-methods
