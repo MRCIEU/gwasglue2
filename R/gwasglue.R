@@ -12,15 +12,22 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
 
   # get nb of jobs
   njobs <- length(yaml) -1 # -1 because of the analyses part
+
+  if (njobs > 1){
+    datasets <- list()
+  }
  
-  for(i in 1:njobs){
+  for(i in 1:njobs){ #TODO parallelize this loop parallel::mclapply
     job <- yaml[[i]]
         
     # get variants
-    if(job$variants$tophits ==FALSE){
-      chr <- (strsplit(job$variants$variant_list, ":") [[1]][1] %>% strsplit(., "chr"))[[1]][2]
-      start_end <- strsplit(job$variants$variant_list, ":") [[1]][2]
-      variants <- paste0(chr,":",start_end)
+    if(job$variants$tophits ==FALSE || is.null(job$variants$tophits)){
+      # use this if using chr1:pos nomenclature
+      # chr <- (strsplit(job$variants$variant_list, ":") [[1]][1] %>% strsplit(., "chr"))[[1]][2
+      # start_end <- strsplit(job$variants$variant_list, ":") [[1]][2]
+      # variants <- paste0(chr,":",start_end)
+      
+      variants <- job$variants$variant_list
       }else{
       exposures <- job$organization$lhs
       variants <- get_tophits_from_datasource(exposures, summarydata=job$summarydata)
@@ -38,6 +45,7 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
       source <- job$summarydata[[j]]$source
       location <- job$summarydata[[j]]$location
       build <- job$summarydata[[j]]$build
+      label <- job$summarydata[[j]]$label
         
       if(source == "ieugwasr"){
        data <- ieugwasr::associations(variants = variants, id = location)
@@ -60,45 +68,42 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
                       id_col = "id",
                       trait_col = "trait", 
                       build = build)
-
     }
-  
-if(yaml$analyses$type == "TwoSampleMR"){
-    #  TODO alow for more than 2 dataset
-#  WIP fix error
-      # create mr_input
+    # set attributes
+    if(yaml$job$analyses$type == "TwoSampleMR"){
+      # get the label of the exposure and outcome
+      lhs <- yaml$organization$lhs
+      rhs <- yaml$organization$rhs
 
-      
-     summary_sets[[1]] <- setAttributes(summary_sets[[1]], mr_label = "exposure")
-     summary_sets[[2]] <- setAttributes(summary_sets[[2]], mr_label = "outcome")
-      # create dataset
-      dataset <- create_dataset(summary_sets=summary_sets)
-      mr_input <- convertToTwoSampleMR(dataset)
-      return(mr_input)
-  }else{
+      if(label %in% lhs){
+        summary_sets[[j]] <- setAttributes(summary_sets[[j]], mr_label = "exposure")
+      } 
+      if(label %in% rhs){
+      summary_sets[[j]] <- setAttributes(summary_sets[[j]], mr_label = "outcome")
+      }
+    }
     # create dataset
     dataset <- create_dataset(summary_sets=summary_sets)
     # get lddata info and harmonise againts reference panel
     if(!is.null(job$lddata)){
-    bfile <-job$lddata$location
-    plink_bin <- job$lddata$plink_bin
-    dataset <- harmonise_ld(dataset, bfile = bfile, plink_bin = plink_bin)
+      bfile <-job$lddata$location
+      plink_bin <- job$lddata$plink_bin
+      dataset <- harmonise_ld(dataset, bfile = bfile, plink_bin = plink_bin)
+    }
+  
+    if(njobs > 1){
+      datasets[[i]] <- dataset
+    }
+   
   }
-
+  if(njobs > 1){
+    return(listDatasets(datasets))}
+  else{
     return(dataset)
   }
-  
-  
-            
-  
-  
-  
-  
-
-  }
-  # TODO: For now, we only return the one job, one DataSet (to change this we should return a list of DataSets). But should we allow for more than 1 dataset be created by the gwasglue function?
     
-}
+} 
+
 
 
 # get_variants <- function(){}
@@ -136,7 +141,7 @@ get_tophits_from_datasource <- function(exposures, summarydata){
 #' YAML constructor (WIP)
 #' @param traits A character vector of traits to be analysed.
 #' @param region A character vector of regions to be analysed.
-#' @param build  A character vector  of reference genome assembly to generate the vcf file. Default is NULL. 
+#' @param build  A character vector  of the reference genome assemblies to generate the vcf file. Default is "GRCh37". 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param bfile It corresponds to the path and prefix of the plink files used to build the LD correlation matrix. 
 #' @param plink_bin Path to the plink executable
@@ -145,10 +150,10 @@ get_tophits_from_datasource <- function(exposures, summarydata){
 #' @return A yaml object.
 #' @importFrom yaml write_yaml as.yaml
 
-job_coloc <- function(traits, region, build = NULL, bfile = NULL, plink_bin = NULL, write = FALSE, outfile = "config.yaml"){
+job_coloc <- function(traits, region, build = "GRCh37", bfile = NULL, plink_bin = NULL, write = FALSE, outfile = "config.yaml"){
   
-  # read number of DataSets to  build and analyse TODO: should we allow for more than 1 dataset?
-  ndatasets <- length(region)
+  # read number of DataSets/jobs to  build and analyse TODO: should we allow for more than 1 dataset?
+  njobs <- length(region)
   
   out <- lapply(region, \(r){
     l <- list()
@@ -161,13 +166,12 @@ job_coloc <- function(traits, region, build = NULL, bfile = NULL, plink_bin = NU
     if(!is.null(bfile) & !is.null(plink_bin)){
       l$lddata <- list(location = bfile, plink_bin=plink_bin)
     }
-    # TODO: 
-    l$analysis <- "coloc"
+    
     return(l)
   })
    
   names(out) <- paste0("job", 1:length(region))
-
+  out <- c(list(out, analyses = list(type = "coloc")))
   # write yaml to file
   if (isTRUE(write)){yaml::write_yaml(out, outfile)}
 
