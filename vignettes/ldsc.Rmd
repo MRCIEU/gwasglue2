@@ -80,17 +80,25 @@ Currently GenomicSEM requires that the data is provided as flat files so to go f
 ## Example
 
 ```r
+# Download hapmap3 variants and convert variant IDs to gwasglue2 system
+ldscores <- ieugwasr::afl2_list("hapmap3") %>% 
+  ieugwasr::convert_varid()
+
+# Write LD scores split by and save directory name
+ldscore_path <- ieugwasr::write_ldscores(ldscores, "EUR")
+
+# Obtain summary data
 dat <- gwasglue2::generate_ldsc(
+  variants = ldscores$variantid,
   traits = c("opengwas://ieu-a-2", "opengwas://ieu-a-7")
 ) %>%
   gwasglue2::gwasglue()
 
-# Write LD scores and save directory name
-ldscore_path <- ieugwasr::write_ldscores("hapmap3/EUR")
 
 # Write summary data to files in LDSC format, and save the array of path names
 trait_paths <- gwasglue2::write_ldsc(dat, path="/path/to/data/")
 
+# Perform analysis
 res <- ldsc(
   traits = trait_paths,
   ld = ldscore_path,
