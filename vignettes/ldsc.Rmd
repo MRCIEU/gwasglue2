@@ -71,9 +71,6 @@ CHR     SNP     BP      L2
 
 The SNPs used can be restricted to HapMap3 SNPs, and LD scores for HapMap3 variants can be obtained from OpenGWAS using
 
-```
-a <- ieugwasr::afl2_list("hapmap3")
-```
 
 Currently GenomicSEM requires that the data is provided as flat files so to go from OpenGWAS to GenomicSEM
 
@@ -89,8 +86,8 @@ Currently GenomicSEM requires that the data is provided as flat files so to go f
 ldscores <- ieugwasr::afl2_list("hapmap3")
 
 # Write LD scores split by and save directory name. Convert variant IDs to gwasglue2 system
-# ieugwasr::write_ldscores(ldscores, "EUR")
-write_ldscores(ldscores, "EUR")
+
+ieugwasr::write_ldscores(ldscores, "EUR")
 ```
 
 
@@ -107,30 +104,17 @@ write_ldscores(ldscores, "EUR")
   })  %>%
     # create dataset and harmonise trait againts trait
     create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+    # set zscores and chisq
     setZscores() %>%
     setChisq()
-```
 
+  # Write summary data to files in LDSC format, and save the array of path names
 
+  trait_paths <- gwasglue2::write_ldsc(dataset)
 
-
-
-
-
-```r
-# Obtain summary data
-dat <- gwasglue2::generate_ldsc(
-  variants = ldscores$variantid,
-  traits = c("opengwas://ieu-a-2", "opengwas://ieu-a-7")
-) %>%
-  gwasglue2::gwasglue()
-
-
-# Write summary data to files in LDSC format, and save the array of path names
-trait_paths <- gwasglue2::write_ldsc(dat, path="/path/to/data/")
-
-# Perform analysis
-res <- ldsc(
+  ldscore_path <- "ldsc/EUR"
+  # Perform analysis
+  res <- (GenomicSEM::ldsc(
   traits = trait_paths,
   ld = ldscore_path,
   sample.prev = c(NA, 0.5),
@@ -139,3 +123,10 @@ res <- ldsc(
 
 res
 ```
+
+
+
+
+
+
+
