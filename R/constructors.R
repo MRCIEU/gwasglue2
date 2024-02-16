@@ -716,31 +716,3 @@ create_variantid <-function(chr,pos,a1,a2) {
   return(variantid)
   }
 
-
-write_ldsc <- function(dataset, path_to_save = "ldsc"){
-  f (!requireNamespace("readr", quietly =TRUE)){
-    stop("The CRAN package `readr` needs to be installed.")}
-  
-  # Create a directory to save the ldscores
-  dir.create(path_to_save, showWarnings = FALSE)
-  
-  	ntraits <- getLength(dataset)
-
-  # subset the dataset to only include the columns we need
-  dt_sub <-  lapply(1:ntraits, function(i){
-     d= dataset@summary_sets[[1]]@ss %>% dplyr::select(., variantid, ea, nea, n, CHISQ, Z)%>%
-
-            # rename the columns to match the  GenomicSEM format
-            dplyr::rename("SNP" = "variantid", "A1"="ea","A2"="nea","n"="N")
-  })
-  
-  traits <- lapply(1:ntraits, function(i){
-      d= dataset@summary_sets[[i]]@ss$id
-    }) %>% unlist()
-
-  # Write the ldscores to the directory
-  for (i in traits){
-    readr::write_delim( dt_sub[[i]], paste0(path_to_save,"/", i, ".sumstats.gz"))
-  }
-  return(traits)
-}
