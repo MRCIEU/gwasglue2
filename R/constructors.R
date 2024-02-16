@@ -687,10 +687,11 @@ standardise <- function(d){
 }
 
 
-# create variantid using hashes when alleles nchar >10
+#'gwasglue2 variant IDs system
+#'@export
 create_variantid <-function(chr,pos,a1,a2) {
   if (!requireNamespace("digest", quietly =TRUE)){
-    stop("The CRAN package `digest` needs to installed.")}
+    stop("The CRAN package `digest` needs to be installed.")}
   alleles_sorted <- t(apply(cbind(a1,a2),1,sort)) 
   #  create variantid
   variantid <- paste0(chr,":", pos,"_",alleles_sorted[,1],"_",alleles_sorted[,2])
@@ -716,3 +717,30 @@ create_variantid <-function(chr,pos,a1,a2) {
   }
 
 
+write_ldsc <- function(dataset, path_to_save = "ldsc"){
+  f (!requireNamespace("readr", quietly =TRUE)){
+    stop("The CRAN package `readr` needs to be installed.")}
+  
+  # Create a directory to save the ldscores
+  dir.create(path_to_save, showWarnings = FALSE)
+  
+  	ntraits <- getLength(dataset)
+
+  # subset the dataset to only include the columns we need
+  dt_sub <-  lapply(1:ntraits, function(i){
+     d= dataset@summary_sets[[1]]@ss %>% dplyr::select(., variantid, ea, nea, n, CHISQ, Z)%>%
+
+            # rename the columns to match the  GenomicSEM format
+            dplyr::rename("SNP" = "variantid", "A1"="ea","A2"="nea","n"="N")
+  })
+  
+  traits <- lapply(1:ntraits, function(i){
+      d= dataset@summary_sets[[i]]@ss$id
+    }) %>% unlist()
+
+  # Write the ldscores to the directory
+  for (i in traits){
+    readr::write_delim( dt_sub[[i]], paste0(path_to_save,"/", i, ".sumstats.gz"))
+  }
+  return(traits)
+}
