@@ -116,10 +116,10 @@ susie_to_dataset <- function(summaryset, s, R){
 }
 
 
-#' Write GenomicSEM LD scores input files to disk
+#' Write Summary data into GenomicSEM input files to disk
 #' @param dataset gwasglue2 DataSet object
-#' @param path_to_save character path to save the LD scores files. Default is "ldsc"
-#' @return character vector of paths to the ldscores files. It is the same length as the number of traits in the dataset. It also saves the  compressed 'trait_id.gz' files to the directory specified in path_to_save.
+#' @param path_to_save character path to save the files. Default is "ldsc"
+#' @return character vector of paths to the summary data files. It is the same length as the number of traits in the dataset. It also saves the  compressed 'trait_id.gz' files to the directory specified in path_to_save.
 write_ldsc <- function(dataset, path_to_save = "ldsc"){
   f (!requireNamespace("readr", quietly =TRUE)){
     stop("The CRAN package `readr` needs to be installed.")}
