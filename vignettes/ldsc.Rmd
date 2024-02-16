@@ -1,0 +1,141 @@
+---
+title: "LD score regression"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{LD score regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+
+
+```{r setup}
+remotes::install_github("mrcieu/ieugwasr",ref=github_pull("48"))
+library(ieugwasr)
+library(gwasglue2)
+library(GenomicSEM) # https://github.com/GenomicSEM/GenomicSEM
+```
+
+## Background
+
+### Analysis
+
+Perform genetic correlation estimation using the [LD Score regression method](https://www.nature.com/articles/ng.3406). In this example we will estimate the genetic correlation between body mass index and coronary heart disease.
+
+### File formats
+
+We will use the GenomicSEM R package to perform LDSC. It can also perform numerous other analytical methods that are based on the same file formatting system. The file format is slightly different to other analyses in R, it is based on text files that are formatted in a particular way as described by the original LDSC software (https://github.com/bulik/ldsc). It needs
+
+**GWAS summary data format:**
+
+```
+SNP     A1      A2      N       CHISQ   Z
+rs4075116       T       C       118122.0        4.04509062862   2.01124106676
+rs3766192       T       C       120302.0        1.19661141803   1.0938973526
+rs9442372       G       A       120277.0        1.18175008915   1.08708329449
+rs3737728       G       A       120288.0        2.05206404517   1.43250272082
+rs9442398       G       A       120303.0        2.43043331408   1.55898470617
+```
+
+**LD score files:**
+
+A directory like this:
+
+```
+/path/to/ldscores/
+  1.l2.ldscore.gz
+  2.l2.ldscore.gz
+  3.l2.ldscore.gz
+  ...
+  22.l2.ldscore.gz
+```
+
+and `1.l2.ldscore.gz` looks like:
+
+```
+CHR     SNP     BP      L2
+1       rs3094315       752566  80.826
+1       rs3131972       752721  80.939
+1       rs3131969       754182  90.291
+1       rs1048488       760912  80.679
+1       rs3115850       761147  80.483
+```
+
+The SNPs used can be restricted to HapMap3 SNPs, and LD scores for HapMap3 variants can be obtained from OpenGWAS using
+
+```
+a <- ieugwasr::afl2_list("hapmap3")
+```
+
+Currently GenomicSEM requires that the data is provided as flat files so to go from OpenGWAS to GenomicSEM
+
+1. Query the data from OpenGWAS
+2. Format and save as flat files
+3. Provide the flat files to `GenomicSEM::ldsc()`
+
+## Example
+
+
+```{r}
+# Download hapmap3 variants
+ldscores <- ieugwasr::afl2_list("hapmap3")
+
+# Write LD scores split by and save directory name. Convert variant IDs to gwasglue2 system
+# ieugwasr::write_ldscores(ldscores, "EUR")
+write_ldscores(ldscores, "EUR")
+```
+
+
+# Classic pipeline
+
+
+```{r}
+# Obtain summary data
+  id_list <- c("ieu-a-2", "ieu-a-7")
+  
+  dataset <- lapply(seq_along(id_list), function(i){
+    # create summarysets
+    dt <- ieugwasr::associations(variants = ldscores$rsid, id= id_list[i], gwasglue = TRUE) 
+  })  %>%
+    # create dataset and harmonise trait againts trait
+    create_dataset(., harmonise = TRUE, tolerance = 0.08, action = 1) %>% 
+    setZscores() %>%
+    setChisq()
+```
+
+
+
+
+
+
+
+```r
+# Obtain summary data
+dat <- gwasglue2::generate_ldsc(
+  variants = ldscores$variantid,
+  traits = c("opengwas://ieu-a-2", "opengwas://ieu-a-7")
+) %>%
+  gwasglue2::gwasglue()
+
+
+# Write summary data to files in LDSC format, and save the array of path names
+trait_paths <- gwasglue2::write_ldsc(dat, path="/path/to/data/")
+
+# Perform analysis
+res <- ldsc(
+  traits = trait_paths,
+  ld = ldscore_path,
+  sample.prev = c(NA, 0.5),
+  population.prev = c(NA, 0.1)
+)
+
+res
+```
