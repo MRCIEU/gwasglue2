@@ -37,7 +37,7 @@ ListDataSets <- function(...) {
 #' @return A gwasglue2 DataSet object
 #' @export
 #' @docType methods
-#' @rdname geDataSet-methods
+#' @rdname getDataSet-methods
 setGeneric("getDataSet", function(dataset,index) standardGeneric("getDataSet"))
 
 #' @rdname geDataSet-methods
