@@ -1,11 +1,15 @@
-#' gwasglue  (WIP)
+
+
+#' gwasglue 
 #' @param yaml A yaml R object.
 #' @param read A boolean indicating whether the yaml object is a path to a yaml file or a yaml R object. IF TRUE, yaml is a path.
 #' @param path_to_yaml A character vector indicating the path to the yaml file.
 #' @return A gwasglue2 DataSet object.
 #' @importFrom yaml read_yaml yaml.load
+#' @export 
 gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
-
+    if (!requireNamespace("yaml", quietly =TRUE)){
+    stop("The R package `yaml` needs to installed to perform the genome build liftover.")}
   # read or load yaml
   if (isTRUE(read)) { yaml <- yaml::read_yaml(path_to_yaml) }
   else { yaml <- yaml::yaml.load(yaml) }
@@ -13,46 +17,37 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
   # get nb of jobs
   njobs <- length(yaml) -1 # -1 because of the analyses part
 
-  if (njobs > 1){
-    datasets <- list()
-  }
- 
-  for(i in 1:njobs){ #TODO parallelize this loop parallel::mclapply
+
+dataset <- lapply(1:njobs, \(i){
     job <- yaml[[i]]
         
     # get variants
     if(job$variants$tophits ==FALSE || is.null(job$variants$tophits)){
-      # use this if using chr1:pos nomenclature
-      # chr <- (strsplit(job$variants$variant_list, ":") [[1]][1] %>% strsplit(., "chr"))[[1]][2
-      # start_end <- strsplit(job$variants$variant_list, ":") [[1]][2]
-      # variants <- paste0(chr,":",start_end)
-      
       variants <- job$variants$variant_list
-      }else{
+    }else{
       exposures <- job$organization$lhs
       variants <- get_tophits_from_datasource(exposures, summarydata=job$summarydata)
-      }
+    }
 
  
     shape <- job$variants$shape
   
     # get the number of SummarySets and create a list
     nsummary_sets <- length(job$summarydata)
-    summary_sets <- list()
 
-    for (j in 1:nsummary_sets){
+    summary_sets <- lapply (1:nsummary_sets, \(j){
       # read the parameters for each SummarySet
       source <- job$summarydata[[j]]$source
       location <- job$summarydata[[j]]$location
       build <- job$summarydata[[j]]$build
       label <- job$summarydata[[j]]$label
         
-      if(source == "ieugwasr"){
+      if(source == "opengwas"){
        data <- ieugwasr::associations(variants = variants, id = location)
       }else{stop("source not supported yet")}
 
       # create summarysets
-      summary_sets[[j]] <- create_summaryset(data,
+      summary_sets <- create_summaryset(data,
                       metadata = NULL,
                       qc = FALSE,
                       beta_col = "beta",
@@ -68,20 +63,23 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
                       id_col = "id",
                       trait_col = "trait", 
                       build = build)
-    }
+  
     # set attributes
-    if(yaml$job$analyses$type == "TwoSampleMR"){
+    if(yaml$analyses$type == "TwoSampleMR"){
       # get the label of the exposure and outcome
       lhs <- yaml$organization$lhs
       rhs <- yaml$organization$rhs
 
       if(label %in% lhs){
-        summary_sets[[j]] <- setAttributes(summary_sets[[j]], mr_label = "exposure")
+        summary_sets <- setAttributes(summary_sets, mr_label = "exposure")
       } 
       if(label %in% rhs){
-      summary_sets[[j]] <- setAttributes(summary_sets[[j]], mr_label = "outcome")
+      summary_sets <- setAttributes(summary_sets, mr_label = "outcome")
       }
     }
+    return(summary_sets)
+
+    })
     # create dataset
     dataset <- create_dataset(summary_sets=summary_sets)
     # get lddata info and harmonise againts reference panel
@@ -90,14 +88,13 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
       plink_bin <- job$lddata$plink_bin
       dataset <- harmonise_ld(dataset, bfile = bfile, plink_bin = plink_bin)
     }
-  
-    if(njobs > 1){
-      datasets[[i]] <- dataset
-    }
-   
-  }
+    return(dataset)
+  })
+
+
+
   if(njobs > 1){
-    return(listDatasets(datasets))}
+    return(listDatasets(dataset))}
   else{
     return(dataset)
   }
@@ -106,9 +103,7 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
 
 
 
-# get_variants <- function(){}
 
-# get_summarydata <- function(){}
 
 get_tophits_from_datasource <- function(exposures, summarydata){
 
@@ -128,57 +123,9 @@ get_tophits_from_datasource <- function(exposures, summarydata){
   return(tophits)
  }
 
-# get_lddata <- function(){}
-
-# get_analyses <- function(){}
-
-# get_organisation <- function(){}
-
 
 # -------------------------------------------------------------------------
 
-
-#' YAML constructor (WIP)
-#' @param traits A character vector of traits to be analysed.
-#' @param region A character vector of regions to be analysed.
-#' @param build  A character vector  of the reference genome assemblies to generate the vcf file. Default is "GRCh37". 
-#' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
-#' @param bfile It corresponds to the path and prefix of the plink files used to build the LD correlation matrix. 
-#' @param plink_bin Path to the plink executable
-#' @param write A boolean indicating whether the yaml object should be written to a file.
-#' @param outfile A character vector indicating the path to write the yaml file.
-#' @return A yaml object.
-#' @importFrom yaml write_yaml as.yaml
-
-job_coloc <- function(traits, region, build = "GRCh37", bfile = NULL, plink_bin = NULL, write = FALSE, outfile = "config.yaml"){
-  
-  # read number of DataSets/jobs to  build and analyse TODO: should we allow for more than 1 dataset?
-  njobs <- length(region)
-  
-  out <- lapply(region, \(r){
-    l <- list()
-    l$variants <- list(shape = "single_region", variant_list = r)
-    l$summarydata <- strsplit(traits, ":") %>% lapply(., \(x) list(source=x[1], location=x[2]))
-    
-    if(!is.null(build)){
-      l$summarydata <- l$summarydata %>% lapply(., \(x) {x$build <- build; x})
-    }
-    if(!is.null(bfile) & !is.null(plink_bin)){
-      l$lddata <- list(location = bfile, plink_bin=plink_bin)
-    }
-    
-    return(l)
-  })
-   
-  names(out) <- paste0("job", 1:length(region))
-  out <- c(list(out, analyses = list(type = "coloc")))
-  # write yaml to file
-  if (isTRUE(write)){yaml::write_yaml(out, outfile)}
-
-  # return a yaml object
-  out <- yaml::as.yaml(out)
-  return(out)
-}   
 
 
 # ------------------------------------------------------------------------
