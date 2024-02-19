@@ -1,0 +1,51 @@
+---
+title: "YAML tutorials"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{YAML tutorials}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(gwasglue2)
+```
+
+Here we demonstarte how to use the constructores to create `DataSets` for different types of analyses.
+
+
+
+
+# MR analyses
+ We will use the YAML constructor `job_mr()` to create a yaml object. This object will be used as input to the `gwasglue()` function to create a `DataSet`. The `job_mr()` constructor takes the following arguments:
+
+```{r}
+
+job_mr(exposure =("ieugwasr:ieu-a-2"),outcome = c("ieugwasr:ieu-a-7"), tophits=TRUE)
+
+```
+
+
+# A simple colocalisation analysis
+The following example demonstrates how to to create  the `DataSet` for a colocalisation analysis using the `job_coloc()` constructor. 
+
+
+```{r}
+bed_ref <- "data/ld/EUR"
+
+yaml <- job_coloc(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), region=c("1:400000-4500000"), bfile= bed_ref, plink_bin="plink")
+cat(yaml)
+dataset <- gwasglue(yaml)
+```
+
+
+
+
+# LD score regression
