@@ -121,7 +121,7 @@ susie_to_dataset <- function(summaryset, s, R){
 #' @param path_to_save character path to save the files. Default is "ldsc"
 #' @return character vector of paths to the summary data files. It is the same length as the number of traits in the dataset. It also saves the  compressed 'trait_id.gz' files to the directory specified in path_to_save.
 write_ldsc <- function(dataset, path_to_save = "ldsc"){
-  f (!requireNamespace("readr", quietly =TRUE)){
+  if (!requireNamespace("readr", quietly =TRUE)){
     stop("The CRAN package `readr` needs to be installed.")}
   
   # Create a directory to save the ldscores
@@ -144,7 +144,7 @@ write_ldsc <- function(dataset, path_to_save = "ldsc"){
   # Write the ldscores to the directory
   for (i in traits){
     paths <- paste0(path_to_save,"/", i, ".sumstats.gz")
-    readr::write_delim( dt_sub[[i]], paths, delim = "\t", col_names = TRUE))
+    readr::write_delim( dt_sub[[i]], paths, delim = "\t", col_names = TRUE)
   }
   return(paths)
 }
