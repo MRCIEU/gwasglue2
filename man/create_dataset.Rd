@@ -20,8 +20,8 @@ create_dataset(
 
 \item{action}{Inherited from harmoniseData() (Default 1)
 \itemize{
-\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles (default);
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes ;
 \item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 }}
 }

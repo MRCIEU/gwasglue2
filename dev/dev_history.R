@@ -13,6 +13,10 @@ usethis::use_tidy_description()
 
 roxygen2::update_collate(".")
 
+
+usethis::use_package_doc()
+
+
 # unit testing
 devtools::test()
 
@@ -29,6 +33,7 @@ usethis::use_vignette("dataset")
 usethis::use_vignette("output")
 usethis::use_vignette("processing-dataset-setters-getters")
 usethis::use_vignette("processing-add-summaryset")
+usethis::use_vignette("yaml_tutorials")
 
 # coverage
 library(covr)
@@ -43,6 +48,7 @@ usethis::use_build_ignore(".tests/", escape = TRUE)
 usethis::use_build_ignore(".inst/tests/", escape = TRUE)
 usethis::use_build_ignore(".devcontainer/", escape = TRUE)
 usethis::use_build_ignore("data/", escape = TRUE)
+usethis::use_build_ignore("ldsc/", escape = TRUE)
 
 
 # add files to .gitignore

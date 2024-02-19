@@ -8,6 +8,7 @@ articles:
   input-opengwas: input-opengwas.html
   input-vcf: input-vcf.html
   input: input.html
+  ldsc: ldsc.html
   mr: mr.html
   output: output.html
   output_TwoSampleMR: output_TwoSampleMR.html
@@ -25,5 +26,6 @@ articles:
   processing-qc: processing-qc.html
   processing-summaryset-setters-getters: processing-summaryset-setters-getters.html
   processing: processing.html
-last_built: 2023-11-07T17:40Z
+  yaml_tutorials: yaml_tutorials.html
+last_built: 2024-02-19T09:13Z
 

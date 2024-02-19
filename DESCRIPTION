@@ -48,6 +48,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate: 
+    'clump.R'
     'constructors.R'
     'dataset.R'
     'convertTo.R'
@@ -58,8 +59,10 @@ Collate:
     'harmonise_ld.R'
     'harmonise_method.R'
     'liftover.R'
+    'listDatasets.R'
     'meta.R'
     'plot.R'
     'summaryset.R'
     'utils.R'
     'wrappers.R'
+    'yaml_constructors.R'

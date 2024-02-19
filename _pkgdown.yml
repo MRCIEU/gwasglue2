@@ -5,7 +5,7 @@ template:
 
 navbar:
  structure:
-    left:  [intro, reference, articles, tutorials, news]
+    left:  [intro, reference, articles, tutorials, YAML, news]
     right: [search, github]
  components:
    intro: 
@@ -27,23 +27,24 @@ navbar:
       href: articles/mr.html
     - text: "Regional genotype-phenotype map"
       href: articles/finemap_coloc1.html
-    - text: "Alternative regional genotype-phenotype map example"
-      href: articles/finemap_coloc2.html
+    - text: "LD score regression"
+      href: articles/ldsc.html
+   YAML: 
+    text: YAML
+    menu:
+    - text: "YAML tutorials"
+      href: articles/yaml_tutorials.html
+    
       
    reference:
-    text: Functions
-    href: reference/index.html
-      # - title: "Objects"
-      # desc: >
-      #   Package overview
-      # contents:
-      #   - SummarySet
-      # - title: "Input"
-      # desc: >
-      #   Functions for generating input for the package
-      # contents:
-      #   - create_summaryset
-      #   - create_dataset
+  #   - title: General query
+  #   contents:
+  #     - gwasglue
+  # - title: input
+  #   contents:
+  #     - create_summaryset
+  #     - create_metadata
+  #    
    news:
     text: Changelog
     href: news/index.html

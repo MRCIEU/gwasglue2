@@ -16,7 +16,7 @@ getSummarySet(dataset, index)
 \item{index}{Index of gwasglue2 SummarySet objects within DataSet}
 }
 \value{
-summarySet gwasglue2 SummarySet object
+A gwasglue2 SummarySet object
 }
 \description{
 Get Method to retrieve the gwasglue2 SummarySet object
