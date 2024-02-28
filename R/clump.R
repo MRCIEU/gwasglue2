@@ -17,7 +17,7 @@ ld_clump <- function(data, clump_kb=10000, clump_r2=0.001, clump_p=1, bfile=NULL
 	# Make textfile
 	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	fn <- tempfile()
-	write.table(data.frame(SNP=dat[["rsid"]], P=dat[["p"]]), file=fn, row.names=F, col.names=T, quote=F)
+	write.table(data.frame(SNP=dat[["rsid"]], P=data[["p"]]), file=fn, row.names=F, col.names=T, quote=F)
 
 	fun2 <- paste0(
 		shQuote(plink_bin, type=shell),
@@ -31,12 +31,12 @@ ld_clump <- function(data, clump_kb=10000, clump_r2=0.001, clump_p=1, bfile=NULL
 	system(fun2)
 	res <- read.table(paste(fn, ".clumped", sep=""), header=T)
 	unlink(paste(fn, "*", sep=""))
-	y <- subset(dat, !dat[["rsid"]] %in% res[["SNP"]])
+	y <- subset(data, !data[["rsid"]] %in% res[["SNP"]])
 	if(nrow(y) > 0)
 	{
-		message("Removing ", length(y[["rsid"]]), " of ", nrow(dat), " variants due to LD with other variants or absence from LD reference panel")
+		message("Removing ", length(y[["rsid"]]), " of ", nrow(data), " variants due to LD with other variants or absence from LD reference panel")
 	}
-	return(subset(dat, dat[["rsid"]] %in% res[["SNP"]]))
+	return(subset(data, data[["rsid"]] %in% res[["SNP"]]))
 }
 
 #' Extract top hits variants from a data frame
