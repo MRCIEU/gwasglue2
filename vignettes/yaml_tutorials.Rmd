@@ -24,28 +24,47 @@ Here we demonstarte how to use the constructores to create `DataSets` for differ
 
 
 # MR analyses
- We will use the YAML constructor `job_mr()` to create a yaml object. This object will be used as input to the `gwasglue()` function to create a `DataSet`. The `job_mr()` constructor takes the following arguments:
+ We will use the YAML constructor `yaml_mr()` to create a yaml object. This object will be used as input to the `gwasglue()` function to create a `DataSet`. The `yaml_mr()` constructor takes the following arguments:
 
 ```{r}
 
-job_mr(exposure =("ieugwasr:ieu-a-2"),outcome = c("ieugwasr:ieu-a-7"), tophits=TRUE)
-
+mr <- yaml_mr(exposure = c("ieugwasr:ieu-a-2"),outcome = c("ieugwasr:ieu-a-7"))
+cat(mr)
+dataset <- gwasglue(mr)
 ```
-
+ In this example, we are using the prefix `ieugwasr` for the `exposure` traits, which will use `ieugwasr::tophits()` to extract the MR instruments. The `yaml_mr()` constructor also has optional arguments when local files are applied  and instruments need to be extracted locally.
 
 # A simple colocalisation analysis
-The following example demonstrates how to to create  the `DataSet` for a colocalisation analysis using the `job_coloc()` constructor. 
+The following example demonstrates how to to create  the `DataSet` for a colocalisation analysis using the `yaml_coloc()` constructor. 
 
 
 ```{r}
 bed_ref <- "data/ld/EUR"
 
-yaml <- job_coloc(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), region=c("1:400000-4500000"), bfile= bed_ref, plink_bin="plink")
-cat(yaml)
-dataset <- gwasglue(yaml)
+coloc <- yaml_coloc(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), region=c("1:400000-4500000"), bfile= bed_ref, plink_bin="plink")
+cat(coloc)
+dataset <- gwasglue(coloc)
 ```
 
 
-
-
 # LD score regression
+
+# A simple LD scores analysis
+The following example demonstrates how to to create  the `DataSet` for a LD scores analysis using the `yaml_ldscores()` constructor. 
+
+
+```{r}
+# Download hapmap3 variants
+ 
+ ldscores <- ieugwasr::afl2_list("hapmap3")
+
+# Write LD scores split by and save directory name. Convert variant IDs to gwasglue2 system
+
+ieugwasr::write_ldscores(ldscores, "EUR")
+
+variants <- paste0(ldscores$chrom[1:10], ":", ldscores$pos[1:10])
+
+ldsc <- yaml_ldscores(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), region=variants)
+cat(ldsc)
+dataset <- gwasglue(dsc)
+```

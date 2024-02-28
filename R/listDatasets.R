@@ -38,10 +38,25 @@ ListDataSets <- function(...) {
 #' @export
 #' @docType methods
 #' @rdname getDataSet-methods
-setGeneric("getDataSet", function(dataset,index) standardGeneric("getDataSet"))
+setGeneric("getDataSet", function(list_datasets,index) standardGeneric("getDataSet"))
 
-#' @rdname geDataSet-methods
+#' @rdname getDataSet-methods
 setMethod("getDataSet", "ListDataSets",
-          function(dataset,index) {
-            return(dataset@datasets[[index]])
+          function(list_datasets,index) {
+            return(list_datasets@datasets[[index]])
           })
+
+
+
+# show method 
+setMethod(f = "show", signature="ListDataSets", definition = function(object) {
+  # set description of DataSet
+  length <- getLength(object)
+
+  
+  # write
+  cat("A 'ListDataSets' object with", length, "DataSets.\n")
+ 
+  cat("\nTo access the gwasglue2 `DataSets` in each of the 'ListDataSets' use getDataSet(list_datasets, index).\n")
+
+})

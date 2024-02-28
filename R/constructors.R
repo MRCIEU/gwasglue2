@@ -207,16 +207,16 @@ create_summaryset <- function (data,
 #' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE
-#' @param beta_col Name of column with effect sizes. The default is `"beta"` for @param type `"tibble"` and `"ES"`for @param type `"vcf"`..
-#' @param se_col Name of column with standard errors. The default is `"se"` for @param type `"tibble"` and `"SE"`for @param type `"vcf"`.
-#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"` for @param type `"tibble"` and `"AF"`for @param type `"vcf"`.
-#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"` for @param type `"tibble"` and `"ALT"`for @param type `"vcf"`.
-#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea` for @param type `"tibble"` and `"REF"`for @param type `"vcf"`.
+#' @param beta_col Name of column with effect sizes. The default is `"beta"`.
+#' @param se_col Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"`.
+#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea`.
 #' @param pvalue_col Name of column with p-value. The default is `"p"`.
-#' @param samplesize_col Column name for sample size. The default is `"n"` for @param type `"tibble"` and `"SS"`for @param type `"vcf"`.
-#' @param chr_col Column name for chromosome . The default is `"chr"` for @param type `"tibble"` and `"seqnames"`for @param type `"vcf"`.
-#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"` for @param type `"tibble"` and `"start"`for @param type `"vcf"`.
-#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"` for @param type `"tibble"` and `"ID"`for @param type `"vcf"`.
+#' @param samplesize_col Column name for sample size. The default is `"n"`.
+#' @param chr_col Column name for chromosome . The default is `"chr"`.
+#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"`.
+#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"`.
 #' @param id_col GWAS study ID column. The default is `"id"`.
 #' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"` 
 #' @return A gwasglue2 SummarySet object

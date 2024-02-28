@@ -63,7 +63,7 @@ RUN R -e "install.packages(c('BiocGenerics', 'Biostrings', 'GenomeInfoDb', 'Geno
 RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc', \
         'rmarkdown', 'knitr', 'bookdown', 'commonmark', 'markdown','Rfast', \
         'httpgd','crayon','hash', 'data.table', 'stringr', ' RCurl', 'rlang', \
-        ' utils', 'RSQLite', 'digest','graphics', 'stats','pander', 'yaml')); \       
+        ' utils', 'RSQLite', 'digest','graphics', 'stats','pander', 'yaml','fst')); \       
         remotes::install_github('mrcieu/ieugwasr'); \
         remotes::install_github('mrcieu/TwoSampleMR');  \
         remotes::install_github('mrcieu/gwasvcf'); \

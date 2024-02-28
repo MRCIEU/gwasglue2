@@ -21,10 +21,10 @@ Depends:
     R (>= 4.0.0)
 Imports:
     dplyr,
-    yaml
+    yaml,
+    digest
 Suggests: 
     covr,
-    digest,
     GenomicRanges,
     graphics,
     IRanges,
@@ -36,7 +36,8 @@ Suggests:
     TwoSampleMR,
     utils,
     ieugwasr,
-    gwasvcf
+    gwasvcf,
+    fread
 VignetteBuilder: 
     knitr
 Remotes:

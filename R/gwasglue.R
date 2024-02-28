@@ -18,18 +18,12 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
   njobs <- length(yaml) -1 # -1 because of the analyses part
 
 
-dataset <- lapply(1:njobs, \(i){
+  dataset <- lapply(1:njobs, \(i){
     job <- yaml[[i]]
         
     # get variants
-    if(job$variants$tophits ==FALSE || is.null(job$variants$tophits)){
       variants <- job$variants$variant_list
-    }else{
-      exposures <- job$organization$lhs
-      variants <- get_tophits_from_datasource(exposures, summarydata=job$summarydata)
-    }
-
- 
+    # get shape
     shape <- job$variants$shape
   
     # get the number of SummarySets and create a list
@@ -40,48 +34,63 @@ dataset <- lapply(1:njobs, \(i){
       source <- job$summarydata[[j]]$source
       location <- job$summarydata[[j]]$location
       build <- job$summarydata[[j]]$build
-      label <- job$summarydata[[j]]$label
+      organization <- job$summarydata[[j]]$organization
         
       if(source == "opengwas"){
-       data <- ieugwasr::associations(variants = variants, id = location)
-      }else{stop("source not supported yet")}
-
-      # create summarysets
-      summary_sets <- create_summaryset(data,
-                      metadata = NULL,
-                      qc = FALSE,
-                      beta_col = "beta",
-                      se_col = "se",
-                      samplesize_col = "n",
-                      pvalue_col = "p",
-                      chr_col = "chr",
-                      position_col = "position",
-                      rsid_col = "rsid",
-                      effect_allele_col = "ea",
-                      other_allele_col = "nea",
-                      eaf_col = "eaf",
-                      id_col = "id",
-                      trait_col = "trait", 
-                      build = build)
-  
-    # set attributes
-    if(yaml$analyses$type == "TwoSampleMR"){
-      # get the label of the exposure and outcome
-      lhs <- yaml$organization$lhs
-      rhs <- yaml$organization$rhs
-
-      if(label %in% lhs){
-        summary_sets <- setAttributes(summary_sets, mr_label = "exposure")
-      } 
-      if(label %in% rhs){
-      summary_sets <- setAttributes(summary_sets, mr_label = "outcome")
+          if (!requireNamespace("ieugwasr", quietly =TRUE)){
+            stop("The MRC IEU R package `ieugwasr` needs to be installed.")}
+       
+       summary_sets <- ieugwasr::associations(variants = variants, id = location, gwasglue = TRUE) %>% setShape(.,shape = shape)
       }
-    }
-    return(summary_sets)
+      if(source == "vcf"){
+          if (!requireNamespace("gwasvcf", quietly =TRUE)){
+            stop("The MRC IEU R package `gwasvcf` needs to be installed.")}
+      
+       summary_sets <- gwasvcf::readVcf(location) %>% 
+              gwasvcf::query_gwas(chrompos = variants) %>% gwasvcf::gwasvcf_to_summaryset()%>% setShape(.,shape = shape)
+      }
+      if(source == "summaryset"){
+       summary_sets <- get(location) %>% setShape(.,shape = shape)
+       if(!isS4(summary_sets)){
+         stop("The object ", location, " is not a SummarySet.")
+        }
+      }
+      if(source == "robject"){
+        data <- dplyr::as_tibble(get(location))
+        if(!inherits(t,c("tbl", "tbl_df", "data.frame"))){
+          stop("The object ", location, " is not a `data.frame`.`")
+          }
+        
+        summary_sets <- create_summaryset(data, qc =TRUE, build = build) %>% setShape(.,shape = shape)
+      }
+      if(source == "text"){
+         if (!requireNamespace("fread", quietly =TRUE)){
+            stop("The CRAN package `fread` needs to be installed.")}
+        data <- data.table::fread(location, header = TRUE)
+        summary_sets <- create_summaryset(data, qc =TRUE, build = build) %>% setShape(.,shape = shape)
+      }
+      else{
+        stop("The source ", source, " is not recognized.")}
 
+
+      # set attributes
+      if(yaml$analyses$type == "MR"){
+        summary_sets <- setAttributes(summary_sets, mr_label = organization)
+      }
+
+    return(summary_sets)
     })
+
     # create dataset
-    dataset <- create_dataset(summary_sets=summary_sets)
+    dataset <- create_dataset(summary_sets=summary_sets) 
+    
+    if(yaml$analyses$type == "LDScores"){
+        dataset <- dataset %>% 
+            # set zscores and chisq
+            setZscores() %>%
+            setChisq()
+      }
+
     # get lddata info and harmonise againts reference panel
     if(!is.null(job$lddata)){
       bfile <-job$lddata$location
@@ -91,41 +100,10 @@ dataset <- lapply(1:njobs, \(i){
     return(dataset)
   })
 
-
-
   if(njobs > 1){
-    return(listDatasets(dataset))}
+    return(ListDataSets(dataset))}
   else{
     return(dataset)
   }
     
-} 
-
-
-
-
-
-get_tophits_from_datasource <- function(exposures, summarydata){
-
-  exposure <- lapply(summarydata, \(s){
-    if(exposures %in% s$label){
-      return(s$location[which(exposures %in% s$label)])
-    }
-    # else{
-    #   message("Exposure label ", s, " not found in the YAML summarydata.")
-    # }
-    
-  }) %>% unlist()
-
-  tophits <- ieugwasr::tophits(exposure[1])$rsid
-
-  # TODO: deal with more than one exposure
-  return(tophits)
- }
-
-
-# -------------------------------------------------------------------------
-
-
-
-# ------------------------------------------------------------------------
+}
