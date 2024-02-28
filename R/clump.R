@@ -17,7 +17,7 @@ ld_clump <- function(data, clump_kb=10000, clump_r2=0.001, clump_p=1, bfile=NULL
 	# Make textfile
 	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	fn <- tempfile()
-	write.table(data.frame(SNP=dat[["rsid"]], P=data[["p"]]), file=fn, row.names=F, col.names=T, quote=F)
+	write.table(data.frame(SNP=data[["rsid"]], P=data[["p"]]), file=fn, row.names=F, col.names=T, quote=F)
 
 	fun2 <- paste0(
 		shQuote(plink_bin, type=shell),
@@ -53,11 +53,11 @@ get_tophits_from_data <- function(data, pval = 5e-08, clump = TRUE, r2 = 0.001, 
 
 	if(clump)
 	{
-		return(ld_clump(dat, clump_kb=kb, clump_r2=r2, clump_p=pval, bfile=bfile, plink_bin=plink_bin))
+		return(ld_clump(data, clump_kb=kb, clump_r2=r2, clump_p=pval, bfile=bfile, plink_bin=plink_bin))
 	}
 	else
 	{
-		return(subset(dat, dat[[pval_col]] < pval))
+		return(subset(data, data[[pval_col]] < pval))
 	}
 
 
