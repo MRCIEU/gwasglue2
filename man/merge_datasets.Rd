@@ -4,10 +4,21 @@
 \alias{merge_datasets}
 \title{Merge Datasets}
 \usage{
-merge_datasets(datasets)
+merge_datasets(datasets, harmonise = TRUE, tolerance = 0.08, action = 1)
 }
 \arguments{
 \item{datasets}{A list of gwasglue2 DataSet objects}
+
+\item{harmonise}{logical (default TRUE). It harmonises the summary sets in the DataSet against each other.}
+
+\item{tolerance}{Inherited from harmoniseData() (default 0.08)}
+
+\item{action}{Inherited from harmoniseData() (Default 1)
+\itemize{
+\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+\item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
+}}
 }
 \value{
 A gwasglue2 DataSet object  with input DataSets merged

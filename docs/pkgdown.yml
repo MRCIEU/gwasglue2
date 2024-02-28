@@ -3,11 +3,29 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Strategy: Strategy.html
-  SummarySet_DataSet: SummarySet_DataSet.html
   finemap_coloc1: finemap_coloc1.html
   finemap_coloc2: finemap_coloc2.html
-  liftover: liftover.html
-  meta: meta.html
+  input-opengwas: input-opengwas.html
+  input-vcf: input-vcf.html
+  input: input.html
+  ldsc: ldsc.html
   mr: mr.html
-last_built: 2023-09-12T15:57Z
+  output: output.html
+  output_TwoSampleMR: output_TwoSampleMR.html
+  output_hypercoloc: output_hypercoloc.html
+  output_susier: output_susier.html
+  processing-add-metadata: processing-add-metadata.html
+  processing-add-summaryset: processing-add-summaryset.html
+  processing-dataset-setters-getters: processing-dataset-setters-getters.html
+  processing-dataset: processing-dataset.html
+  processing-harmonise-ldref: processing-harmonise-ldref.html
+  processing-harmonise: processing-harmonise.html
+  processing-liftover: processing-liftover.html
+  processing-merge-datasets: processing-merge-datasets.html
+  processing-meta-analysis: processing-meta-analysis.html
+  processing-qc: processing-qc.html
+  processing-summaryset-setters-getters: processing-summaryset-setters-getters.html
+  processing: processing.html
+  yaml_tutorials: yaml_tutorials.html
+last_built: 2024-02-19T09:13Z
 

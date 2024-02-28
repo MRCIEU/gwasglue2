@@ -1,0 +1,70 @@
+---
+title: "Processing: liftover"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Processing: liftover}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+**gwasglue2** has a `liftover()` function to remap genomic coordinates from different genome assemblies to the same reference build. This function works on the `SummarySet` object and uses a chain file to map the coordinates. The chain file is a text file that contains the mapping between two genome assemblies. The chain file can be provided by the user or downloaded directly by the  **gwasglue2** `download_chainfile()` or `liftover()` functions.
+
+**gwasglue2** uses the chain files and Human genome nomenclature of [ENSEMBL](https://www.ensembl.org/Homo_sapiens/) ("NCBI34", "NCBI35", "NCBI36", "GRCh37" and "GRCh38").
+
+<br>
+<br>
+## Setup
+In addition to **gwasglue2**, we’ll load the following package:
+
+- [**ieugwasr**](https://mrcieu.github.io/ieugwasr/) - R package for accessing IEU GWAS database
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+devtools::load_all("../") # this was added just for development
+```
+<br>
+<br>
+## Functions
+* `create_summaryset()`, using the `build` argument.
+* `download_chainfile()`: downloads Human genomes chain files from ENSEMBL.
+* `liftover()`: remaps the genomic coordinates from the GWAS summary data on the `SummarySet` to another genome assembly using a chain file.
+
+<br>
+<br>
+
+## Example
+
+We will use GWAS summary data obtained from IEU OpenGWAS through the **ieugwasr** package (see [here](input-opengwas.html) for details). The data was built under the "GRCh37" genome assembly and we want to remap it to "GRCh378". 
+
+First, we create a SummarySet object that we name `sumset` providing in the `build` argument the genome assembly used to build the GWAS summary data. We can check it in the metadata.
+
+
+ ```{r}
+ data <- ieugwasr::associations(variants = "5:74132993-75132993", id = "ukb-d-I9_IHD")
+ 
+ sumset <- create_summaryset(data, build = "GRCh37")
+ getMetadata(sumset)
+
+ ```
+ Then we perform the liftover. We can first download the chain file followed by the `liftover()`. In this case we need to give the genome assemblies to "lift from" and to "lift to" : 
+
+```{r}
+sumset_lift <- download_chainfile(from = "GRCh37", to = "GRCh38") %>%
+                liftover(sumset, chainfile = ., to = "GRCh38")
+```
+Or simply provide directly to `liftover()` the genome assembly to "lift to". In this case, the function will check the `build` to "lift from" in the metadata of `sumset` and download the chain file.
+
+
+```{r}
+sumset1_lift <- liftover(sumset, to = "GRCh38")
+```
+

@@ -14,7 +14,7 @@ setZscores(dataset)
 \item{dataset}{A gwasglue2 DataSet object}
 }
 \value{
-An extra '"zscores"' column in the  GWAS summary statistics tibble.
+An extra '"Z"' column in the  GWAS summary statistics tibble.
 }
 \description{
 Calculating Z-scores

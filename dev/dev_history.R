@@ -13,6 +13,10 @@ usethis::use_tidy_description()
 
 roxygen2::update_collate(".")
 
+
+usethis::use_package_doc()
+
+
 # unit testing
 devtools::test()
 
@@ -22,6 +26,14 @@ usethis::use_r("liftover.R")
 # create a vignette
 usethis::use_vignette("SummarySet_DataSet")
 usethis::use_vignette("liftover")
+usethis::use_vignette("input")
+usethis::use_vignette("input-vcf")
+usethis::use_vignette("processing")
+usethis::use_vignette("dataset")
+usethis::use_vignette("output")
+usethis::use_vignette("processing-dataset-setters-getters")
+usethis::use_vignette("processing-add-summaryset")
+usethis::use_vignette("yaml_tutorials")
 
 # coverage
 library(covr)
@@ -36,6 +48,7 @@ usethis::use_build_ignore(".tests/", escape = TRUE)
 usethis::use_build_ignore(".inst/tests/", escape = TRUE)
 usethis::use_build_ignore(".devcontainer/", escape = TRUE)
 usethis::use_build_ignore("data/", escape = TRUE)
+usethis::use_build_ignore("ldsc/", escape = TRUE)
 
 
 # add files to .gitignore
@@ -46,4 +59,4 @@ usethis::use_news_md()
 
 # debug vignettes
 build_vignettes()
-devtools::build_rmd("vignettes/liftover.Rmd") 
+devtools::build_rmd("vignettes/input-vcf.Rmd") 

@@ -1,0 +1,490 @@
+---
+title: "shape_organisation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{shape_organisation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+
+
+Do univariable MR of one exposure on one outcome
+
+```{r}
+a <- TwoSampleMR::extract_instruments("ieu-a-2")
+b <- TwoSampleMR::extract_outcome_data(a$SNP, "ieu-a-7")
+dat1 <- harmonise_data(a, b)
+```
+
+```{r}
+dat <- make_dat("ieu-a-2", "ieu-a-7")
+```
+
+
+Do univariable MR of one exposure on many outcomes
+
+```{r}
+a <- TwoSampleMR::extract_instruments("ieu-a-2")
+b <- TwoSampleMR::extract_outcome_data(a$SNP, c("ieu-a-7", "ieu-a-22"))
+dat <- harmonise_data(a, b)
+```
+
+Do univariable MR of many exposures on many outcomes
+
+```{r}
+a <- TwoSampleMR::extract_instruments(c("ieu-a-301", "ieu-a-2"))
+b <- TwoSampleMR::extract_outcome_data(a$SNP, c("ieu-a-7", "ieu-a-22"))
+dat <- harmonise_data(a, b)
+```
+
+Do multivariable MR of many exposures on one outcome
+
+```{r}
+a <- extract_instruments_mv(c("ieu-a-300", "ieu-a-301"))
+b <- extract_outcome_data(a$SNP, "ieu-a-7")
+dat <- harmonise_data_mv(a, b)
+```
+
+(Hypothetical) do multivariable MR of many exposures on many outcomes
+
+```{r}
+a <- extract_instruments_mv(c("ieu-a-300", "ieu-a-301"))
+b <- extract_outcome_data(a$SNP, c("ieu-a-7", "ieu-a-22"))
+dat <- harmonise_data_mv(a, b)
+```
+
+- In all the examples above the source data is opengwas, and they're each making a slightly a different shape.
+- But it would be possible to make every one of those shapes from the same data using vcf files.
+- Simularly, if the data were in arbitrary data.frames or text files.
+
+Some of this has been implemented to work on other data inputs, e.g. get the outcome from text file
+
+```{r}
+b <- TwoSampleMR::read_outcome_data(a$SNP, "filename.txt", SNP_col="SNP", ...)
+dat <- harmonise_data_mv(a, b)
+```
+
+Define shapes. For example, two multivariable 
+
+Example schema of analysis plan
+
+```yaml
+plan1:
+    variants:
+        shape: <descriptor e.g. single region, multiple region, scattered variants, gw pruned, gw full>
+        variant_list: <vector of chr:pos_a1_a2 or ranges>
+    summarydata:
+        - trait1:
+            source: textfile
+            location: /path/to/file1.txt.gz
+            meta:
+              snp_col:
+              ea_col:
+              oa_col:
+        - trait2:
+            source: ieugwasr
+            location: ieu-a-2
+        - trait3:
+            source: vcffile
+            location: /path/to/vcf3.vcf.gz
+        - trait4:
+            source: vcffile
+            location: http://gwas.mrcieu.ac.uk/ieu-a-2.vcf.gz
+    lddata:
+        source: plinkbfile
+        location: /path/to/plink
+    organization:
+        - 1:
+            rhs:
+                - trait1
+                - trait2
+            lhs:
+                - trait3
+        - 2:
+            rhs:
+                - trait1
+                - trait2
+            lhs:
+                - trait4
+plan2:
+    variants:
+        shape: <descriptor>
+        variant_list: <vector of chr:pos_a1_a2 or ranges>
+    data:
+        - trait1:
+            source: textfile
+            location: /path/to/file1.txt.gz
+        - trait2:
+            source: ieugwasr
+            location: ieu-a-2
+        - trait3:
+            source: vcffile
+            location: /path/to/vcf3.vcf.gz
+        - trait4:
+            source: vcffile
+            location: http://gwas.mrcieu.ac.uk/ieu-a-2.vcf.gz
+    organization:
+        - 1:
+            lhs:
+                - trait1
+                - trait2
+            rhs:
+                - trait3
+        - 2:
+            lhs:
+                - trait1
+                - trait2
+            rhs:
+                - trait4
+analyses:
+    - 1
+        type: TwoSampeMR
+        input: plan1
+    -2
+        type: TwoSampeMR
+        input: plan2
+
+```
+Output will be a text file to be read by TwoSampleMR
+
+Meta analysis in two steps
+step 1: Dataset -> meta analysis -> summary set
+
+```yaml
+plan1:
+    variants:
+    summarydata:
+        - trait1:
+        - trait2:
+    analysis:
+        lhs:
+            - trait1a
+            - trait1b
+```
+
+step 2: use summary set as input to analysis plan
+
+```yaml
+job1:
+    variants:
+    summarydata:
+        - trait1:
+            source: summaryset
+            location: robj
+        - trait2:
+    organization:
+        lhs:
+            - trait1
+        rhs:
+            - trait2
+    
+analyses: 
+    type: TwoSampleMR
+    input: job1
+```
+
+Programming flow
+
+1. Wrapper function generates yaml
+2. gwasglue2 constructor uses yaml to generate datasets
+
+Tutorial code
+
+```{r}
+# generate list based on a routine plan, pipes to gwasglue to construct the dataset
+plan_univariable_mr(
+    exposure = c("ieugwasr:ieu-a-2", "textfile:/path/to/file.txt.gz", "gwasvcf:/path/to/file.vcf.gz"),
+    outcome =  c("ieugwasr:ieu-a-7", existing_summaryset)
+) %>% gwasglue()
+# creates three different datasets
+# dataset 1 uses the instruments for exposure 1
+# dataset 2 uses the instruments for exposure 2
+# dataset 3 uses the instruments for exposure 3
+
+# generate list based on a routine plan, pipes to gwasglue to construct the dataset
+plan_multivariable_mr(
+    exposure = list(
+      "ieugwasr:ieu-a-2", 
+      list("file:filename.txt.gz",
+        snp_col="",
+        ea_col=""
+      ), "gwasvcf:/path/to/file.vcf.gz"),
+    outcome =  c("ieugwasr:ieu-a-7", existing_summaryset)
+) %>% gwasglue()
+# creates one dataset - uses combined instruments across all exposures
+
+
+get_plan(gwasglue_obj) # returns list
+
+get_plan(gwasglue_obj) %>% write_yaml("plan.yaml")
+get_plan(gwasglue_obj) %>% write_json("plan.json")
+
+read_yaml("plan.yaml") %>% gwasglue()
+```
+
+
+
+## Text files
+
+- Convoluted because we need to provide information about how to read them
+- Can be slow to read them - use fst package to read text files
+- Could collect some standard column name schemas
+  - gwas catalog
+  - plink
+  - metal
+- Could just copy this function across https://github.com/MRCIEU/TwoSampleMR/blob/master/R/read_data.R#L157
+
+
+
+## Prototyping plan manifests
+
+For MR - how do we sensibly extract instruments for the exposures without needing to have e.g. ieugwasr as a dependency?
+
+```{r}
+
+gwasglue2::get_tophits_from_datasource()
+
+plan_univariable_mr <- function(exposure, outcome) {
+  # number of datasets = length of exposure
+  ndatasets <- length(exposure)
+
+  lapply(ndatasets, \(x) {
+    # get instruments for each exposure
+    l <- list()
+    if(grepl("^ieugwasr:", exposure[x])) {
+      # rewrite this so that R doesn't think that it depends on ieugwasr
+      l$variants <- ieugwasr::tophits(gsub("^ieugwasr:", "", exposure[x]))$rsid
+
+    }
+
+  })
+
+}
+plan_univariable_mr(
+    exposure = c("ieugwasr:ieu-a-2", "textfile:/path/to/file.txt.gz", "gwasvcf:/path/to/file.vcf.gz"),
+    outcome =  c("ieugwasr:ieu-a-7", existing_summaryset)
+) %>% gwasglue()
+```
+
+Coloc example - simpler because it doesn't require the extraction of instruments
+
+
+
+susie->hyprcoloc pipeline e.g. specify coloc plan as above, but susie would generate a yaml constructor for its outputs
+
+```yaml
+plan1:
+  variants: chr:pos1-pos2
+  summarydata:
+    - trait1:
+      source: trait1_cs1
+      location: susieobj[]
+    - trait2:
+      source: trait1_cs2
+      location: susieobj[]
+```
+
+
+
+
+For now, we are going to create the yaml files manually, but we will  create a function to do this in the future.
+
+```{r}
+
+# colocalisation example
+yaml_coloc <- "
+job1:
+  variants:
+    shape: single_region
+    variant_list: 1:400000-4500000
+    build: GRCh37
+    tophits: FALSE
+  summarydata:
+  - label: ieu-a-2
+    source: ieugwasr
+    location: ieu-a-2
+    meta:
+  - label: ieu-a-7
+    source: ieugwasr
+    location: ieu-a-7
+  lddata:
+    location: data/ld/EUR
+    plink_bin: plink
+analyses: 
+    type: susier
+    input: job1"
+# yaml::write_yaml(yaml_coloc, "config_coloc.yaml")
+cat(yaml_coloc)
+
+yaml <- yaml::yaml.load(yaml_coloc)
+
+dataset_coloc <- gwasglue(yaml_coloc)
+```
+```{r}
+# colocalisation example: two jobs
+yaml_coloc2 <- "
+job1:
+  variants:
+    shape: single_region
+    variant_list: 1:400000-4500000
+    build: GRCh37
+    tophits: FALSE
+  summarydata:
+  - label: ieu-a-2
+    source: ieugwasr
+    location: ieu-a-2
+    meta:
+  - label: ieu-a-7
+    source: ieugwasr
+    location: ieu-a-7
+  lddata:
+    location: data/ld/EUR
+    plink_bin: plink
+job2:
+  variants:
+    shape: single_region
+    variant_list: 1:450000-5500000
+    build: GRCh37
+    tophits: FALSE
+  summarydata:
+  - label: ieu-a-2
+    source: ieugwasr
+    location: ieu-a-2
+    meta:
+  - label: ieu-a-7
+    source: ieugwasr
+    location: ieu-a-7
+  lddata:
+    location: data/ld/EUR
+    plink_bin: plink
+analyses: 
+  type: susier
+  input:
+   job1
+   job2"
+
+# yaml::write_yaml(yaml_coloc, "config_coloc.yaml")
+cat(yaml_coloc)
+
+yaml2 <- yaml::yaml.load(yaml_coloc2)
+yaml2
+# dataset_coloc <- gwasglue(yaml_coloc)
+```
+
+
+```{r}
+# mr example
+
+# for mr analysis we don't need to specify the variants. We look for the tophits in the summary data for the exposure. Create tophits function.
+yaml_mr <- "
+job1:
+  variants:
+    shape: scattered
+    tophits: TRUE
+  summarydata:
+  - label: trait1
+    source: ieugwasr
+    location: ieu-a-2
+    build: GRCh37
+  - label: trait2
+    source: ieugwasr
+    location: ieu-a-7
+    build: GRCh37
+  organization:
+   label: org1
+   lhs: trait1
+   rhs: trait2   
+analyses: 
+  type: TwoSampleMR
+  input: job1
+"
+# yaml::write_yaml(yaml_coloc, "config_mr.yaml")
+cat(yaml_mr)
+yaml=yaml::yaml.load(yaml_mr)
+
+
+mr <- gwasglue(yaml_mr)
+```
+
+```{r}
+# colocalisation example
+yaml_mr2 <- "
+job1:
+  variants: 
+    shape: scattered
+  summarydata:
+   - label: trait1
+     source: robj
+     location: summaryset1
+     build: GRCh37
+   - label: trait2
+     source: ieugwasr
+     location: ieu-a-2
+     build: GRCh37
+   - label: trait3
+     source: j
+     location: summaryset2
+     build: GRCh37
+     meta:
+       snp_col: SNP
+       ea_col: EA
+       oa_col: OA
+   - label: trait4
+     source: vcffile
+     location: http://gwas.mrcieu.ac.uk/ieu-a-2.vcf.gz
+  organization:
+   - label: org1
+     lhs: trait1
+     rhs: 
+     - trait2 
+     - trait3  
+   - label: org2
+     lhs: trait1
+     rhs: 
+     - trait2 
+     - trait4  
+analyses: 
+  type: TwoSampleMR
+  input: job1
+"
+# yaml::write_yaml(yaml_coloc, "config_mr.yaml")
+cat(yaml_mr2)
+yaml_mr2<-yaml::yaml.load(yaml_mr2)
+
+
+# dataset <- gwasglue(yaml_mr2)
+```
+
+```{r}
+data_ieu_a_2 <- read.table("data/summary_stats/ieu-a-2_TopHits_sumdata_mod.txt", header=TRUE)
+ieu_a_2 <- create_summaryset(data_ieu_a_2, effect_allele_col="effect_allele", other_allele_col="non_effect_allele", pvalue_col="pvalue", position_col="pos")
+
+data_ieu_a_7 <- read.table("inst/tests/ieu-a-7_sumdata_ieu-0-7TopHits.txt", header=TRUE)
+ieu_a_7 <- create_summaryset(data_ieu_a_7)
+
+bed_ref <- "data/ld/EUR"
+
+yaml <- job_coloc(traits = c("summaryset:ieu_a_2", "summaryset:ieu_a_7"), region=c("1:400000-4500000","15:400000-4500000"), bfile= bed_ref, plink_bin="plink", build="GRCh37")
+cat(yaml)
+
+dataset <- gwasglue_for(yaml)
+```
+
+
+```{r}
+bed_ref <- "data/ld/EUR"
+
+yaml <- job_coloc(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), region=c("1:400000-4500000","15:400000-4500000"), bfile= bed_ref, plink_bin="plink", build="GRCh37")
+cat(yaml)
+dataset <- gwasglue(yaml)
+```

@@ -17,8 +17,7 @@ harmoniseData(dataset, tolerance, action)
 
 \item{action}{Level of strictness in dealing with SNPs.
 \itemize{
-\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes;
 \item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 }}
 }

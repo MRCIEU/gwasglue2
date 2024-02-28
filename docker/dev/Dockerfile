@@ -63,11 +63,12 @@ RUN R -e "install.packages(c('BiocGenerics', 'Biostrings', 'GenomeInfoDb', 'Geno
 RUN R -e "install.packages(c('tidyverse', 'remotes', 'renv', 'coloc', \
         'rmarkdown', 'knitr', 'bookdown', 'commonmark', 'markdown','Rfast', \
         'httpgd','crayon','hash', 'data.table', 'stringr', ' RCurl', 'rlang', \
-        ' utils', 'RSQLite', 'digest','graphics', 'stats','pander')); \       
+        ' utils', 'RSQLite', 'digest','graphics', 'stats','pander', 'yaml','fst')); \       
         remotes::install_github('mrcieu/ieugwasr'); \
         remotes::install_github('mrcieu/TwoSampleMR');  \
         remotes::install_github('mrcieu/gwasvcf'); \
         remotes::install_github('mrcieu/GwasDataImport'); \
+        remotes::install_github('GenomicSEM/GenomicSEM'); \
         remotes::install_github('ritarasteiro/susieR'); \
         remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = FALSE)"
 # hypercoloc needs pandoc to build vignettes

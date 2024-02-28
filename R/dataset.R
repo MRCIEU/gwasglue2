@@ -43,7 +43,7 @@ setClass("DataSet",
     trait_organisation = "list"
     ),
   prototype = prototype(
-    sumset = list(NA_character_),
+    summary_sets = list(NA_character_),
     overlap_variants = NA_character_,
     is_resized = FALSE,
     is_harmonised = FALSE,
@@ -99,7 +99,7 @@ setMethod("getData", "DataSet",
 #'
 #' @param dataset A gwasglue2 DataSet object
 #' @param index Index of gwasglue2 SummarySet objects within DataSet
-#' @return summarySet gwasglue2 SummarySet object
+#' @return A gwasglue2 SummarySet object
 #' @export
 #' @docType methods
 #' @rdname getSummarySet-methods
@@ -129,7 +129,7 @@ setMethod("getLength", "DataSet",
 #' Calculating Z-scores
 #'
 #' @param dataset A gwasglue2 DataSet object
-#' @return An extra '"zscores"' column in the  GWAS summary statistics tibble. 
+#' @return An extra '"Z"' column in the  GWAS summary statistics tibble. 
 #' @export
 #' @docType methods
 #' @rdname setZscores-methods
@@ -138,7 +138,7 @@ setGeneric("setZscores", function(dataset) standardGeneric("setZscores"))
 setMethod( "setZscores", "DataSet",function(dataset) {
   message("Calculating zscores")
   for (i in seq_along(dataset@summary_sets)){
-  dataset@zscores[[i]] <- dataset@summary_sets[[i]]@ss$beta/dataset@summary_sets[[i]]@ss$se
+  dataset@Z[[i]] <- dataset@summary_sets[[i]]@ss$beta/dataset@summary_sets[[i]]@ss$se
   }
  return(dataset)
     }
@@ -155,8 +155,28 @@ setMethod( "setZscores", "DataSet",function(dataset) {
 # #' @rdname  getZ-scores-methods
 # setMethod("getZscores", "DataSet",
 #           function(dataset,index) {
-#             return(dataset@zscores[[index]])
+#             return(dataset@Z[[index]])
 #           })
+
+
+#' Calculating Chi squares
+#'
+#' @param dataset A gwasglue2 DataSet object
+#' @return An extra '"CHISQ"' column in the  GWAS summary statistics tibble. 
+#' @export
+#' @docType methods
+#' @rdname setChisq-methods
+setGeneric("setChisq", function(dataset) standardGeneric("setChisq"))
+#' @rdname setChisq-methods
+setMethod( "setChisq", "DataSet",function(dataset) {
+  message("Calculating Chi squares")
+  for (i in seq_along(dataset@summary_sets)){
+  dataset@CHISQ[[i]] <- qnorm(dataset@summary_sets[[i]]@p / 2)^2
+
+  }
+ return(dataset)
+    }
+)
 
 
 #'  Set the trait organisation of the gwasglue2 DataSet

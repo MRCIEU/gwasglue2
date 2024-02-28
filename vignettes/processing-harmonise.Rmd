@@ -1,0 +1,56 @@
+---
+title: "Harmonising trait againt trait"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Harmonising trait againt trait}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+A **gwasglue2** `DataSet-class()` object contains two or more harmonised `SummarySet` objects, each one representing a GWAS study. 
+
+Opposite to [**gwasglue**](https://mrcieu.github.io/gwasglue/), **gwasglue2** does not uses `rsids`, by default, when harmonising the data or in other analyses. Instead, a `variantid` is created using the chromosomal (chr) position (pos) and effect (ea) and non-effect (nea) alleles, taking the form of `chr:pos_ea_nea`. The GWAS summary data is also standardised when creating a `SummarySet` and transformed for the alleles to be in alphabetical order. Thus, to harmonise the data and assuming the variants are in forward strand,  **gwasglue2** will just check the overlaped variants. If the variants are in opposite strand, it takes similar approach to the one in [**TwoSampleMR**](https://mrcieu.github.io/TwoSampleMR/).
+
+
+More details on harmonisation can be found in the [Strategy](Strategy.html) page.
+
+
+<br>
+<br>
+
+## Setup
+```{r setup}
+library(gwasglue2)
+```
+
+
+<br>
+<br>
+
+## Function
+* `create_dataset()`: creates a `DataSet` object 
+* `isHarmonised()`: checks if the `DataSet` object is harmonised
+
+<br>
+<br>
+
+## Example
+
+We will create a `DataSet` object (`dataset`) like the one created in the [Create a dataset](processing-dataset.html) section, but showing the default arguments. The `create_dataset()` function will harmonise the traits assuming that they are on the forward strand (`action = 1`). Finally, we can check if  `dataset` object is harmonised using the `isHarmonised()` function.
+
+
+```{r}
+summarysets <- list(sumset_opengwas, sumset_vcf)
+dataset <-  create_dataset(summarysets, harmonise = TRUE, action = 1)
+isHarmonised(dataset)
+```
+
+
+Check [here](create_dataset.html) to change the `action` argument to harmonise the traits in the opposite strand. 

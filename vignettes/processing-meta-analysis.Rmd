@@ -1,0 +1,83 @@
+---
+title: "Processing: Meta analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Processing: Meta analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+
+Meta-analysis is a statistical combination of the results from two or more separate studies. In **gwasglue2**, the meta-analysis is performed using the fixed-effect model, which assumes that one true effect size underlies all the studies. The meta-analysis is performed using the `meta_analysis()` function. This function takes a `DataSet` object as input and returns a new `SummarySet` object.
+
+<br>
+<br>
+
+## Setup
+In addition to **gwasglue2**, we’ll load the following package:
+
+- [**ieugwasr**](https://mrcieu.github.io/ieugwasr/) - R package for accessing IEU GWAS database
+
+```{r setup}
+library(gwasglue2)
+library(ieugwasr)
+devtools::load_all("../") # this was added just for development
+```
+<br>
+<br>
+
+## Functions
+* `create_metadata()`: creates a metadata object
+* `create_summaryset()`, using the `metadata` argument: creates a `SummarySet` object
+* `create_dataset()`: creates a `DataSet` object 
+* `meta_analysis()`: performs meta-analysis and returns a `SummarySet` object
+ 
+ <br>
+ <br>
+ 
+## Example
+
+We are going to perform meta-analysis for two different studies of cardiac heart disease (chd), in the HMGCR (3-hydroxy-3-methylglutaryl-CoA reductase) gene region (chr5:74132993-75132993). We will use GWAS summary data obtained from IEU OpenGWAS through the **ieugwasr** package (see [here](input-opengwas.html) for details).
+
+Firt, we choose the IEU ids for the chd trait.
+
+```{r}
+ids <- c( "ieu-a-7",  "ukb-d-I9_IHD")
+```
+Then, we obtain the metadata using `ieugwasr::gwasinfo()` for each study and create a metadata object.
+
+```{r}
+metadata <- lapply(seq_along(ids), function(i){
+  m <- create_metadata(ieugwasr::gwasinfo(ids[i])) 
+})
+```
+
+In the <dataset> code bellow, we create an harmonised `dataset` object from the summary sets for each study.
+
+```{r dataset, include = TRUE}
+#  create dataset 
+  hmgcr_chrpos <- "5:74132993-75132993"
+  dataset <- lapply(seq_along(ids), function(i){
+    # create summarysets
+    s <- create_summaryset(ieugwasr::associations(variants = hmgcr_chrpos, id =ids[i]), metadata=metadata[[i]])
+  }) %>%
+    # create dataset
+    create_dataset(., harmonise = TRUE)
+```
+
+Finally, we perform the meta-analysis in <meta> to create a new summary set
+ 
+ ```{r meta, include = TRUE}
+ meta_chd <- dataset %>%
+    meta_analysis()
+ ```
+
+ 

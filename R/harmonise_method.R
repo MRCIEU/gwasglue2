@@ -42,10 +42,10 @@
 #' 
 #' @param dataset The gwasglue2 DataSet object
 #' @param action Level of strictness in dealing with SNPs during harmonisation.
-#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles (default);
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes;
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
-#' @return The gwasglue2 DataSet object resized
+#' @return The gwasglue2 DataSet object resized. If action = 1, the data is also harmonised.
 #' @export 
 #' @docType methods
 #' @rdname overlapVariants-methods
@@ -116,8 +116,7 @@ setMethod("overlapVariants", "DataSet", function(dataset, action) {
 #' 
 #' @param dataset The gwasglue2 DataSet object
 #' @param action Level of strictness in dealing with SNPs.
-#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes;
 #' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 #' @param tolerance Tolerance value.
 #' @return The gwasglue2 DataSet object harmonised

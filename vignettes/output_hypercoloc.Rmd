@@ -1,0 +1,49 @@
+---
+title: "hypercoloc"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{hypercoloc}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+The **hypercoloc** package performs Bayesian multi-trait Colocalization. We modified the package to accept a `DataSet` object as input.
+
+<br>
+<br>
+
+
+## Setup
+In addition to **gwasglue2**, we will load the following package:
+
+- [**hyprcoloc**](https://www.nature.com/articles/s41467-020-20885-8) from a github fork
+
+```{r setup}
+remotes::install_github('ritarasteiro/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), build_vignettes = TRUE) 
+library(gwasglue2)
+library(hyprcoloc)  # fork that takes Dataset
+```
+
+
+<br>
+<br>
+
+
+## Example 
+
+**hypercoloc**  takes a `DataSet` object (`dataset`) like the one created in the [Create a dataset](processing-dataset.html) section.
+
+```{r} 
+res_dataset <- hyprcoloc(dataset = dataset) 
+#hyprcoloc is using gwasglue2 DataSet class object as input
+print(res_dataset)
+```
+
+More details can be found [here](finemap_coloc1.html)

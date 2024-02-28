@@ -1,0 +1,78 @@
+---
+title: "Processing: Setter and getters functions for the SummarySet object"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Processing: Setter and getters functions for the SummarySet object}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+In the [Input section](input.html), we showed how to create a  **gwasglue2** `SummarySet` object. Here, we will show how to set and get information from a `SummarySet` object.
+<br>
+<br>
+
+## Setup
+
+```{r setup}
+library(gwasglue2)
+devtools::load_all("../") # this was added just for development purposes
+```
+
+<br>
+<br>
+
+## Functions
+* `getSummaryData()`: Reads the GWAS summary data from the `SummarySet` object.
+* `setMetadata()`: See [here](processing-add-metadata.html)
+* `getMetadata()`: See [here](processing-add-metadata.html)
+* `addToMetadata()`: See [here](processing-add-metadata.html)
+* `setAttributes()`: Sets the attributes of the `SummarySet` object. The `type` and `creation` attributes are added by default.
+* `getAttributes()`: Gets the attributes of the `SummarySet` object.
+* `setShape()`. The `shape` feature is not yet implemented in **gwasglue2**. 
+* `getShape()`. The `shape` feature is not yet implemented in **gwasglue2**.
+* `dimData()`. Gives the dimensions of the GWAS summary data.
+
+
+<br>
+<br>
+
+## Example
+ All the functions listed above work on a `SummarySet` object. We will use one of the `SummarySet` objects (`sumset_opengwas`) created in the [Input section](input.html).
+
+ We can check the the GWAS summary data with `getSummaryData()` and its dimensions using the `dimData()` function. The dimensions of the GWAS summary data are 4,172 rows and 13 columns. 
+
+```{r}
+getSummaryData(sumset_opengwas)
+dimData(sumset_opengwas)
+```
+
+We can also check the metadata associated with the `SummarySet` object using the `getMetadata()` function. More details on how to add metadata to a `SummarySet` object can be found [here](processing-add-metadata.html).
+
+```{r}
+getMetadata(sumset_opengwas)
+```
+
+We can also check the attributes associated with the `SummarySet` object using the `getAttributes()` function. By default, **gwasglue2** adds the `type` of GWAS summary data in the `SummarySet` object and the `creation` date. It is also possible to add other attributes to the `SummarySet` object using the `setAttributes()` function. 
+
+```{r}
+getAttributes(sumset_opengwas)
+sumset_opengwas <- setAttributes(sumset_opengwas, author = "rr")
+getAttributes(sumset_opengwas)
+```
+
+
+If we want use the `mr_label = "exposure"` or `mr_label = "outcome"`attribute to the `SummarySet` object for future MR analyses, we can do it as follows:
+
+
+```{r}
+sumset_opengwas <- setAttributes(sumset_opengwas, mr_label = "exposure")
+getAttributes(sumset_opengwas)
+```

@@ -16,6 +16,9 @@
     <loc>/articles/SummarySet_DataSet.html</loc>
   </url>
   <url>
+    <loc>/articles/dataset.html</loc>
+  </url>
+  <url>
     <loc>/articles/finemap_coloc1.html</loc>
   </url>
   <url>
@@ -25,6 +28,15 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/input-opengwas.html</loc>
+  </url>
+  <url>
+    <loc>/articles/input-vcf.html</loc>
+  </url>
+  <url>
+    <loc>/articles/input.html</loc>
+  </url>
+  <url>
     <loc>/articles/liftover.html</loc>
   </url>
   <url>
@@ -32,6 +44,54 @@
   </url>
   <url>
     <loc>/articles/mr.html</loc>
+  </url>
+  <url>
+    <loc>/articles/output.html</loc>
+  </url>
+  <url>
+    <loc>/articles/output_TwoSampleMR.html</loc>
+  </url>
+  <url>
+    <loc>/articles/output_hypercoloc.html</loc>
+  </url>
+  <url>
+    <loc>/articles/output_susier.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-add-metadata.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-add-summaryset.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-dataset-setters-getters.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-dataset.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-harmonise-ldref.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-harmonise.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-liftover.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-merge-datasets.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-meta-analysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-qc.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing-summaryset-setters-getters.html</loc>
+  </url>
+  <url>
+    <loc>/articles/processing.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -59,6 +119,9 @@
   </url>
   <url>
     <loc>/reference/add_summaryset.html</loc>
+  </url>
+  <url>
+    <loc>/reference/assertSameShape-methods.html</loc>
   </url>
   <url>
     <loc>/reference/clumpTophits.html</loc>
@@ -133,6 +196,9 @@
     <loc>/reference/getRSID-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/getShape-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/getSource-methods.html</loc>
   </url>
   <url>
@@ -146,6 +212,9 @@
   </url>
   <url>
     <loc>/reference/getTool-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getTraitOrg-methods.html</loc>
   </url>
   <url>
     <loc>/reference/getVariants-methods.html</loc>
@@ -217,7 +286,13 @@
     <loc>/reference/setRSID-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/setShape-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/setTool-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setTraitOrg-methods.html</loc>
   </url>
   <url>
     <loc>/reference/setVariantid-methods.html</loc>

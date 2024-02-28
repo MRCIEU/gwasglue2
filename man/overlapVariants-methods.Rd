@@ -15,13 +15,13 @@ overlapVariants(dataset, action)
 
 \item{action}{Level of strictness in dealing with SNPs during harmonisation.
 \itemize{
-\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles (default);
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes;
 \item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 }}
 }
 \value{
-The gwasglue2 DataSet object resized
+The gwasglue2 DataSet object resized. If action = 1, the data is also harmonised.
 }
 \description{
 Look for overlapped variants between SummarySets in the DataSet and Resize

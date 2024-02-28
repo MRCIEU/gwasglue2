@@ -2,10 +2,10 @@ Package: gwasglue2
 Title: GWAS summary data sources connected to analytical tools
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = "aut",
-           comment = c(ORCID = "0000-0003-0920-1055")),
     person("Rita", "Rasteiro", , "rita.rasteiro@bristol.ac.uk", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-4217-3060")),
+    person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = "aut",
+           comment = c(ORCID = "0000-0003-0920-1055")),
     person("Christopher", "Woods", , "Christopher.Woods@bristol.ac.uk", role = "aut",
            comment = c(ORCID = "0000-0001-6563-9903"))
   )
@@ -20,10 +20,11 @@ Depends:
     methods,
     R (>= 4.0.0)
 Imports:
-    dplyr
+    dplyr,
+    yaml,
+    digest
 Suggests: 
     covr,
-    digest,
     GenomicRanges,
     graphics,
     IRanges,
@@ -33,27 +34,36 @@ Suggests:
     stats,
     testthat (>= 3.0.0),
     TwoSampleMR,
-    utils
+    utils,
+    ieugwasr,
+    gwasvcf,
+    fread
 VignetteBuilder: 
     knitr
 Remotes:
-    mrcieu/TwoSampleMR
+    mrcieu/TwoSampleMR,
+    mrcieu/ieugwasr,
+    mrcieu/gwasvcf
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate: 
+    'clump.R'
     'constructors.R'
     'dataset.R'
     'convertTo.R'
     'globals.R'
+    'gwasglue.R'
     'harmonise.R'
     'harmoniseLD_method.R'
     'harmonise_ld.R'
     'harmonise_method.R'
     'liftover.R'
+    'listDatasets.R'
     'meta.R'
     'plot.R'
     'summaryset.R'
     'utils.R'
     'wrappers.R'
+    'yaml_constructors.R'
