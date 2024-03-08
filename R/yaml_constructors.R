@@ -1,7 +1,7 @@
 # YAML constructors
 
 
-#' YAML constructor for the coloc job
+#' YAML constructor for the coloc dataset
 #' @param traits A character vector of traits to be analysed. Each trait should be prefixed with the source of the data ("opengwas" if querring the IEU OpenGWAS database, "vcf", "text", "robject" and "summaryset") followed by their location. For "opengwas", the location will be the IEU OpenGWAS ID, for "vcf" and "text" will be the name of the files, for the "robject" will be the name of a R object containing a dataset dataframe and "summaryset"  be the name of a `SummarySet()` object. Eg. "opengwas:ieu-a-2", "vcf:ieu-a-2.vcf.gz", "text:ieu-a-2.txt", "robject:dt_ieu-a-2", "summaryset:sumset_ieu-a-2". Note that files should be in the work session directory.
 #' @param region A character vector of regions to be analysed.
 #' @param build  A character vector  of the reference genome assemblies to generate the vcf file. Default is "GRCh37". 
@@ -15,8 +15,8 @@
 #' @export 
 yaml_coloc <- function(traits, region, build = "GRCh37", bfile = NULL, plink_bin = NULL, write = FALSE, outfile = "config.yaml"){
   
-  # read number of DataSets/jobs to  build and analyse
-  njobs <- length(region)
+  # read number of DataSets to  build and analyse
+  ndatasets <- length(region)
   
   out <- lapply(region, \(r){
     l <- list()
@@ -34,7 +34,7 @@ yaml_coloc <- function(traits, region, build = "GRCh37", bfile = NULL, plink_bin
   })
     
   
-  names(out) <- c(paste0("job", 1:njobs))
+  names(out) <- c(paste0("dataset", 1:ndatasets))
   out <- append(out, list(analyses=list(type = "coloc")))
 
   
@@ -49,9 +49,9 @@ yaml_coloc <- function(traits, region, build = "GRCh37", bfile = NULL, plink_bin
 
 
 
-#' YAML constructor for the LD scores job
+#' YAML constructor for the LD scores dataset
 #' @param traits A character vector of traits to be analysed. Each trait should be prefixed with the source of the data ("opengwas" if querring the IEU OpenGWAS database, "vcf", "text", "robject" and "summaryset") followed by their location. For "opengwas", the location will be the IEU OpenGWAS ID, for "vcf" and "text" will be the name of the files, for the "robject" will be the name of a R object containing a dataset dataframe and "summaryset"  be the name of a `SummarySet()` object. Eg. "opengwas:ieu-a-2", "vcf:ieu-a-2.vcf.gz", "text:ieu-a-2.txt", "robject:dt_ieu-a-2", "summaryset:sumset_ieu-a-2". Note that files should be in the work session directory.
-#' @param variants A character vector of variants to be analysed.
+#' @param variants A vector of variants to be analysed. Preferable,  a 'RData' file path with an object named "variants", 
 #' @param build  A character vector  of the reference genome assemblies to generate the vcf file. Default is "GRCh37". 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param write A boolean indicating whether the yaml object should be written to a file.
@@ -60,12 +60,12 @@ yaml_coloc <- function(traits, region, build = "GRCh37", bfile = NULL, plink_bin
 #' @importFrom yaml write_yaml as.yaml
 #' @export 
 yaml_ldscores <- function(traits, variants, build = "GRCh37", write = FALSE, outfile = "config.yaml"){
-  # read number of DataSets/jobs to  build and analyse
-  njobs <- 1
+  # read number of DataSets  build and analyse
+  ndatasets <- 1
   
-  out <- lapply(njobs, \(r){
+  out <- lapply(ndatasets, \(r){
     l <- list()
-    l$variants <- list(shape = "scatterd", variant_list = variants)
+    l$variants <- list(shape = "scattered", variant_list = variants)
     l$summarydata <- strsplit(traits, ":") %>% lapply(., \(x) list(source=x[1], location=x[2]))
 
     if(!is.null(build)){
@@ -75,7 +75,7 @@ yaml_ldscores <- function(traits, variants, build = "GRCh37", write = FALSE, out
     return(l)
     })
   
-  names(out) <- c(paste0("job", 1))
+  names(out) <- c(paste0("dataset", 1))
   out <- append(out, list(analyses=list(type = "LDScores")))
 
   
@@ -91,9 +91,10 @@ yaml_ldscores <- function(traits, variants, build = "GRCh37", write = FALSE, out
 
 
 
-#' YAML constructor for the MR job
+#' YAML constructor for the MR dataset
 #' @param exposure A character vector of exposure traits to be analysed. Each trait should be prefixed with the source of the data ("opengwas" if querring the IEU OpenGWAS database, "vcf", "text", "robject" and "summaryset") followed by their location. For "opengwas", the location will be the IEU OpenGWAS ID, for "vcf" and "text" will be the name of the files, for the "robject" will be the name of a R object containing a dataset dataframe and "summaryset"  be the name of a `SummarySet()` object. Eg. "opengwas:ieu-a-2", "vcf:ieu-a-2.vcf.gz", "text:ieu-a-2.txt", "robject:dt_ieu-a-2", "summaryset:sumset_ieu-a-2". Note that files should be in the work session directory.
 #' @param outcome A character vector of outcome traits to be analysed. The same rules as for the exposure apply.
+#' @param pop A character vector of the population to be used by [ieugwasr::tophist()] if @param exposure is "opengwas". Default is "EUR".
 #' @param build  A character vector  of the reference genome assemblies to generate the vcf file. Default is "GRCh37". 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param pval A numeric vector of p-value thresholds to be used to select the top hits. Default is 5e-08.
@@ -113,11 +114,11 @@ yaml_ldscores <- function(traits, variants, build = "GRCh37", write = FALSE, out
 #' @export 
 
 yaml_mr <- function(exposure, outcome, pop = "EUR", build = "GRCh37", pval = 5e-08, clump = TRUE, r2 = 0.001, kb = 10000, variant_col="rsid", pval_col = "p", chr_col = "chr", position_col = "position", bfile=NULL, plink_bin=NULL,write = FALSE, outfile = "config.yaml"){
-  # read number of DataSets/jobs to  build and analyse
-  njobs <- length(exposure)
-  noutcomes <-length(outcome)
+  # read number of DataSets to  build and analyse
+  ndatasets <- length(exposure)
+  noutcomes <- length(outcome)
 
-  out <- lapply(1:njobs, \(i){
+  out <- lapply(1:ndatasets, \(i){
     l <- list()
     # get instruments for each exposure
     if(grepl("^opengwas:", exposure[i])) {
@@ -130,31 +131,39 @@ yaml_mr <- function(exposure, outcome, pop = "EUR", build = "GRCh37", pval = 5e-
     if(grepl("^vcf:", exposure[i])) {
        if (!requireNamespace("gwasvcf", quietly =TRUE)){
             stop("The MRC IEU R package `gwasvcf` needs to be installed.")}
-      dat <- gwasvcf::readVcf(gsub("^vcf:", "", exposure[i])) %>% gwasvcf::vcf_to_tibble()
-      tophits <- get_tophits_from_data(dat, pval = pval, clump = clump, r2 = r2, kb = kb, variant_col="ID", pval_col = "p", bfile=NULL, plink_bin=NULL)
+      data <- gwasvcf::readVcf(gsub("^vcf:", "", exposure[i])) %>% gwasvcf::vcf_to_tibble()
+      tophits <- get_tophits_from_data(data, pval = pval, clump = clump, r2 = r2, kb = kb, variant_col="ID", pval_col = "p", bfile=NULL, plink_bin=NULL)
       tophits <- paste0(tophits$seqnames, ":", tophits$start)
      }
 
     if(grepl("^text:", exposure[i])) {
-      dat <- if (!requireNamespace("fread", quietly =TRUE)){
+      if (!requireNamespace("fread", quietly =TRUE)){
             stop("The CRAN package `fread` needs to be installed.")}
       data <- data.table::fread(gsub("^text:", "", exposure[i]), header = TRUE)
       
-      tophits <- get_tophits_from_data(dat, pval = pval, clump = clump, r2 = r2, kb = kb, variant_col=variant_col, pval_col = pval_col, bfile=plink_bin, plink_bin=plink_bin)
+      tophits <- get_tophits_from_data(data, pval = pval, clump = clump, r2 = r2, kb = kb, variant_col=variant_col, pval_col = pval_col, bfile=plink_bin, plink_bin=plink_bin)
+      tophits <- paste0(tophits[chr_col], ":", tophits[position_col])
+      }
+
+    if(grepl("^gwascatalog:", exposure[i])) {
+      if (!requireNamespace("readr", quietly =TRUE)){
+            stop("The CRAN package `freadr` needs to be installed.")}
+      data <- readr::read_tsv(gsub("^gwascatalog:", "", exposure[i]))
+      tophits <- get_tophits_from_data(data, pval = pval, clump = clump, r2 = r2, kb = kb, variant_col=variant_col, pval_col = pval_col, bfile=plink_bin, plink_bin=plink_bin)
       tophits <- paste0(tophits[chr_col], ":", tophits[position_col])
       }
     
     if(grepl("^robject:", exposure[i])) {
-      dat <- get(gsub("^robject:", "", exposure[i]))
-      if(!inherits(t,c("tbl", "tbl_df", "data.frame"))){
+      data <- get(gsub("^robject:", "", exposure[i]))
+      if(!inherits(data, c("tbl", "tbl_df", "data.frame"))){
           stop("The object ", exposure[i], " is not a `data.frame`.`")
           }
-      tophits <- get_tophits_from_data(dat, pval = pval, clump = clump, r2 = r2, kb = kb, variant_col=variant_col, pval_col = pval_col, bfile=bfile, plink_bin=plink_bin)
+      tophits <- get_tophits_from_data(data, pval = pval, clump = clump, r2 = r2, kb = kb, variant_col=variant_col, pval_col = pval_col, bfile=bfile, plink_bin=plink_bin)
       tophits <- paste0(tophits[chr_col], ":", tophits[position_col])
       }
     if(grepl("^summaryset:", exposure[i])) {
       summaryset <- get(gsub("^summaryset:", "", exposure[i]))
-      if(!isS4(summary_sets)){
+      if(!inherits(summaryset,"SummarySet")){
          stop("The object ", exposure[i], " is not a SummarySet.")
         }
       tophits <- summaryset %>% getSummaryData() %>% get_tophits_from_data(pval = pval, clump = clump, r2 = r2, kb = kb, bfile=bfile, plink_bin=plink_bin)
@@ -174,7 +183,7 @@ yaml_mr <- function(exposure, outcome, pop = "EUR", build = "GRCh37", pval = 5e-
   })
     
   
-  names(out) <- c(paste0("job", 1:njobs))
+  names(out) <- c(paste0("dataset", 1:ndatasets))
   out <- append(out, list(analyses=list(type = "MR")))
 
   
