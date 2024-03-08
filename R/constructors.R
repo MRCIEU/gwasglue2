@@ -43,32 +43,36 @@ create_metadata <- function(metadata = NULL,
 #' A function to create a gwasglue2 SummarySet object from different sources and formats
 #' 
 #' @param data GWAS summary statistics.
+#' @param variants A vector with variants  chromosomal position information. Default NULL
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
-#' @param type Input @param data type. Default is `"tibble"`. Other options: `"vcf"`
+#' @param type Input @param data type. Default is `"tibble"`. Other options: `"vcf" and `"gwascatalog"`.
 #' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from running. If TRUE gwasglue2 will try to solve the problems.  Default is FALSE
-#' @param beta_col Name of column with effect sizes. The default is `"beta"` for @param type `"tibble"` and `"ES"`for @param type `"vcf"`..
-#' @param se_col Name of column with standard errors. The default is `"se"` for @param type `"tibble"` and `"SE"`for @param type `"vcf"`.
-#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"` for @param type `"tibble"` and `"AF"`for @param type `"vcf"`.
-#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"` for @param type `"tibble"` and `"ALT"`for @param type `"vcf"`.
-#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea` for @param type `"tibble"` and `"REF"`for @param type `"vcf"`.
-#' @param pvalue_col Name of column with p-value. The default is `"p"`.
-#' @param logpvalue_col Name of column with log(p-value). The default is `"LP"` for @param type `"vcf"`.
-#' @param samplesize_col Column name for sample size. The default is `"n"` for @param type `"tibble"` and `"SS"`for @param type `"vcf"`.
-#' @param chr_col Column name for chromosome . The default is `"chr"` for @param type `"tibble"` and `"seqnames"`for @param type `"vcf"`.
-#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"` for @param type `"tibble"` and `"start"`for @param type `"vcf"`.
-#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"` for @param type `"tibble"` and `"ID"`for @param type `"vcf"`.
-#' @param id_col GWAS study ID column. The default is `"id"`.
-#' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"` 
+#' @param beta_col Name of column with effect sizes.  Check [create_summaryset_from_tibble()], [create_summaryset_from_gwasvcf()] or [create_summaryset_from_gwascatalog()] for default columns.
+#' @param se_col Name of column with standard errors. 
+#' @param eaf_col Name of column with effect allele frequency. 
+#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". 
+#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". 
+#' @param pvalue_col Name of column with p-value. 
+#' @param logpvalue_col Name of column with log(p-value). 
+#' @param samplesize_col Column name for sample size. 
+#' @param chr_col Column name for chromosome . 
+#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. 
+#' @param rsid_col Required name of column with variants rs IDs. 
+#' @param id_col GWAS study ID column. 
+#' @param trait_col Column name for the column with phenotype name corresponding the the variant. 
+#' Check [create_summaryset_from_tibble()], [create_summaryset_from_gwasvcf()] or [create_summaryset_from_gwascatalog()] for default columns names.
 #' @return A gwasglue2 SummarySet object
 #' @export 
 create_summaryset <- function (data,
                               metadata = NULL,
+                              variants = NULL,
                               type = "tibble",
                               qc = FALSE,
                               beta_col = NULL,
+                              odds_ratio_col = NULL,
                               se_col =NULL,
                               samplesize_col = NULL,
                               pvalue_col = NULL,
@@ -123,6 +127,7 @@ create_summaryset <- function (data,
 
     s <- create_summaryset_from_tibble(data = data,
                               metadata = metadata,
+                              variants = variants,
                               qc = qc,
                               beta_col =  beta_col,
                               se_col = se_col,
@@ -179,8 +184,68 @@ create_summaryset <- function (data,
     
     s <- create_summaryset_from_gwasvcf(data = data,
                               metadata = metadata,
+                              variants = variants,
                               qc = qc,
                               beta_col =  beta_col,
+                              se_col = se_col,
+                              samplesize_col = samplesize_col,
+                              pvalue_col = pvalue_col,
+                              logpvalue_col = logpvalue_col,
+                              chr_col = chr_col,
+                              position_col = position_col,
+                              rsid_col = rsid_col,
+                              effect_allele_col = effect_allele_col,
+                              other_allele_col = other_allele_col,
+                              eaf_col = eaf_col,
+                              id_col = id_col,
+                              build = build)
+  }
+
+  # create SummarySet from gwascatalog
+  if (type == "gwascatalog") {
+    if(is.null(beta_col)){
+      beta_col = "beta"
+    }
+    f(is.null(odds_ratio_col)){
+      beta_col = "odds_ratio"
+    }
+    if(is.null(se_col)){
+      se_col = "standard_error"
+    }
+    if(is.null(samplesize_col)){
+     samplesize_col = "n"
+    }
+    if(is.null(pvalue_col)){
+      pvalue_col = "p_value"
+    }
+    if(is.null(chr_col)){
+      chr_col = "chromosome"
+    }
+    if(is.null(position_col)){
+       position_col = "base_pair_location"
+    }
+    if(is.null(rsid_col)){
+      rsid_col = "rsid"
+    }
+    if(is.null(effect_allele_col)){
+      effect_allele_col = "effect_allele"
+    }
+    if(is.null(other_allele_col)){
+      other_allele_col = "other_allele"
+    }
+    if(is.null(eaf_col)){
+      eaf_col = "effect_allele_frequency"
+    }
+    if(is.null(id_col)){
+      id_col = "id"
+    }
+    
+    s <- create_summaryset_from_gwasvcf(data = data,
+                              metadata = metadata,
+                              variants = variants,
+                              qc = qc,
+                              beta_col =  beta_col,
+                              odds_ratio_col = odds_ratio_col,
                               se_col = se_col,
                               samplesize_col = samplesize_col,
                               pvalue_col = pvalue_col,
@@ -202,6 +267,7 @@ create_summaryset <- function (data,
 #' A function to create a gwasglue2 SummarySet object from a tibble or dataframe
 #' 
 #' @param data GWAS summary statistics. A tibble or a dataframe
+#' @param variants A vector with variants  chromosomal position information. Default NULL
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
 #' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
@@ -223,6 +289,7 @@ create_summaryset <- function (data,
 #' @export 
 create_summaryset_from_tibble <- function (data,
                               metadata = NULL,
+                              variants = NULL,
                               qc = FALSE,
                               beta_col = "beta",
                               se_col = "se",
@@ -242,12 +309,12 @@ create_summaryset_from_tibble <- function (data,
   # Check column names and change them to ieugwasr nomenclature
   data_cols <- names(data)  
 
-  # IEU required columns
-  ieu_req <- c("beta", "se", "p", "chr",  "position", "rsid", "ea",  "nea")
-  req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, rsid_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
+   # IEU required columns
+  ieu_req <- c("beta", "se", "p", "chr",  "position",  "ea",  "nea")
+  req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
   # IEU optional columns
-  ieu_optional <- c("n", "eaf", "id","trait")
-  optional_cols <- c(samplesize_col, eaf_col, id_col,trait_col)
+  ieu_optional <- c("n", "eaf", "id", "rsid")
+  optional_cols <- c(samplesize_col, eaf_col, id_col, rsid_col)
 
 # stop if any required column is missing
   if (isFALSE(all(req_cols%in%data_cols))){
@@ -298,8 +365,7 @@ create_summaryset_from_tibble <- function (data,
 
   s <- SummarySet(sumstats = data) %>%
     setMetadata(., metadata) %>%
-    setVariantid(.) %>%
-    setRSID(.,.@ss$rsid) 
+    setVariantid(.)
 
   # sanity checks
   # check if there are repeated variantids
@@ -330,6 +396,7 @@ create_summaryset_from_tibble <- function (data,
 #' A function to create a gwasglue2 SummarySet object from a vcf file
 #' 
 #' @param data GWAS summary statistics. In the GWAS vcf dataframe format
+#' @param variants A vector with variants  chromosomal position information. Default NULL
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
 #' @param build Reference genome assembly to generate the vcf file. Default is NULL. 
@@ -351,6 +418,7 @@ create_summaryset_from_tibble <- function (data,
 #' @export 
 create_summaryset_from_gwasvcf <- function (data,
                               metadata = NULL,
+                              variants = NULL,
                               qc = FALSE,
                               beta_col = "ES",
                               se_col = "SE",
@@ -378,13 +446,12 @@ create_summaryset_from_gwasvcf <- function (data,
     data_cols <- names(data)
   }
 
-  # IEU required columns
-  ieu_req <- c("beta", "se", "p", "chr",  "position", "rsid", "ea",  "nea")
-  req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, rsid_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
+   # IEU required columns
+  ieu_req <- c("beta", "se", "p", "chr",  "position",  "ea",  "nea")
+  req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
   # IEU optional columns
-  # TODO add trait?
-  ieu_optional <- c("n", "eaf", "id")
-  optional_cols <- c(samplesize_col, eaf_col, id_col)
+  ieu_optional <- c("n", "eaf", "id", "rsid")
+  optional_cols <- c(samplesize_col, eaf_col, id_col, rsid_col)
 
 # stop if any required column is missing
   if (isFALSE(all(req_cols%in%data_cols))){
@@ -393,9 +460,9 @@ create_summaryset_from_gwasvcf <- function (data,
   }
 
   # replace column names by optional ieu_cols
-  if (isTRUE(any(optional_cols%in%data_cols))){
-    data1 <- data[optional_cols[optional_cols%in%data_cols]]
-    names(data1) <- ieu_optional[optional_cols%in%data_cols]
+  if (isTRUE(any(optional_cols %in% data_cols))){
+    data1 <- data[optional_cols[optional_cols %in% data_cols]]
+    names(data1) <- ieu_optional[optional_cols %in% data_cols]
     data2 <- data[,which(names(data) %ni% ieu_optional & names(data) %ni% optional_cols)]
     data <- dplyr::bind_cols(data1, data2)
   }
@@ -435,8 +502,7 @@ create_summaryset_from_gwasvcf <- function (data,
 
   s <- SummarySet(sumstats = data) %>%
     setMetadata(., metadata) %>%
-    setVariantid(.) %>%
-    setRSID(.,.@ss$rsid) 
+    setVariantid(.)
 
   # sanity checks
   # check if there are repeated variantids
@@ -465,6 +531,142 @@ create_summaryset_from_gwasvcf <- function (data,
 }
 
 
+#' A function to create a gwasglue2 SummarySet object from GWAS catalog data
+#' 
+#' @param data GWAS summary statistics. A dataframe in the GWAS catalog dataframe format
+#' @param variants A vector with variants  chromosomal position information. Default NULL
+#' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
+#' @seealso [create_metadata()] to create a metadata object
+#' @param build Reference genome assembly to generate the vcf file. Default is NULL. 
+#' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
+#' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from runing. If TRUE gwasglue will try to solve the problems.  Default is FALSE
+#' @param beta_col Name of column with effect sizes. The default is `"beta"`.
+#' @param odds_ratio_col Name of column with odds ratio of the effect sizes. The default is `"odds_ratio"`.
+#' @param se_col Name of column with standard errors. The default is `"standard_error"`.
+#' @param eaf_col Name of column with effect allele frequency. The default is `"effect_allele_frequency"`.
+#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"effect_allele"`.
+#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"other_allele"`.
+#' @param pvalue_col Name of column with p-value. The default is `"p-value"`.
+#' @param samplesize_col Column name for sample size. The default is `"n"`.
+#' @param chr_col Column name for chromosome . The default is `"chromosome"`.
+#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"base_pair_location"`.
+#' @param rsid_col Column  name with variants rs IDs. The default is `"rsid"`.
+#' @param id_col GWAS study ID column. The default is `"id"`.
+#' @return A gwasglue2 SummarySet object
+#' @export 
+create_summaryset_from_gwascatalog <- function (data,
+                              metadata = NULL,
+                              variants = NULL,
+                              qc = FALSE,
+                              beta_col = "beta",
+                              odds_ratio_col = "odds_ratio",
+                              se_col = "standard_error",
+                              samplesize_col = "n",
+                              pvalue_col = "p_value",
+                              chr_col = "chromosome",
+                              position_col = "base_pair_location",
+                              rsid_col = "rsid",
+                              effect_allele_col = "effect_allele",
+                              other_allele_col = "other_allele",
+                              eaf_col = "effect_allele_frequency",
+                              id_col = "id", 
+                              build = NULL) {
+
+  data <- data %>% dplyr::as_tibble()
+
+  # Check column names and change them to ieugwasr nomenclature
+  data_cols <- names(data)  
+
+  # transform the pvalue if it is in log10
+   if(isTRUE(any(data_cols==odds_ratio_col)) & isFALSE(any(data_cols==beta_col))){
+    odds_ratio <- data[which(colnames(data)==odds_ratio_col)]
+    data$beta <- log(odds_ratio)
+    data_cols <- names(data)
+  }
+
+  # IEU required columns
+  ieu_req <- c("beta", "se", "p", "chr",  "position",  "ea",  "nea")
+  req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
+  # IEU optional columns
+  ieu_optional <- c("n", "eaf", "id", "rsid")
+  optional_cols <- c(samplesize_col, eaf_col, id_col, rsid_col)
+
+# stop if any required column is missing
+  if (isFALSE(all(req_cols%in%data_cols))){
+    dif <- setdiff(req_cols, data_cols)
+    stop("Column(s) ", list(dif), " is/are missing. Please specify.",call. = FALSE)
+  }
+
+  # replace column names by optional ieu_cols
+  if (isTRUE(any(optional_cols %in% data_cols))){
+    data1 <- data[optional_cols[optional_cols %in% data_cols]]
+    names(data1) <- ieu_optional[optional_cols %in% data_cols]
+    data2 <- data[,which(names(data) %ni% ieu_optional & names(data) %ni% optional_cols)]
+    data <- dplyr::bind_cols(data1, data2)
+  }
+
+  # replace column names by required ieu_cols
+  if (isTRUE(all(req_cols%in%data_cols))){
+    data1 <- data[req_cols]
+    names(data1) <- ieu_req
+      
+    data2 <- data[,which(names(data) %ni% ieu_req & names(data) %ni% req_cols)]
+    data <- dplyr::bind_cols(data1, data2)
+  }
+  
+
+  #  standardise and sort summarySet by
+     data <- data %>% 
+            standardise(.) %>% 
+            dplyr::arrange(chr, position, ea, nea)
+
+  # create metadata if not in input from user
+  if (is.null(metadata)){
+    metadata = create_metadata()
+  }
+  # checks on metadata using data info
+  if ("id" %in% names(metadata) && "id" %in% colnames(data) && is.na(metadata$id)){ 
+    metadata$id <- unique(data$id)
+    }
+  if ("sample_size" %in% names(metadata) && "n" %in% colnames(data) && is.na(metadata$sample_size) && !all(is.na(data$n))){
+    metadata$sample_size <- max(data$n, na.rm = TRUE)
+    }
+  if ("trait" %in% names(metadata) && "Trait" %in% colnames(data) && is.na(metadata$trait)){ 
+    metadata$trait <- unique(data$trait)
+    }
+  if ("build" %in% names(metadata) && is.na(metadata$build)){ 
+    metadata$build <- build
+    }
+
+  s <- SummarySet(sumstats = data) %>%
+    setMetadata(., metadata) %>%
+    setVariantid(.)
+
+  # sanity checks
+  # check if there are repeated variantids
+  variant_id <- s@ss$variantid
+  variant_id_rep <- variant_id[(duplicated(variant_id) | duplicated(variant_id, fromLast = TRUE)) ]
+  
+  # warning message if there is problems run with option
+  if (length(variant_id_rep) > 0){
+    if (isFALSE(qc)){
+    warning( "There are repeated variants in the data, that could stop gwasglue2 from running in some analyses. If you want gwasglue to deal with it, run again 'create_summaryset' with option 'qc = TRUE'\n")
+    print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+    }
+    # remove repeated variantids
+    if (isTRUE(qc)){
+      message("gwasglue2 is removing problematic variants\n")
+      print(s@ss[which(s@ss$variantid %in% variant_id_rep), ] %>% dplyr::select(., variantid, chr, position, ea, nea, eaf,beta, se))
+      s@ss <- s@ss[which(s@ss$variantid %ni% variant_id_rep), ]
+    }
+  }
+    
+
+  # set attributes
+  s@attributes <- list("type" = "gwas_catalog", "creation" = Sys.time())
+  
+  return(s)
+}
 
 
 
@@ -715,4 +917,60 @@ create_variantid <-function(chr,pos,a1,a2) {
   
   return(variantid)
   }
+
+
+
+#' Change columns names
+#' @param data GWAS summary statistics. A tibble or a dataframe
+#' @param beta_col Name of column with effect sizes. The default is `"beta"`.
+#' @param se_col Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"`.
+#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea`.
+#' @param pvalue_col Name of column with p-value. The default is `"p"`.
+#' @param samplesize_col Column name for sample size. The default is `"n"`.
+#' @param chr_col Column name for chromosome . The default is `"chr"`.
+#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"`.
+#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"`.
+#' @param id_col GWAS study ID column. The default is `"id"`.
+#' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"` 
+
+change_colnames <- function (data){
+data <- data %>% dplyr::as_tibble()                              
+  # Check column names and change them to ieugwasr nomenclature
+  data_cols <- names(data)  
+
+  # IEU required columns
+  ieu_req <- c("beta", "se", "p", "chr",  "position", "rsid", "ea",  "nea")
+  req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, rsid_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
+  # IEU optional columns
+  ieu_optional <- c("n", "eaf", "id","trait")
+  optional_cols <- c(samplesize_col, eaf_col, id_col,trait_col)
+
+# stop if any required column is missing
+  if (isFALSE(all(req_cols%in%data_cols))){
+    dif <- setdiff(req_cols, data_cols)
+    stop("Column(s) ", list(dif), " is/are missing. Please specify.",call. = FALSE)
+  }
+
+  # replace column names by optional ieu_cols
+  if (isTRUE(any(optional_cols %in% data_cols))){
+    data1 <- data[optional_cols[optional_cols %in% data_cols]]
+    names(data1) <- ieu_optional[optional_cols %in% data_cols]
+    data2 <- data[,which(names(data) %ni% ieu_optional & names(data) %ni% optional_cols)]
+    data <- dplyr::bind_cols(data1, data2)
+  }
+
+     # replace column names by required ieu_cols
+  if (isTRUE(all(req_cols%in%data_cols))){
+    data1 <- data[req_cols]
+    names(data1) <- ieu_req
+      
+    data2 <- data[,which(names(data) %ni% ieu_req & names(data) %ni% req_cols)]
+    data <- dplyr::bind_cols(data1, data2)
+  }
+return (data)
+}
+
+
 
