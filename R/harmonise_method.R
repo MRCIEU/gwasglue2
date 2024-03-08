@@ -84,6 +84,10 @@ setMethod("overlapVariants", "DataSet", function(dataset, action) {
     # Find overlapped variants among all summarySets
      #  check for multiallelic variants and drop them
     #  TODO probably will vave to change this to use chr:position instead of rsid
+    if (is.null(dataset@summary_sets[[i]]@ss$rsid)){
+      stop("No 'rsid' information in GWAS data for this SummarySet. Need this information to harmonise, when using 'action = 2' or 'action = 3'." )
+    }
+
     variants_list <- sapply(1:length(dataset@summary_sets), function(i){
       variants <- list(dataset@summary_sets[[i]]@ss$rsid[which(dataset@summary_sets[[i]]@ss$rsid %ni% names(which(table(dataset@summary_sets[[i]]@ss$rsid) > 1)))])
     })
@@ -163,7 +167,7 @@ setMethod( "harmoniseData", "DataSet", function(dataset, tolerance, action){
       dataset@summary_sets[[1]]@ss <- dplyr::as_tibble(dat1) #TODO check if there is any condition where dat1 changes?
       dataset@summary_sets[[i]]@ss <- dplyr::as_tibble(dat2)
 
-      # TODO fill slots
+      # fill slots
       dataset@dropped_SNPs[[count]] <-  h$variantid[h$keep == FALSE]
       # # names(dataset@dropped_SNPs)[[count]] <- paste0(dat1$id[1],"_vs_",dat2$id[1])
       # dataset@palindromic_SNPs[[count]] <-  h$variantid[h$palindromic == TRUE]
@@ -175,7 +179,6 @@ setMethod( "harmoniseData", "DataSet", function(dataset, tolerance, action){
   }
   message("\nDone harmonising!")
   
-  # TODO harmonise_make_snp_effects_positive?
 
   # at the end of harmonisation remove all union(dataset@dropped_SNPs)
   if(length(dataset@dropped_SNPs) != 0){
