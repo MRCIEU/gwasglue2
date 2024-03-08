@@ -37,7 +37,7 @@ Suggests:
     utils,
     ieugwasr,
     gwasvcf,
-    fread
+    data.frame
 VignetteBuilder: 
     knitr
 Remotes:
