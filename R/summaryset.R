@@ -60,7 +60,24 @@ setMethod("getSummaryData", "SummarySet",
 
           })
 
+#' Resize the GWAS Summary Statistics  from the SummarySet, using the variants chromosomal positions
+#'
+#' @param summary_set A gwasglue2 SummarySet object.
+#' @param variants A vector with the variants chromosomal positions. They can be either ranges or single positions. Eg. `1:1000-2000`, c("1:2000", "1:3000", "1:4000") or c("1:2000-3000", "1:4000", "1:6000")
+#' @return A resized gwasglue2 SummarySet object
+#' @export
+#' @docType methods
+#' @rdname resizeData-methods
+setGeneric("resizeData", function(summary_set, variants) standardGeneric("resizeData"))
+#' @rdname resizeData-methods
+setMethod("resizeData", "SummarySet",
+          function(summary_set, variants) {
+  data <- getSummaryData(summary_set) %>% resize_data(., variants)
+  summary_set@ss <- data
+  return(summary_set)
+  })
 
+        
 #' Set Method to add metadata to the SummarySet 
 #'
 #' @param summary_set A gwasglue2 SummarySet object.
@@ -364,8 +381,7 @@ setMethod(f = "show", signature="SummarySet", definition = function(object) {
   cat("Sample size:", n, "\n")
   
   if (is.na(shape)){
-  cat("Shape: No shape defined. Use the setShape() function to add it to the SummarySet\n")
-  cat("NOTE: The shape feature is not fully implemented yet. Analyses can continue without defining it.\n")
+  cat("Shape: No shape defined. Use the setShape() function to add it to the SummarySet, but analyses can continue without defining it. \n")
   } else{
       cat("Shape:", shape, "\n")
   }
