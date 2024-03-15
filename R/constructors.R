@@ -46,7 +46,7 @@ create_metadata <- function(metadata = NULL,
 #' @param variants A vector with variants  chromosomal position information. Default NULL
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
-#' @param type Input @param data type. Default is `"tibble"`. Other options: `"vcf" and `"gwascatalog"`.
+#' @param type Input @param data type. Default is `"tibble"`. Other options: `"vcf" and `"catalog"`.
 #' @param build Reference genome assembly to generate the genomic data. Default is NULL. 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param qc Quality control. It checks the @param data and look for problems that can stop gwasglue2 from running. If TRUE gwasglue2 will try to solve the problems.  Default is FALSE
@@ -201,13 +201,13 @@ create_summaryset <- function (data,
                               build = build)
   }
 
-  # create SummarySet from gwascatalog
-  if (type == "gwascatalog") {
+  # create SummarySet from catalog
+  if (type == "catalog") {
     if(is.null(beta_col)){
       beta_col = "beta"
     }
-    f(is.null(odds_ratio_col)){
-      beta_col = "odds_ratio"
+    if(is.null(odds_ratio_col)){
+      odds_ratio_col = "odds_ratio"
     }
     if(is.null(se_col)){
       se_col = "standard_error"
@@ -240,7 +240,7 @@ create_summaryset <- function (data,
       id_col = "id"
     }
     
-    s <- create_summaryset_from_gwasvcf(data = data,
+    s <- create_summaryset_from_catalog(data = data,
                               metadata = metadata,
                               variants = variants,
                               qc = qc,
@@ -249,7 +249,6 @@ create_summaryset <- function (data,
                               se_col = se_col,
                               samplesize_col = samplesize_col,
                               pvalue_col = pvalue_col,
-                              logpvalue_col = logpvalue_col,
                               chr_col = chr_col,
                               position_col = position_col,
                               rsid_col = rsid_col,
@@ -339,9 +338,12 @@ create_summaryset_from_tibble <- function (data,
     data <- dplyr::bind_cols(data1, data2)
   }
   
-  
+  # resize data
+  if (!is.null(variants)){
+    data <- data %>% resize_data(., variants)
+  }
   #  standardise and sort summarySet by
-     data <- data %>% 
+  data <- data %>% 
             standardise(.) %>% 
             dplyr::arrange(chr, position, ea, nea)
 
@@ -476,6 +478,10 @@ create_summaryset_from_gwasvcf <- function (data,
     data <- dplyr::bind_cols(data1, data2)
   }
   
+  # resize data
+  if (!is.null(variants)){
+    data <- data %>% resize_data(., variants)
+  }
 
   #  standardise and sort summarySet by
      data <- data %>% 
@@ -531,9 +537,9 @@ create_summaryset_from_gwasvcf <- function (data,
 }
 
 
-#' A function to create a gwasglue2 SummarySet object from GWAS catalog data
+#' A function to create a gwasglue2 SummarySet object from NHGRI-EBI Catalog data
 #' 
-#' @param data GWAS summary statistics. A dataframe in the GWAS catalog dataframe format
+#' @param data GWAS summary statistics. A dataframe in the NHGRI-EBI Catalog format
 #' @param variants A vector with variants  chromosomal position information. Default NULL
 #' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset
 #' @seealso [create_metadata()] to create a metadata object
@@ -554,7 +560,7 @@ create_summaryset_from_gwasvcf <- function (data,
 #' @param id_col GWAS study ID column. The default is `"id"`.
 #' @return A gwasglue2 SummarySet object
 #' @export 
-create_summaryset_from_gwascatalog <- function (data,
+create_summaryset_from_catalog <- function (data,
                               metadata = NULL,
                               variants = NULL,
                               qc = FALSE,
@@ -614,9 +620,14 @@ create_summaryset_from_gwascatalog <- function (data,
     data <- dplyr::bind_cols(data1, data2)
   }
   
+  # resize data
+  if (!is.null(variants)){
+    data <- data %>% resize_data(., variants)
+  }
 
   #  standardise and sort summarySet by
      data <- data %>% 
+            
             standardise(.) %>% 
             dplyr::arrange(chr, position, ea, nea)
 
@@ -696,126 +707,6 @@ create_dataset <- function(summary_sets=list(),
   return(ds)
 }
 
-
-#' Creates a DataSet object using GWAS summary statistics, and harmonise data against data
-#'
-#' @param data A list of GWAS summary data (tibles)
-#' @param metadata A list with metadata information. If NULL, it creates metadata with information retrieved from the dataset. 
-#' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
-#' @param tolerance Inherited from harmoniseData() (default 0.08)
-#' @param action Inherited from harmoniseData() (Default 1)
-#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
-#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
-#' @param beta_col Name of column with effect sizes. The default is `"beta"`.
-#' @param se_col Name of column with standard errors. The default is `"se"`.
-#' @param eaf_col Name of column with effect allele frequency. The default is `"eaf"`.
-#' @param effect_allele_col Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"ea"`.
-#' @param other_allele_col Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"nea`.
-#' @param pvalue_col Name of column with p-value. The default is `"p"`.
-#' @param samplesize_col Column name for sample size. The default is `"n"`.
-#' @param chr_col Column name for chromosome . The default is `"chr"`.
-#' @param position_col Column name for the position. Together, with @param chr gives the physical coordinates of the variant. The default is `"position"`.
-#' @param rsid_col Required name of column with variants rs IDs. The default is `"rsid"`.
-#' @param id_col The default is `"id"`.
-#' @param trait_col Column name for the column with phenotype name corresponding the the variant. The default is `"trait"`
-#' @param ... Other columns
-#' @seealso [create_metadata()] to create a metadata object
-#' @return A harmonised gwasglue2 DataSet object
-#' @export
-create_dataset_from_tibble <- function(data = list(),
-                          metadata = NULL,
-                          harmonise = TRUE,
-                          tolerance = 0.08,
-                          action = 1,
-                          beta_col = "beta",
-                          se_col = "se",
-                          samplesize_col = "n",
-                          pvalue_col = "p",
-                          chr_col = "chr",
-                          position_col = "position",
-                          rsid_col = "rsid",
-                          effect_allele_col = "ea",
-                          other_allele_col = "nea",
-                          eaf_col = "eaf",
-                          id_col = "id",
-                          trait_col = "trait",
-                          ...) {
-
-  ds <- DataSet(list())
-  if (is.null(metadata)){
-    metadata = vector("list", length(data))
-  }
-  for (i in seq_along(data)){
-    s <- create_summaryset_from_tibble(data= data[[i]],
-        metadata = metadata[[i]],
-        beta_col = beta_col,
-        se_col = se_col,
-        samplesize_col = samplesize_col,
-        pvalue_col = pvalue_col,
-        chr_col = chr_col,
-        position_col = position_col,
-        rsid_col = rsid_col,
-        effect_allele_col = effect_allele_col,
-        other_allele_col = other_allele_col,
-        eaf_col = eaf_col,
-        id_col = id_col,
-        trait_col = trait_col)
-    
-    ds@summary_sets[[i]] <- s
-  }
-
-  if (harmonise == TRUE) {
-    ds <- ds %>% overlapVariants(., action = action)
-  }
-  if (action != 1 && harmonise == TRUE){
-        ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
-  } 
-  return(ds)
-}
-
-
-#' Add a SummarySet to a DataSet 
-#'
-#' @param summary_sets one or more gwasglue2 Summarysets objects to add to an existent DataSet object. If more than one it should be a list
-#' @param dataset The gwasglue2 DataSet object to add to
-#' @param harmonise logical (default TRUE). It harmonises the summary sets in the DataSet against each other. 
-#' @param tolerance Inherited from harmoniseData() (default 0.08)
-#' @param action Inherited from harmoniseData() (Default 1)
-#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
-#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
-#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
-#' @return A harmonised gwasglue2 DataSet object with input SummarySets added
-#' @export 
-add_summaryset <- function(summary_sets,
-                          dataset,
-                          harmonise = TRUE,
-                          tolerance = 0.08,
-                          action = 1) {
-  
-  l <- length(dataset@summary_sets)
-  
-  if(length(summary_sets) == 0){
-     dataset@summary_sets[[l + 1]] <- summary_sets
-  }else {
-    for(i in seq_along(summary_sets)){
-    dataset@summary_sets[[l + i]] <- summary_sets[[i]]
-    }
-  }
-
-  message("\nSummarySet added to DataSet")
-  
-  ds <- dataset
-
-  if (harmonise == TRUE) {
-    ds <- ds %>% overlapVariants(., action = action)
-  }
-  if (action != 1 && harmonise == TRUE){
-        ds <-  harmoniseData(ds, tolerance = tolerance, action = action)
-  } 
-  return(ds)
-
-} 
 
 
 #' Merge Datasets 
@@ -941,10 +832,10 @@ data <- data %>% dplyr::as_tibble()
   data_cols <- names(data)  
 
   # IEU required columns
-  ieu_req <- c("beta", "se", "p", "chr",  "position", "rsid", "ea",  "nea")
+  ieu_req <- c("beta", "se", "p", "chr",  "position",  "ea",  "nea")
   req_cols <- c(beta_col, se_col, pvalue_col, chr_col, position_col, rsid_col, effect_allele_col, other_allele_col) # nolint: line_length_linter
   # IEU optional columns
-  ieu_optional <- c("n", "eaf", "id","trait")
+  ieu_optional <- c("n", "eaf", "id","trait", "rsid")
   optional_cols <- c(samplesize_col, eaf_col, id_col,trait_col)
 
 # stop if any required column is missing
@@ -974,3 +865,33 @@ return (data)
 
 
 
+
+
+
+
+# grep variants pattern and create a list with the chromosomal positions
+chrpos <- function(x){
+  if (grepl(":", x)){
+    x <- strsplit(x, ":") %>% unlist()
+    if(grepl("-", x[2])){
+    pos <- strsplit(x[2], "-") %>% unlist()
+    chrpos <- list(chr = x[1], start=pos[1], end = pos[2])
+    }
+    else{
+     chrpos <- list(chr = x[1], start= x[2], end = x[2])
+    }
+  }
+  return(chrpos)
+}
+
+# resize GWAS data
+resize_data <- function(data, variants){
+  rows <- lapply(variants, \(v) {
+    pos <- chrpos(v)
+    index <- which(data$chr==as.numeric(pos$chr) & data$position >= as.numeric(pos$start) & data$position <= as.numeric(pos$end))
+    index
+    }) %>% unlist()
+  
+  data <- data[rows,]
+  return(data)
+}
