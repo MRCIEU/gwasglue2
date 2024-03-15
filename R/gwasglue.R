@@ -46,7 +46,7 @@ gwasglue <- function(yaml, read=FALSE, path_to_yaml="config.yaml"){
         
         summary_sets <- ieugwasr::associations(variants = variants, id = location, gwasglue = TRUE) %>% setShape(.,shape = shape)
       }
-      if(source == "gwascatalog"){
+      if(source == "catalog"){
         if (!requireNamespace("readr", quietly =TRUE)){
               stop("The CRAN package `readr` needs to be installed.")}
         data <- readr::read_tsv(get(location))
