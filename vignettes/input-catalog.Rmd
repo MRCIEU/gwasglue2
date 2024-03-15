@@ -1,0 +1,57 @@
+---
+title: "Input: NHGRI-EBI Catalog data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NHGRI-EBI Catalog data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```
+## Setup
+In addition to **gwasglue2**, we will load the following package:
+
+- [**gwasrapid**](https://rmagno.eu/gwasrapidd/) -  access to the NHGRI-EBI Catalog of published genome-wide association studies.
+
+```{r setup}
+library(gwasglue2)
+library(gwasrapidd)
+```
+<br>
+<br>
+
+## Functions
+* `create_summaryset()`, using the `type = "catalog"` argument
+
+<br>
+<br>
+
+## Example
+We will the `create_summaryset()` function to create a `SummarySet` object from the NHGRI-EBI Catalog of published genome-wide association studies. The `type = "catalog"` argument is used to specify that the input is a data frame from the NHGRI-EBI Catalog.
+
+
+We are going to use association GWAS data from the NHGRI-EBI Catalog of published genome-wide association studies. The data can be downloaded from [here](https://www.ebi.ac.uk/gwas/docs/file-downloads). In this example, we are using the  study ID `GCST90018991` for Immunosuppressant use measurement trait.
+
+
+```{r}
+catalogfile <- "GCST90018991_buildGRCh37.tsv.gz"
+data <- readr::read_tsv(catalogfile)
+
+sumset_catalog <- create_summaryset(data, type="catalog", variants = "6:14110384-44266184")
+sumset_catalog
+
+```
+<br>
+<br>
+
+
+
+
+

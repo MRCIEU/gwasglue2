@@ -1,0 +1,155 @@
+---
+title: "Tutorial 1: How to create a SummarySet and a DataSet"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial 1: How to create a SummarySet and a DataSet}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+   eval = FALSE
+)
+```
+
+```{r setup}
+library(gwasglue2)
+library(VariantAnnotation)
+library( gwasvcf)
+library(ieugwasr)
+devtools::load_all("../") # this was added just for development
+```
+
+In this tutorial, we will approach the several ways of creating the two types of gwasglue2 objects: the `SummarySet()` and the `DataSet`. Check the [Strategy](Strategy.html) page for more details on these objects.
+
+
+# SummarySet
+ To create a SummarySet object we first need GWAS summary data, like the ones that can be obtained from IEU OpenGWAS through the `ieugwasr` package.
+
+ ```{r}
+ data1 <- ieugwasr::associations(variants = "5:74132993-75132993", id = "ukb-d-I9_IHD")
+
+ ```
+ 
+ Then we use the `create_summaryset()` to create the `SummarySet`.
+
+```{r}
+ sumset1 <- create_summaryset(data1)
+ getMetadata(sumset1)
+```
+
+In the code above, we did not supply any metadata information. The function will fill the metadata using any information available in the GWAS summary data (in `data1`).
+It is possible to add metadata using the `metadata`  argument.
+
+To create a `metadata` object, we use the `create_metadata()` function. We can give metadata information manually using one or more argument of the function. For example: 
+ 
+```{r}
+ meta1 <- create_metadata(sample_size = 361194)
+ print(meta1)
+```
+
+It is also possible for the user to add extra metadata information.
+
+```{r}
+ meta1 <- create_metadata(sample_size = 361194, access = date())
+ print(meta1)
+```
+
+
+Or to provide a dataframe with metadata information, using the `metadata` argument.
+
+```{r}
+ meta1 <- create_metadata(metadata = ieugwasr::gwasinfo("ukb-d-I9_IHD"), access = date())
+ meta1  
+```
+
+Thus, we can now build a `SummarySet` object with metadata information provided. Note that `data1` is a tibble and by default `create_summaryset()` reads tibbles. 
+
+```{r}
+ sumset1 <- create_summaryset(data1, metadata=meta1)
+ getMetadata(sumset1)
+```
+
+Let's try with another example, using another IEU id.
+
+First the GWAS summary data,
+
+```{r}
+ data2 <- ieugwasr::associations(variants = "5:74132993-75132993", id = "finn-b-I9_CHD")
+``` 
+
+and then the metadata
+
+```{r}
+ meta2 <- create_metadata(metadata = ieugwasr::gwasinfo("finn-b-I9_CHD"))
+ meta2  
+```
+You will notice that there is no `sample_size` information in the metadata. This absence could cause gwasglue2 further down in the analyses. We could the  `sample_size` parameter in `create_metadata()` to add the argument or add it later. We are going to add this information after creating the `SummarySet`.
+
+
+```{r}
+sumset2 <- create_summaryset(data2, metadata=meta2)
+```
+
+The warning tell us that there is a problem with the GWAS summary data. Specifically, there are variants with the same chromosomal position and alleles that have different betas, p-values and allele frequencies. If we change the quality control parameter to `qc = TRUE`, we will let gwasglue2 to deal with this inconsistencies in the dataset.
+
+```{r}
+sumset2 <- create_summaryset(data2, metadata=meta2, qc = TRUE)
+```
+
+Now we will deal with the lack of sample size information in the metadata. If this information was present in `data2`, the `create_summaryset()` function would fill this information automatically. But this is not the case, and thus we are going to use the `addToMetadata()` method and the `ncontrol` information already present in the metadata.
+
+
+```{r}
+getMetadata(sumset2)
+sumset2 = addToMetadata(sumset2, sample_size = (getMetadata(sumset2)$ncontrol + getMetadata(sumset2)$ncases))
+getMetadata(sumset2)
+```
+
+## Create a Summaryset from a GWAS vcf file
+
+In the examples above, the SummarySets were created using a tibble or more specifically the output of the `ieugwasr` package. Now we are going to use GWAS vcf files to create a SummarySet.
+
+First we use the Bioconductor package `VariantAnnotation` to read the vcf file.
+
+```{r}
+vcffile <- "../data/vcf/IEU-a-2.vcf.gz"
+vcf <- VariantAnnotation::readVcf(vcffile)
+```
+Then `gwasvcf` is used to query the vcf file and converting to simple dataframes.
+
+```{r}
+data_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993"))%>% 
+  gwasvcf::vcf_to_granges() %>% 
+  dplyr:: as_tibble()
+```
+
+Then we create the SummarySet using the `create_sumaryset()` function with argument `type = "vcf"`
+```{r}
+sumset_vcf <- create_summaryset(data_vcf, type="vcf")
+```
+
+Another and simpler way of creating a `SummarySet` from a vcf file is to use the `gwasvcf::gwasvcf_to_summaryset()` function:
+
+```{r}
+sumset_vcf <- gwasvcf::query_gwas(vcf, chrompos=c("5:74132993-75132993")) %>%
+  gwasvcf::gwasvcf_to_summaryset() 
+```
+
+# DataSet
+A `DataSet-class` is a list of two or more harmonised `SummarySets`.
+
+First we need to create a list with all `SummarySets` we want to analyse,
+
+```{r}
+summarysets <- list(sumset1, sumset2, sumset_vcf)
+```
+and then use the `create_dataset()` function to build the `DataSet` object.
+
+```{r}
+dataset <-  create_dataset(summarysets, harmonise = TRUE, tolerance = 0.08, action = 1)
+```
+

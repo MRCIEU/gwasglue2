@@ -19,13 +19,11 @@ In here, we show several ways of generating one of the **gwasglue2** objects - t
 
 * [Input from the IEU OpenGWAS Project, using the API](input-opengwas.html)
 * [Input from a GWAS-VCF file](input-vcf.html)
+* [Input from a text file](input-text.html)
+* [Input from NHGRI-EBI Catalog data](input-catalog.html)
+<!-- * [Input from a simulated GWAS](input-simGWAS.html) -->
 
 
 
 Check the [Strategy](Strategy.html) page for more details on `SummarySet-class()` and `DataSet-class()` objects.
-<!-- 
-input_object 
-input_simGWAS
-input_simulateGP
-input_textfiles
- -->
+

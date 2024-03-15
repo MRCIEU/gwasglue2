@@ -18,7 +18,108 @@ knitr::opts_chunk$set(
 library(gwasglue2)
 ```
 
-Here we demonstarte how to use the constructores to create `DataSets` for different types of analyses.
+`gwasglue2` uses YAML files to specify the analysis to be performed. The YAML file is used to create a `DataSet` object, which is used to perform the analysis. The `DataSet` object is created using the `gwasglue()` function. The `gwasglue()` function takes a YAML file as input and returns a `DataSet` object.
+
+There are three types of analyses that can be performed using `gwasglue2`: Mendelian randomisation (MR), colocalisation, and LD score regression. Each analysis has its own YAML constructor. The YAML constructors are as follows:
+- `yaml_mr()`: for MR analyses
+- `yaml_coloc()`: for colocalisation analyses
+- `yaml_ldscores()`: for LD score regression analyses
+
+The **gwasglue2** YAML files have all the same structure. There are two major keys: `dataset` and `analyses`. The `dataset` key contains the information about type of data that is going to be used for the `analyses`. Together,  they have all the information needed to create **gwasglue2** `DataSets`. There are two subkeys in `dataset`: `variants` and `summarydata`. The `variants` key contains information about the variants to be used in the analysis. The `summarydata` key contains information about the summary statistics GWAS data to be used in the analysis. 
+
+The following is a simple example of a YAML file for a LD score analysis:
+
+```{r}
+yaml_ldscores(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), variants = "variants.RData")
+```
+
+```yaml
+#there is just one dataset 
+dataset1:
+  variants:
+    #shape is defined by the type of analyses
+    shape: scattered
+    #the variants can be defined by a list of chromosomal positions (eg. 1:1000) or a region (eg. 1:1000-2000). It can be given direclty or as a RData file
+    variant_list: variants.RData
+  summarydata:
+    # sources  and location of the GWAS summary statistics 
+  - source: opengwas
+    location: ieu-a-2
+    build: GRCh37
+  - source: opengwas
+    location: ieu-a-7
+    build: GRCh37
+analyses:
+  # accepted types of analyses: MR, coloc, LDScores
+  type: LDScores
+```
+
+Accepted sources of the GWAS summary statistics (in parentesis are the accepted values for their location): 
+- opengwas (IEU OpenGWAS ID)
+- catalog (path to the file)
+<!-- - phenoscanner (path to the file) site not working at the moment -->
+- vcf (path to the file)
+- text (path to the file)
+- robject (name of a R object containing a dataframe)
+- summaryset (name of a `SummarySet()` object)
+
+**NOTE:**  **gwasglue2** uses as definition the column names used the IEU OpenGWAS project. The required column names are: `beta`, `se`, `p`, `chr`,  `position`,  `ea`,  `nea`. We advise to change the column names to the IEU OpenGWAS standard before using the `gwasglue()` function. You can use the `gwasglue2::change_colnames()` function to do this and source it as a `robject`. The `gwasglue()` function also assumes that all studies are in the same build. If the studies are in different builds, you can use the `gwasglue2::liftover()`  function to change the build of the studies and source it as a `summaryset`.
+
+
+The example below is a bit more complex. It is a YAML file for a colocalisation analysis. It contains two `datasets`, each with its own summary statistics and variants. The `analyses` key contains the type of analysis to be performed. In this case, it is a colocalisation analysis. In each `dataset`, there is a `lddata` subkey that contains the `location` to the plink files used to build the LD correlation matrix and the path to the **plink** executable.
+
+
+```{r}
+yaml_coloc(traits = c("opengwas:ieu-a-2", "vcf:ieu-a-7"), region=c("1:400000-4500000", "2:400000-4500000" ), bfile= bed_ref, plink_bin="plink", build = "GRCh37")
+```
+
+```yaml
+# Two datasets
+dataset1:
+  variants:
+    #shape is defined by the type of analyses
+    shape: single_region
+    #the variants can be defined by a list of chromosomal positions (eg. 1:1000) or a region (eg. 1:1000-2000). It can be given direclty or as a RData file
+    variant_list: 1:400000-4500000
+  summarydata:
+  - source: opengwas
+    location: ieu-a-2
+    build: GRCh37
+  - source: vcf
+    location: ieu-a-7
+    build: GRCh37
+  lddata:
+    location: data/ld/EUR
+    plink_bin: plink
+dataset2:
+  variants:
+    shape: single_region
+    variant_list: 2:400000-4500000
+  summarydata:
+  - source: opengwas
+    location: ieu-a-2
+    build: GRCh37
+  - source: vcf
+    location: ieu-a-7
+    build: GRCh37
+  lddata:
+    location: data/ld/EUR
+    plink_bin: plink
+analyses:
+  type: coloc
+```
+
+```{r}
+
+mr <- yaml_mr(exposure = c("ieugwasr:ieu-a-2"),outcome = c("ieugwasr:ieu-a-7"))
+cat(mr)
+dataset <- gwasglue(mr)
+```
+
+
+
+The YAML constructors take different arguments depending on the type of analysis. 
+Bellow, we demonstrate how to use the constructores to create `DataSets` for different types of analyses.
 
 
 
@@ -28,11 +129,11 @@ Here we demonstarte how to use the constructores to create `DataSets` for differ
 
 ```{r}
 
-mr <- yaml_mr(exposure = c("ieugwasr:ieu-a-2"),outcome = c("ieugwasr:ieu-a-7"))
+mr <- yaml_mr(exposure = c("ieugwasr:ieu-a-2"),outcome = c("ieugwasr:ieu-a-7"), write = TRUE, outfile = "config.yaml")
 cat(mr)
 dataset <- gwasglue(mr)
 ```
- In this example, we are using the prefix `ieugwasr` for the `exposure` traits, which will use `ieugwasr::tophits()` to extract the MR instruments. The `yaml_mr()` constructor also has optional arguments when local files are applied  and instruments need to be extracted locally.
+ In this example, we are using the prefix `ieugwasr` for the `exposure` traits, which will use `ieugwasr::tophits()` to extract the MR instruments. The `yaml_mr()` constructor also has optional arguments when local files are applied  and instruments need to be extracted locally. The `write` argument is used to write the YAML object to a file. The `outfile` argument is used to specify the name of the file to which the YAML object will be written.
 
 # A simple colocalisation analysis
 The following example demonstrates how to to create  the `DataSet` for a colocalisation analysis using the `yaml_coloc()` constructor. 
@@ -41,7 +142,8 @@ The following example demonstrates how to to create  the `DataSet` for a colocal
 ```{r}
 bed_ref <- "data/ld/EUR"
 
-coloc <- yaml_coloc(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), region=c("1:400000-4500000"), bfile= bed_ref, plink_bin="plink")
+coloc <- yaml_coloc(traits = c("opengwas:ieu-a-2", "vcf:ieu-a-7"), region=c("1:400000-4500000", "2:400000-4500000" ), bfile= bed_ref, plink_bin="plink")
+
 cat(coloc)
 dataset <- gwasglue(coloc)
 ```
@@ -62,9 +164,10 @@ The following example demonstrates how to to create  the `DataSet` for a LD scor
 
 ieugwasr::write_ldscores(ldscores, "EUR")
 
-variants <- paste0(ldscores$chrom[1:10], ":", ldscores$pos[1:10])
-
-ldsc <- yaml_ldscores(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), region=variants)
+variants <- paste0(ldscores$chrom, ":", ldscores$pos)
+save(variants, file = "variants.RData")
+ldsc <- yaml_ldscores(traits = c("opengwas:ieu-a-2", "opengwas:ieu-a-7"), variants = "variants.RData")
 cat(ldsc)
+
 dataset <- gwasglue(dsc)
 ```

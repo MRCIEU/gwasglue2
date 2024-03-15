@@ -1,0 +1,59 @@
+---
+title: "Input: text data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Input: text data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+
+To create a **gwasglue2** `SummarySet-class()` object we first need GWAS summary data, like the ones that can be obtained from [IEU Open GWAS Project](https://gwas.mrcieu.ac.uk/) through the **ieugwasr** package. 
+
+<br>
+<br>
+
+## Setup
+In addition to **gwasglue2**, we’ll load the following package:
+
+- [**ieugwasr**](https://mrcieu.github.io/ieugwasr/) - R package for accessing and query the IEU GWAS database
+
+```{r setup}
+library(gwasglue2)
+```
+
+<br>
+<br>
+
+## Functions
+* `create_summaryset()` - Creates a `SummarySet-class()` object from a `data.frame` or `tibble` with GWAS summary data.
+
+<br>
+<br>
+
+## Example
+We will need a text file with GWAS summary data we are going to study. For example, we have a text file for  IEU Open GWAS the trait id `ukb-d-I9_IHD` (coronary heart disease) and we want to query for the region `chr5:74132993-75132993`.
+
+ ```{r}
+ data <- data.table::fread("ukb-d-I9_IHD.txt", header = TRUE)
+ data
+ ```
+ 
+Then we use the **gwasglue2** constructor `create_summaryset()` to create the `SummarySet-class()`. By default, this function reads a tibble with the same columns names as the  output of the **ieugwasr** package. To change column names, use the `beta_col`, `se_col`, `samplesize_col`, `pvalue_col`, `chr_col`, `position_col`, `rsid_col`, `effect_allele_col`, `other_allele_col`, `eaf_col`, `id_col` arguments. See the documentation for [`create_summaryset`] for more details.
+
+
+```{r}
+ sumset_text <- create_summaryset(data, variants = "5:74132993-75132993")
+ sumset_text
+```
+
+When we call `sumset_text`, it shows a summary of the `SummarySet` object. How to acess the GWAS summary data is explained in the next section.
+                       
