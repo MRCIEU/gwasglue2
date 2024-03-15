@@ -94,7 +94,7 @@ yaml_ldscores <- function(traits, variants, build = "GRCh37", write = FALSE, out
 #' YAML constructor for the MR dataset
 #' @param exposure A character vector of exposure traits to be analysed. Each trait should be prefixed with the source of the data ("opengwas" if querring the IEU OpenGWAS database, "vcf", "text", "robject" and "summaryset") followed by their location. For "opengwas", the location will be the IEU OpenGWAS ID, for "vcf" and "text" will be the name of the files, for the "robject" will be the name of a R object containing a dataset dataframe and "summaryset"  be the name of a `SummarySet()` object. Eg. "opengwas:ieu-a-2", "vcf:ieu-a-2.vcf.gz", "text:ieu-a-2.txt", "robject:dt_ieu-a-2", "summaryset:sumset_ieu-a-2". Note that files should be in the work session directory.
 #' @param outcome A character vector of outcome traits to be analysed. The same rules as for the exposure apply.
-#' @param pop A character vector of the population to be used by [ieugwasr::tophist()] if @param exposure is "opengwas". Default is "EUR".
+#' @param pop A character vector of the population to be used by [ieugwasr::tophits()] if @param exposure is "opengwas". Default is "EUR".
 #' @param build  A character vector  of the reference genome assemblies to generate the vcf file. Default is "GRCh37". 
 #' * Options are `"NCBI34"`, `"NCBI35"`, `"NCBI36"`, `"GRCh37"` or "GRCh38".
 #' @param pval A numeric vector of p-value thresholds to be used to select the top hits. Default is 5e-08.
@@ -145,7 +145,7 @@ yaml_mr <- function(exposure, outcome, pop = "EUR", build = "GRCh37", pval = 5e-
       tophits <- paste0(tophits[chr_col], ":", tophits[position_col])
       }
 
-    if(grepl("^gwascatalog:", exposure[i])) {
+    if(grepl("^catalog:", exposure[i])) {
       if (!requireNamespace("readr", quietly =TRUE)){
             stop("The CRAN package `freadr` needs to be installed.")}
       data <- readr::read_tsv(gsub("^gwascatalog:", "", exposure[i]))
